@@ -150,3 +150,143 @@ if(BUILD_SHARED_LIBS AND (NOT ARIBCC_SHARED_LIBRARY))
 endif()
 
 # Generate config header
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/aribcc_config.h.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/include/aribcc_config.h"
+)
+
+### Source files
+add_library(aribcaption
+        include/aribcaption/aligned_alloc.hpp
+        include/aribcaption/aribcaption.h
+        include/aribcaption/aribcaption.hpp
+        include/aribcaption/aribcc_export.h
+        include/aribcaption/caption.h
+        include/aribcaption/caption.hpp
+        include/aribcaption/color.h
+        include/aribcaption/color.hpp
+        include/aribcaption/context.h
+        include/aribcaption/context.hpp
+        include/aribcaption/decoder.h
+        include/aribcaption/decoder.hpp
+        src/base/aligned_alloc.cpp
+        src/base/always_inline.hpp
+        src/base/cfstr_helper.hpp
+        src/base/language_code.hpp
+        src/base/logger.cpp
+        src/base/logger.hpp
+        src/base/md5.c
+        src/base/md5.h
+        src/base/md5_helper.hpp
+        src/base/result.hpp
+        src/base/scoped_cfref.hpp
+        src/base/scoped_com_initializer.hpp
+        src/base/scoped_holder.hpp
+        src/base/utf_helper.hpp
+        src/base/wchar_helper.hpp
+        src/common/caption_capi.cpp
+        src/common/context.cpp
+        src/common/context_capi.cpp
+        src/decoder/b24_codesets.cpp
+        src/decoder/b24_codesets.hpp
+        src/decoder/b24_colors.cpp
+        src/decoder/b24_colors.hpp
+        src/decoder/b24_controlsets.hpp
+        src/decoder/b24_conv_tables.hpp
+        src/decoder/b24_drcs_conv.cpp
+        src/decoder/b24_drcs_conv.hpp
+        src/decoder/b24_gaiji_table.hpp
+        src/decoder/b24_macros.hpp
+        src/decoder/decoder.cpp
+        src/decoder/decoder_capi.cpp
+        src/decoder/decoder_impl.cpp
+        src/decoder/decoder_impl.hpp
+)
+
+# Append renderer-related sources if renderer not disabled
+if(NOT ARIBCC_NO_RENDERER)
+    target_sources(aribcaption PRIVATE
+        include/aribcaption/image.h
+        include/aribcaption/image.hpp
+        include/aribcaption/renderer.h
+        include/aribcaption/renderer.hpp
+        $<$<BOOL:${ARIBCC_IS_ANDROID}>:src/base/tinyxml2.cpp>
+        $<$<BOOL:${ARIBCC_IS_ANDROID}>:src/base/tinyxml2.h>
+        src/renderer/alphablend.hpp
+        src/renderer/alphablend_generic.hpp
+        src/renderer/alphablend_x86.hpp
+        src/renderer/bitmap.cpp
+        src/renderer/bitmap.hpp
+        src/renderer/canvas.cpp
+        src/renderer/canvas.hpp
+        src/renderer/drcs_renderer.cpp
+        src/renderer/drcs_renderer.hpp
+        src/renderer/font_provider.cpp
+        src/renderer/font_provider.hpp
+        $<$<BOOL:${ARIBCC_IS_ANDROID}>:src/renderer/font_provider_android.cpp>
+        $<$<BOOL:${ARIBCC_IS_ANDROID}>:src/renderer/font_provider_android.hpp>
+        $<$<BOOL:${ARIBCC_USE_CORETEXT}>:src/renderer/font_provider_coretext.cpp>
+        $<$<BOOL:${ARIBCC_USE_CORETEXT}>:src/renderer/font_provider_coretext.hpp>
+        $<$<BOOL:${ARIBCC_USE_DIRECTWRITE}>:src/renderer/font_provider_directwrite.cpp>
+        $<$<BOOL:${ARIBCC_USE_DIRECTWRITE}>:src/renderer/font_provider_directwrite.hpp>
+        $<$<BOOL:${ARIBCC_USE_FONTCONFIG}>:src/renderer/font_provider_fontconfig.cpp>
+        $<$<BOOL:${ARIBCC_USE_FONTCONFIG}>:src/renderer/font_provider_fontconfig.hpp>
+        $<$<BOOL:${ARIBCC_USE_GDI_FONT}>:src/renderer/font_provider_gdi.cpp>
+        $<$<BOOL:${ARIBCC_USE_GDI_FONT}>:src/renderer/font_provider_gdi.hpp>
+        src/renderer/image_capi.cpp
+        src/renderer/rect.hpp
+        src/renderer/region_renderer.cpp
+        src/renderer/region_renderer.hpp
+        src/renderer/renderer.cpp
+        src/renderer/renderer_capi.cpp
+        src/renderer/renderer_impl.cpp
+        src/renderer/renderer_impl.hpp
+        src/renderer/text_renderer.cpp
+        src/renderer/text_renderer.hpp
+        $<$<BOOL:${ARIBCC_USE_CORETEXT}>:src/renderer/text_renderer_coretext.cpp>
+        $<$<BOOL:${ARIBCC_USE_CORETEXT}>:src/renderer/text_renderer_coretext.hpp>
+        $<$<BOOL:${ARIBCC_USE_DIRECTWRITE}>:src/renderer/text_renderer_directwrite.cpp>
+        $<$<BOOL:${ARIBCC_USE_DIRECTWRITE}>:src/renderer/text_renderer_directwrite.hpp>
+        $<$<BOOL:${ARIBCC_USE_FREETYPE}>:src/renderer/text_renderer_freetype.cpp>
+        $<$<BOOL:${ARIBCC_USE_FREETYPE}>:src/renderer/text_renderer_freetype.hpp>
+    )
+endif()
+
+add_library(aribcaption::aribcaption ALIAS aribcaption)
+
+target_compile_features(aribcaption
+    PRIVATE
+        cxx_std_17
+)
+
+# Indicate `-fvisibility=hidden` to hide non-export symbols
+set_target_properties(aribcaption
+    PROPERTIES
+        C_VISIBILITY_PRESET hidden
+        CXX_VISIBILITY_PRESET hidden
+)
+
+# Enable /utf-8 for MSVC
+target_compile_options(aribcaption
+    PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/utf-8>
+)
+
+# Disable C++ exceptions, if required
+if(ARIBCC_NO_EXCEPTIONS)
+    if(MSVC)
+        string(REGEX REPLACE "/EH[a-z]+" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        target_compile_options(aribcaption
+            PRIVATE
+                /EHs-c-
+        )
+        target_compile_definitions(aribcaption
+            PRIVATE
+                _HAS_EXCEPTIONS=0
+        )
+    else()
+        string(REGEX REPLACE "-fexceptions" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        target_compile_options(aribcaption
+            PRIVATE
+                $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
+        )
