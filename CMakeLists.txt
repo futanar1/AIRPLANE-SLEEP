@@ -290,3 +290,152 @@ if(ARIBCC_NO_EXCEPTIONS)
             PRIVATE
                 $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
         )
+    endif()
+endif()
+
+# Disable C++ RTTI, if required
+if(ARIBCC_NO_RTTI)
+    if(MSVC)
+        string(REGEX REPLACE "/GR" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        target_compile_options(aribcaption
+            PUBLIC
+                /GR-
+        )
+    else()
+        string(REGEX REPLACE "-frtti" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        target_compile_options(aribcaption
+            PUBLIC
+                $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
+        )
+    endif()
+endif()
+
+# Enable necessary SSE instruction sets for x86/x64 build on gcc/clang
+if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)" AND CMAKE_SYSTEM_PROCESSOR MATCHES "(x86|X86|x64|X64|amd64|AMD64|i386|i686)")
+    target_compile_options(aribcaption
+        PRIVATE
+            -msse
+            -msse2
+    )
+endif()
+
+# Disable aligned allocation on Apple platforms, which is only supported on macOS 10.14 / iOS 11 or newer
+if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(aribcaption
+        PRIVATE
+            -fno-aligned-allocation
+    )
+endif()
+
+target_compile_definitions(aribcaption
+    PRIVATE
+        ARIBCC_IMPLEMENTATION
+        $<$<BOOL:${WIN32}>:
+            NOMINMAX
+            UNICODE
+            _UNICODE
+            _CRT_SECURE_NO_WARNINGS
+        >
+)
+
+### Includes
+target_include_directories(aribcaption
+    PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        $<$<BOOL:${ARIBCC_USE_FONTCONFIG}>:${Fontconfig_INCLUDE_DIRS}>
+        $<$<BOOL:${ARIBCC_USE_FREETYPE}>:${FREETYPE_INCLUDE_DIRS}>
+)
+
+### Linking
+target_link_libraries(aribcaption
+    PRIVATE
+        $<$<BOOL:${ARIBCC_USE_CORETEXT}>:${COREFOUNDATION_FRAMEWORK}>
+        $<$<BOOL:${ARIBCC_USE_CORETEXT}>:${COREGRAPHICS_FRAMEWORK}>
+        $<$<BOOL:${ARIBCC_USE_CORETEXT}>:${CORETEXT_FRAMEWORK}>
+        $<$<BOOL:${ARIBCC_USE_DIRECTWRITE}>:ole32>
+        $<$<BOOL:${ARIBCC_USE_DIRECTWRITE}>:d2d1>
+        $<$<BOOL:${ARIBCC_USE_DIRECTWRITE}>:dwrite>
+        $<$<BOOL:${ARIBCC_USE_DIRECTWRITE}>:windowscodecs>
+        $<$<BOOL:${ARIBCC_USE_GDI_FONT}>:gdi32>
+)
+
+# vcpkg uses optimized/debug keyword in XXXXX_LIBRARIES variables
+# which is incompatible with generator expressions
+if(ARIBCC_USE_FONTCONFIG)
+    target_link_libraries(aribcaption
+        PRIVATE
+            ${Fontconfig_LIBRARIES}
+    )
+endif()
+
+if(ARIBCC_USE_FREETYPE)
+    target_link_libraries(aribcaption
+        PRIVATE
+            ${FREETYPE_LIBRARIES}
+    )
+endif()
+
+
+### Installing
+include(GNUInstallDirs)
+
+# Install generated config header
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/include/aribcc_config.h
+    DESTINATION
+        ${CMAKE_INSTALL_INCLUDEDIR}/aribcaption
+)
+
+# Install decoder-related public headers
+install(
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/aribcc_export.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/aribcaption.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/aribcaption.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/caption.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/caption.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/color.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/color.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/context.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/context.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/decoder.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/decoder.hpp
+    DESTINATION
+        ${CMAKE_INSTALL_INCLUDEDIR}/aribcaption
+)
+
+# Install renderer-related public headers, if not disabled
+if(NOT ARIBCC_NO_RENDERER)
+    install(
+        FILES
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/aligned_alloc.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/image.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/image.hpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/renderer.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/include/aribcaption/renderer.hpp
+        DESTINATION
+            ${CMAKE_INSTALL_INCLUDEDIR}/aribcaption
+    )
+endif()
+
+# Install
+install(
+    TARGETS aribcaption
+        EXPORT aribcaption-targets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        FRAMEWORK DESTINATION Library/Frameworks
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+# Export targets to cmake script
+install(
+    EXPORT
+        aribcaption-targets
