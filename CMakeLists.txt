@@ -439,3 +439,91 @@ install(
 install(
     EXPORT
         aribcaption-targets
+    FILE
+        aribcaption-targets.cmake
+    NAMESPACE
+        aribcaption::
+    DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}/cmake/aribcaption
+)
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/aribcaption-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/aribcaption-config.cmake
+    INSTALL_DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}/cmake/aribcaption
+)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/aribcaption-config-version.cmake
+    VERSION
+        ${PROJECT_VERSION}
+    COMPATIBILITY
+        SameMajorVersion
+)
+
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/aribcaption-config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/aribcaption-config-version.cmake
+    DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}/cmake/aribcaption
+)
+
+## Generate pkg-config config file (.pc)
+include(cmake/GeneratePkgConfig.cmake)
+generate_pkg_config_pc_file(aribcaption
+    TEMPLATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/libaribcaption.pc.in
+    OUTPUT
+        ${CMAKE_CURRENT_BINARY_DIR}/libaribcaption.pc
+)
+
+## Install pkg-config config file (.pc)
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/libaribcaption.pc
+    DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)
+
+### Testing (if enabled)
+if(ARIBCC_IS_MAIN_PROJECT AND ARIBCC_BUILD_TESTS)
+    add_subdirectory(test EXCLUDE_FROM_ALL)
+endif()
+
+
+### Packaging
+set(CPACK_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
+set(CPACK_PACKAGE_VENDOR "magicxqq")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${CMAKE_PROJECT_DESCRIPTION})
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+
+if(WIN32)
+    set(CPACK_GENERATOR ZIP)
+    set(CPACK_SOURCE_GENERATOR ZIP)
+else()
+    set(CPACK_GENERATOR TGZ)
+    set(CPACK_SOURCE_GENERATOR TGZ)
+endif()
+
+set(CPACK_SOURCE_IGNORE_FILES
+    /.idea
+    /.vs
+    /.vscode
+    /.git
+    /.*build.*
+    /out
+    /screenshots
+    /\\\\.DS_Store
+    CMakeSettings.json
+    compile_commands.json
+)
+
+include(CPack)
