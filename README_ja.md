@@ -121,3 +121,75 @@ target_link_libraries(testarib
         aribcaption::aribcaption
 )
 ```
+
+または、`add_subdirectory()` でソースコードのフォルダーを直接インポートできます:
+```cmake
+cmake_minimum_required(VERSION 3.11)
+project(testarib2 LANGUAGES C CXX)
+
+set(ARIBCC_USE_FREETYPE ON CACHE BOOL "Enable FreeType")    # Indicate options here (optional)
+add_subdirectory(thirdparty/libaribcaption)
+
+add_executable(testarib2 main.cpp)
+
+target_compile_features(testarib2
+    PRIVATE
+        cxx_std_17
+)
+
+target_link_libraries(testarib2
+    PRIVATE
+        aribcaption::aribcaption
+)
+```
+
+もしくは、pkg-config 経由で使用することもできます（インストールされた場合）：
+```bash
+# Link to libaribcaption static library
+gcc main.c -o main `pkg-config --cflags --libs --static libaribcaption`
+
+# Link to libaribcaption shared library
+gcc main.c -o main `pkg-config --cflags --libs libaribcaption`
+```
+
+## ドキュメント
+[public headers](include/aribcaption) のコメントまたは [sample code with ffmpeg](test/ffmpeg) を直接に読んでください。
+
+## ヒント
+libaribcaption の public headers も C++17 で書かれているため、使用する際にも C++17 対応のコンパイラが必要です。
+もし開発環境が C++17 に対応できない場合は、C API の使用を検討してください。
+
+libaribcaption の C API (拡張子が ".h" の [public headers])は C または他の言語から呼び出すために役立ちます。
+[capi sample](test/capi) を参考してください。
+
+[public headers]: include/aribcaption
+
+## おすすめのフォント
+Windows TV MaruGothic
+
+Hiragino Maru Gothic ProN (macOS)
+
+[Rounded M+ 1m for ARIB](https://www.axfc.net/u/3107925)
+
+[和田研中丸ゴシック2004ARIB](https://ja.osdn.net/projects/jis2004/wiki/FrontPage)
+
+## ライセンス
+MIT License とします。再配布の際に copyright notice と permission notice を添付してください。
+
+## 参考資料
+[ARIB STD-B24](https://www.arib.or.jp/english/std_tr/broadcasting/std-b24.html)
+
+[ARIB TR-B14](https://www.arib.or.jp/english/std_tr/broadcasting/tr-b14.html)
+
+ABNT NBR 15606-1
+
+[ISDB-T Standards (Philippines)](https://ntc.gov.ph/wp-content/uploads/2018/MC/MC-07-12-2014-Attachment.pdf)
+
+## 関連実装
+libaribcaption は以下のプロジェクトからインスピレーションを得ています：
+
+[aribb24](https://github.com/nkoriyama/aribb24)
+
+[aribb24.js](https://github.com/monyone/aribb24.js)
+
+[TVCaptionMod2](https://github.com/xtne6f/TVCaptionMod2)
