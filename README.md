@@ -181,3 +181,16 @@ libaribcaption is released under MIT License. You should include the copyright n
 [ARIB STD-B24](https://www.arib.or.jp/english/std_tr/broadcasting/std-b24.html)
 
 [ARIB TR-B14](https://www.arib.or.jp/english/std_tr/broadcasting/tr-b14.html)
+
+ABNT NBR 15606-1
+
+[ISDB-T Standards (Philippines)](https://ntc.gov.ph/wp-content/uploads/2018/MC/MC-07-12-2014-Attachment.pdf)
+
+## Other implementations
+libaribcaption is heavily inspired by the following projects:
+
+[aribb24](https://github.com/nkoriyama/aribb24)
+
+[aribb24.js](https://github.com/monyone/aribb24.js)
+
+[TVCaptionMod2](https://github.com/xtne6f/TVCaptionMod2)
