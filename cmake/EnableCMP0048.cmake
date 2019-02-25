@@ -18,4 +18,6 @@
 
 # This file is a workaround for suppressing warning from Freetype's CMakeLists.txt
 
-if 
+if (POLICY CMP0048)
+    cmake_policy(SET CMP0048 NEW)
+endif()
