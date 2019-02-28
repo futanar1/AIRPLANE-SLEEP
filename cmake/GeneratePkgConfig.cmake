@@ -18,4 +18,7 @@
 
 function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
     # Library output name, used in Libs
-    get_t
+    get_target_property(LIB_OUTPUT_NAME "${TARGET}" LIBRARY_OUTPUT_NAME)
+    if(NOT LIB_OUTPUT_NAME)
+        get_target_property(LIB_OUTPUT_NAME "${TARGET}" NAME)
+    end
