@@ -28,4 +28,6 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
     set(PKG_LIBS "")
 
     if(NOT BUILD_SHARED_LIBS)
-     
+        if(CMAKE_CXX_IMPLICIT_LINK_LIBRARIES)
+            foreach(IMPLICIT_LIB ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+                if (IMPLICIT
