@@ -21,4 +21,11 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
     get_target_property(LIB_OUTPUT_NAME "${TARGET}" LIBRARY_OUTPUT_NAME)
     if(NOT LIB_OUTPUT_NAME)
         get_target_property(LIB_OUTPUT_NAME "${TARGET}" NAME)
-    end
+    endif()
+    list(APPEND LIBS_LIST "-l${LIB_OUTPUT_NAME}")
+
+    set(PKG_REQUIRES "")
+    set(PKG_LIBS "")
+
+    if(NOT BUILD_SHARED_LIBS)
+     
