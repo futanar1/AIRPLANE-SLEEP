@@ -40,4 +40,6 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
         endif()
 
         if(LIBS_LIST)
-    
+            # Blacklist for MinGW-w64
+            list(REMOVE_ITEM LIBS_LIST
+                "-lmingw32" "-lgcc_s" "-lgcc" "-lmoldname" "-lmingwex" "-lmin
