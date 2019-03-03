@@ -42,4 +42,8 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
         if(LIBS_LIST)
             # Blacklist for MinGW-w64
             list(REMOVE_ITEM LIBS_LIST
-                "-lmingw32" "-lgcc_s" "-lgcc" "-lmoldname" "-lmingwex" "-lmin
+                "-lmingw32" "-lgcc_s" "-lgcc" "-lmoldname" "-lmingwex" "-lmingwthrd"
+                "-lmsvcrt" "-lpthread" "-ladvapi32" "-lshell32" "-luser32" "-lkernel32")
+        endif()
+
+        if(ARIBCC_USE_FREETYPE AND NOT ARIBCC_USE_
