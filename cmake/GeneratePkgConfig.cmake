@@ -33,4 +33,11 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
                 if (IMPLICIT_LIB MATCHES "-l.*")
                     list(APPEND LIBS_LIST "${IMPLICIT_LIB}")
                 else()
-                    list(APPEN
+                    list(APPEND LIBS_LIST "-l${IMPLICIT_LIB}")
+                endif()
+                unset(IMPLICIT_LIB)
+            endforeach()
+        endif()
+
+        if(LIBS_LIST)
+    
