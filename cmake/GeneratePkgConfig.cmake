@@ -62,4 +62,9 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
         endif()
 
         if(ARIBCC_USE_DIRECTWRITE)
-            list(APPEND LIBS_LIST "-lole32" "-ld2d1" "-ld
+            list(APPEND LIBS_LIST "-lole32" "-ld2d1" "-ldwrite" "-lwindowscodecs")
+        endif()
+
+        if(ARIBCC_USE_GDI_FONT)
+            list(APPEND LIBS_LIST "-lgdi32")
+      
