@@ -58,4 +58,8 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
         endif()
 
         if(ARIBCC_USE_CORETEXT)
-            list(APPEND LIBS_LIST "-framework CoreFoundation" "-framewor
+            list(APPEND LIBS_LIST "-framework CoreFoundation" "-framework CoreGraphics" "-framework CoreText")
+        endif()
+
+        if(ARIBCC_USE_DIRECTWRITE)
+            list(APPEND LIBS_LIST "-lole32" "-ld2d1" "-ld
