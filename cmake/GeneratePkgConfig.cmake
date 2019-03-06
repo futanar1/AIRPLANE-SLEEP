@@ -54,4 +54,8 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
 
         if(ARIBCC_USE_FONTCONFIG)
             list(APPEND REQUIRES_LIST "fontconfig")
-         
+            list(APPEND LIBS_LIST "-lfontconfig")
+        endif()
+
+        if(ARIBCC_USE_CORETEXT)
+            list(APPEND LIBS_LIST "-framework CoreFoundation" "-framewor
