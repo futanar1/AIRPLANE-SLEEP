@@ -49,3 +49,9 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
         if(ARIBCC_USE_FREETYPE AND NOT ARIBCC_USE_EMBEDDED_FREETYPE)
             # Only required for system-wide installed FreeType
             list(APPEND REQUIRES_LIST "freetype2")
+            list(APPEND LIBS_LIST "-lfreetype")
+        endif()
+
+        if(ARIBCC_USE_FONTCONFIG)
+            list(APPEND REQUIRES_LIST "fontconfig")
+         
