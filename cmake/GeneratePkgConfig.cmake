@@ -73,4 +73,5 @@ function(generate_pkg_config_pc_file TARGET TEMPLATE template OUTPUT output)
     string(REPLACE ";" " " PKG_REQUIRES "${REQUIRES_LIST}")
     string(REPLACE ";" " " PKG_LIBS "${LIBS_LIST}")
 
-    configure_file(${te
+    configure_file(${template} ${output} @ONLY)
+endfunction()
