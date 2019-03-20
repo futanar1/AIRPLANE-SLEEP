@@ -35,4 +35,8 @@ class AlignedAllocator {
     static_assert(N % 4 == 0);
 public:
     using value_type = T;
-    using size_type = std::s
+    using size_type = std::size_t;
+    using pointer = std::add_pointer_t<value_type>;
+    using const_pointer = std::add_pointer_t<const value_type>;
+
+    template <class
