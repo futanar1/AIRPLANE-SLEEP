@@ -21,4 +21,11 @@
 
 #include <cstddef>
 #include <new>
-#inclu
+#include <type_traits>
+#include "aribcc_export.h"
+
+namespace aribcaption {
+
+ARIBCC_API void* AlignedAlloc(size_t size, size_t alignment);
+
+ARIBCC_API void AlignedFree(void* ptr)
