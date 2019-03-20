@@ -28,4 +28,11 @@ namespace aribcaption {
 
 ARIBCC_API void* AlignedAlloc(size_t size, size_t alignment);
 
-ARIBCC_API void AlignedFree(void* ptr)
+ARIBCC_API void AlignedFree(void* ptr);
+
+template <class T, std::size_t N>
+class AlignedAllocator {
+    static_assert(N % 4 == 0);
+public:
+    using value_type = T;
+    using size_type = std::s
