@@ -39,4 +39,11 @@ public:
     using pointer = std::add_pointer_t<value_type>;
     using const_pointer = std::add_pointer_t<const value_type>;
 
-    template <class
+    template <class U>
+    struct rebind {
+        using other = AlignedAllocator<U, N>;
+    };
+public:
+    AlignedAllocator() noexcept = default;
+
+    AlignedAllocator(const Align
