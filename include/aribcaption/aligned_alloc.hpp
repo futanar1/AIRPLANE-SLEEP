@@ -46,4 +46,9 @@ public:
 public:
     AlignedAllocator() noexcept = default;
 
-    AlignedAllocator(const Align
+    AlignedAllocator(const AlignedAllocator&) noexcept = default;
+
+    template <class U>
+    explicit AlignedAllocator(const AlignedAllocator<U, N>&) noexcept {}
+
+    p
