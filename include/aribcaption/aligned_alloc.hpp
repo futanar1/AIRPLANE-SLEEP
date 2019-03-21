@@ -51,4 +51,6 @@ public:
     template <class U>
     explicit AlignedAllocator(const AlignedAllocator<U, N>&) noexcept {}
 
-    p
+    pointer allocate(size_type n, const_pointer hint = nullptr) const noexcept {
+        (void)hint;
+        size_t size = n * 
