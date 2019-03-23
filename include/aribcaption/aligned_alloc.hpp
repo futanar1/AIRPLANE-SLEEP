@@ -53,4 +53,9 @@ public:
 
     pointer allocate(size_type n, const_pointer hint = nullptr) const noexcept {
         (void)hint;
-        size_t size = n * 
+        size_t size = n * sizeof(T);
+        void* ptr = AlignedAlloc(size, N);
+        return reinterpret_cast<pointer>(ptr);
+    }
+
+    void deallocate(pointer p, s
