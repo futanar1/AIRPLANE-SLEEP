@@ -58,4 +58,11 @@ public:
         return reinterpret_cast<pointer>(ptr);
     }
 
-    void deallocate(pointer p, s
+    void deallocate(pointer p, size_type) const noexcept {
+        void* ptr = p;
+        AlignedFree(ptr);
+    }
+};
+
+template <class T, std::size_t M,
+          class U, std::
