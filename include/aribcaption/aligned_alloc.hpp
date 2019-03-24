@@ -65,4 +65,6 @@ public:
 };
 
 template <class T, std::size_t M,
-          class U, std::
+          class U, std::size_t N>
+static inline bool operator==(const AlignedAllocator<T, M>&,
+                              const AlignedAllocator<U, N>&) noexc
