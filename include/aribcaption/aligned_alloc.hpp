@@ -74,4 +74,10 @@ static inline bool operator==(const AlignedAllocator<T, M>&,
 template <class T, std::size_t M,
           class U, std::size_t N>
 static inline bool operator!=(const AlignedAllocator<T, M>& lhs,
-           
+                              const AlignedAllocator<U, N>& rhs) noexcept {
+    return !(lhs == rhs);
+}
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTI
