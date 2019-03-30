@@ -80,4 +80,4 @@ static inline bool operator!=(const AlignedAllocator<T, M>& lhs,
 
 }  // namespace aribcaption
 
-#endif  // ARIBCAPTI
+#endif  // ARIBCAPTION_ALIGNED_ALLOC_HPP
