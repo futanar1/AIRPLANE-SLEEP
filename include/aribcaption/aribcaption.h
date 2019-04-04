@@ -21,4 +21,10 @@
 
 #include "aribcc_config.h"
 #include "aribcc_export.h"
-#i
+#include "context.h"
+#include "color.h"
+#include "caption.h"
+#include "decoder.h"
+
+#ifndef ARIBCC_NO_RENDERER
+#include "image.
