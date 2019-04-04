@@ -16,4 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifn
+#ifndef ARIBCAPTION_ARIBCAPTION_H
+#define ARIBCAPTION_ARIBCAPTION_H
+
+#include "aribcc_config.h"
+#include "aribcc_export.h"
+#i
