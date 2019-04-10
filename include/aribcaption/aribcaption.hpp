@@ -19,4 +19,11 @@
 #ifndef ARIBCAPTION_ARIBCAPTION_HPP
 #define ARIBCAPTION_ARIBCAPTION_HPP
 
-#incl
+#include "aribcc_config.h"
+#include "aribcc_export.h"
+#include "context.hpp"
+#include "color.hpp"
+#include "caption.hpp"
+#include "decoder.hpp"
+
+#ifndef ARIBCC_
