@@ -26,4 +26,9 @@
 #include "caption.hpp"
 #include "decoder.hpp"
 
-#ifndef ARIBCC_
+#ifndef ARIBCC_NO_RENDERER
+#include "image.hpp"
+#include "renderer.hpp"
+#endif  // ARIBCC_NO_RENDERER
+
+#endif  // ARIBCAPTION_ARIBCAPTION_HPP
