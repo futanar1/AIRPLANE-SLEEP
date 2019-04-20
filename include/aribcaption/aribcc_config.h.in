@@ -17,4 +17,12 @@
  */
 
 #ifndef ARIBCAPTION_ARIBCC_CONFIG_H
-#define A
+#define ARIBCAPTION_ARIBCC_CONFIG_H
+
+#cmakedefine ARIBCC_SHARED_LIBRARY   1
+
+#cmakedefine ARIBCC_NO_RENDERER      1
+
+#cmakedefine ARIBCC_IS_ANDROID       1
+
+#cmakede
