@@ -25,4 +25,8 @@
 
 #cmakedefine ARIBCC_IS_ANDROID       1
 
-#cmakede
+#cmakedefine ARIBCC_USE_CORETEXT     1
+#cmakedefine ARIBCC_USE_DIRECTWRITE  1
+#cmakedefine ARIBCC_USE_FONTCONFIG   1
+#cmakedefine ARIBCC_USE_FREETYPE     1
+#cmakedefine
