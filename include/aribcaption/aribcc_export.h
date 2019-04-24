@@ -1,5 +1,6 @@
+
 /*
- * Copyright (C) 2021 magicxqq <xqq@xqq.im>. All rights reserved.
+ * Copyright (C) 2022 magicxqq <xqq@xqq.im>. All rights reserved.
  *
  * This file is part of libaribcaption.
  *
@@ -16,19 +17,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef ARIBCAPTION_ARIBCC_CONFIG_H
-#define ARIBCAPTION_ARIBCC_CONFIG_H
+#ifndef ARIBCAPTION_ARIBCC_EXPORT_H
+#define ARIBCAPTION_ARIBCC_EXPORT_H
 
-#cmakedefine ARIBCC_SHARED_LIBRARY   1
+#include "aribcc_config.h"
 
-#cmakedefine ARIBCC_NO_RENDERER      1
+#ifdef ARIBCC_SHARED_LIBRARY
+    #ifdef _WIN32
+        #ifdef ARIBCC_IMPLEMENTATION
+            #define ARIBCC_API __declspec(dllexport)
+        #else
+            #define ARIBCC_API __declspec(dllimport)
+        #endif
+    #else
+        #ifdef ARIBCC_IMPLEMENTATION
+            #define ARIBCC_API __attribute__((visibility("default")))
+        #else
+            #define ARIBCC_API
+        #endif
+    #endif
+#else
+    #define ARIBCC_API
+#endif
 
-#cmakedefine ARIBCC_IS_ANDROID       1
-
-#cmakedefine ARIBCC_USE_CORETEXT     1
-#cmakedefine ARIBCC_USE_DIRECTWRITE  1
-#cmakedefine ARIBCC_USE_FONTCONFIG   1
-#cmakedefine ARIBCC_USE_FREETYPE     1
-#cmakedefine ARIBCC_USE_GDI_FONT     1
-
-#endif  // ARIBCAPTION_ARIBCC_CONFIG_H
+#endif  // ARIBCAPTION_ARIBCC_EXPORT_H
