@@ -16,4 +16,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef ARI
+#ifndef ARIBCAPTION_CAPTION_H
+#define ARIBCAPTION_CAPTION_H
+
+#include <stddef.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include "aribcc_export.h"
+#incl
