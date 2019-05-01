@@ -23,4 +23,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "aribcc_export.h"
-#incl
+#include "color.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Helper macro for encoding ISO 639-2 3-char language code
+ *
+ * @param a,b,
