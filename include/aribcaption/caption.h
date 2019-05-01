@@ -32,4 +32,9 @@ extern "C" {
 /**
  * Helper macro for encoding ISO 639-2 3-char language code
  *
- * @param a,b,
+ * @param a,b,c char
+ * @code
+ * uint32_t language_code = ARIBCC_MAKE_LANG('j', 'p', 'n')
+ * @endcode
+ */
+#define ARIBCC_MAKE_LANG(a,b,c) ((((a) & 0xff
