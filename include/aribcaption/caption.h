@@ -50,4 +50,10 @@ extern "C" {
  * Some ARIB captions have indefinite duration which means the caption's end time is undetermined.
  * Captions with indefinite duration should be presented until the next caption's PTS.
  */
-#define ARIBCC_
+#define ARIBCC_DURATION_INDEFINITE ((int64_t)UINT64_C(0x7FFFFFFFFFFFFFFF))
+
+/**
+ * Per-CaptionChar character styles
+ */
+typedef enum aribcc_charstyle_t {
+    
