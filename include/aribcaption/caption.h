@@ -37,4 +37,9 @@ extern "C" {
  * uint32_t language_code = ARIBCC_MAKE_LANG('j', 'p', 'n')
  * @endcode
  */
-#define ARIBCC_MAKE_LANG(a,b,c) ((((a) & 0xff
+#define ARIBCC_MAKE_LANG(a,b,c) ((((a) & 0xff) << 16) | (((b) & 0xff) << 8) | ((c) & 0xff))
+
+/**
+ * Constant for marking the PTS is undefined.
+ */
+#define ARIBCC_PTS_NOPTS ((int64
