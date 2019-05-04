@@ -56,4 +56,7 @@ extern "C" {
  * Per-CaptionChar character styles
  */
 typedef enum aribcc_charstyle_t {
-    
+    ARIBCC_CHARSTYLE_DEFAULT = 0,
+    ARIBCC_CHARSTYLE_BOLD = 1u << 0,
+    ARIBCC_CHARSTYLE_ITALIC = 1u << 1,
+    ARIBCC_CHARSTYLE_UNDERLINE = 1u << 2,
