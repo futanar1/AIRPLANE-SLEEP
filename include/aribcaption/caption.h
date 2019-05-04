@@ -47,4 +47,7 @@ extern "C" {
 /**
  * Constant for marking the duration is indefinite.
  *
- * Some ARIB captions have indefinite duration which means t
+ * Some ARIB captions have indefinite duration which means the caption's end time is undetermined.
+ * Captions with indefinite duration should be presented until the next caption's PTS.
+ */
+#define ARIBCC_
