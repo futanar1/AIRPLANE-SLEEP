@@ -42,4 +42,9 @@ extern "C" {
 /**
  * Constant for marking the PTS is undefined.
  */
-#define ARIBCC_PTS_NOPTS ((int64
+#define ARIBCC_PTS_NOPTS ((int64_t)UINT64_C(0x8000000000000000))
+
+/**
+ * Constant for marking the duration is indefinite.
+ *
+ * Some ARIB captions have indefinite duration which means t
