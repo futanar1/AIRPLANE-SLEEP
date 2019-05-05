@@ -73,4 +73,9 @@ typedef enum aribcc_enclosurestyle_t {
     ARIBCC_ENCLOSURESTYLE_TOP = 1u << 2,
     ARIBCC_ENCLOSURESTYLE_LEFT = 1u << 3,
     ARIBCC_ENCLOSURESTYLE_DEFAULT = ARIBCC_ENCLOSURESTYLE_NONE
-} aribcc_enclosures
+} aribcc_enclosurestyle_t;
+
+/**
+ * Enums for caption type indication. Usually, kCaption should be used.
+ *
+ * kSuperimpose should be indicated if you are handling ARIB superimpose 
