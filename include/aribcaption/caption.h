@@ -67,4 +67,7 @@ typedef enum aribcc_charstyle_t {
  * Per-CaptionChar enclosure styles
  */
 typedef enum aribcc_enclosurestyle_t {
- 
+    ARIBCC_ENCLOSURESTYLE_NONE = 0,
+    ARIBCC_ENCLOSURESTYLE_BOTTOM = 1u << 0,
+    ARIBCC_ENCLOSURESTYLE_RIGHT = 1u << 1,
+    ARIBCC_ENCLO
