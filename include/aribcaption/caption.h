@@ -82,4 +82,9 @@ typedef enum aribcc_enclosurestyle_t {
  */
 typedef enum aribcc_captiontype_t {
     ARIBCC_CAPTIONTYPE_CAPTION = 0x80,
-    ARIBCC_CAPTIONTYPE_SUPE
+    ARIBCC_CAPTIONTYPE_SUPERIMPOSE = 0x81,
+    ARIBCC_CAPTIONTYPE_DEFAULT = ARIBCC_CAPTIONTYPE_CAPTION
+} aribcc_captiontype_t;
+
+/**
+ * Represents the ty
