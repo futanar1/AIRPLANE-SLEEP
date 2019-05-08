@@ -78,4 +78,8 @@ typedef enum aribcc_enclosurestyle_t {
 /**
  * Enums for caption type indication. Usually, kCaption should be used.
  *
- * kSuperimpose should be indicated if you are handling ARIB superimpose 
+ * kSuperimpose should be indicated if you are handling ARIB superimpose (a kind of emergency caption).
+ */
+typedef enum aribcc_captiontype_t {
+    ARIBCC_CAPTIONTYPE_CAPTION = 0x80,
+    ARIBCC_CAPTIONTYPE_SUPE
