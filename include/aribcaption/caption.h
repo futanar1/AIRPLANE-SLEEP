@@ -87,4 +87,9 @@ typedef enum aribcc_captiontype_t {
 } aribcc_captiontype_t;
 
 /**
- * Represents the ty
+ * Represents the type of CaptionChar.
+ *
+ * The type will be kDRCS or kDRCSReplaced if it's a DRCS character.
+ */
+typedef enum aribcc_chartype_t {
+    ARIBCC_CH
