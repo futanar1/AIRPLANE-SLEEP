@@ -105,4 +105,9 @@ typedef struct aribcc_caption_char_t {
     aribcc_chartype_t type;
 
     /**
-     * Character's Unicode codepoint
+     * Character's Unicode codepoint (UCS4). This field will be 0 if CaptionCharType is kDRCS.
+     */
+    uint32_t codepoint;
+
+    /**
+     * Character's PUA(Private Use 
