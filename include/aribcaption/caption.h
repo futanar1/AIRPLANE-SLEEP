@@ -96,4 +96,13 @@ typedef enum aribcc_chartype_t {
     ARIBCC_CHARTYPE_DRCS = 1,
     ARIBCC_CHARTYPE_DRCS_REPLACED = 2,
     ARIBCC_CHARTYPE_DEFAULT = ARIBCC_CHARTYPE_TEXT
-} aribcc_chartype
+} aribcc_chartype_t;
+
+/**
+ * Represents a caption character.
+ */
+typedef struct aribcc_caption_char_t {
+    aribcc_chartype_t type;
+
+    /**
+     * Character's Unicode codepoint
