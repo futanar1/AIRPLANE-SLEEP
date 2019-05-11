@@ -114,4 +114,5 @@ typedef struct aribcc_caption_char_t {
      *
      * This field will be non-zero only if PUA code is defined for the character.
      *
-     
+     * Some ARIB additional symbols (i.e. Gaiji) are mapped into Private Use Area in Unicode BMP.
+     * Though most of them could be mapped into characters intr
