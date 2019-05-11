@@ -110,4 +110,8 @@ typedef struct aribcc_caption_char_t {
     uint32_t codepoint;
 
     /**
-     * Character's PUA(Private Use 
+     * Character's PUA(Private Use Area) codepoint (UCS4)
+     *
+     * This field will be non-zero only if PUA code is defined for the character.
+     *
+     
