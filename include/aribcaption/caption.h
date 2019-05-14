@@ -118,4 +118,7 @@ typedef struct aribcc_caption_char_t {
      * Though most of them could be mapped into characters introduced in Unicode 5.2,
      * Some fonts don't support Unicode 5.2 but support ARIB additional symbols through Private Use Area codes.
      */
- 
+    uint32_t pua_codepoint;
+
+    /**
+     * DRCS character's code. Only appears if if CaptionCharType is kDRCS or kDRCSR
