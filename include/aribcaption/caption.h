@@ -121,4 +121,8 @@ typedef struct aribcc_caption_char_t {
     uint32_t pua_codepoint;
 
     /**
-     * DRCS character's code. Only appears if if CaptionCharType is kDRCS or kDRCSR
+     * DRCS character's code. Only appears if if CaptionCharType is kDRCS or kDRCSReplaced.
+     * It is a private code which is unrelated to Unicode.
+     *
+     * DRCS data could be retrieved from Caption::drcs_map using drcs_code.
+ 
