@@ -125,4 +125,12 @@ typedef struct aribcc_caption_char_t {
      * It is a private code which is unrelated to Unicode.
      *
      * DRCS data could be retrieved from Caption::drcs_map using drcs_code.
- 
+     */
+    uint32_t drcs_code;
+
+    int x;
+    int y;
+    int char_width;
+    int char_height;
+    int char_horizontal_spacing;
+    int char_v
