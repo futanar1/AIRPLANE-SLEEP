@@ -146,4 +146,12 @@ typedef struct aribcc_caption_char_t {
 
     /**
      * String representation of character encoded in UTF-8. This string is Null-terminated.
-     * Will be empty string if CaptionCharType is kDRCS because alte
+     * Will be empty string if CaptionCharType is kDRCS because alternative codepoint is unknown.
+     */
+    char u8str[8];
+} aribcc_caption_char_t;
+
+/**
+ * Calculate the width of the character block
+ */
+ARIBCC_API int aribcc_caption
