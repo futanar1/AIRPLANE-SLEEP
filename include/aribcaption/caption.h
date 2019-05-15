@@ -139,4 +139,10 @@ typedef struct aribcc_caption_char_t {
 
     aribcc_color_t text_color;    ///< Color of the text (foreground)
     aribcc_color_t back_color;    ///< Color of the background
-    aribcc_color_t stroke_color;  ///< Color of the
+    aribcc_color_t stroke_color;  ///< Color of the storke text
+
+    aribcc_charstyle_t style;
+    aribcc_enclosurestyle_t enclosure_style;
+
+    /**
+     * String representati
