@@ -133,4 +133,8 @@ typedef struct aribcc_caption_char_t {
     int char_width;
     int char_height;
     int char_horizontal_spacing;
-    int char_v
+    int char_vertical_spacing;
+    float char_horizontal_scale;
+    float char_vertical_scale;
+
+    aribcc_color_t text_color;    ///< Color of 
