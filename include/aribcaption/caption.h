@@ -145,4 +145,5 @@ typedef struct aribcc_caption_char_t {
     aribcc_enclosurestyle_t enclosure_style;
 
     /**
-     * String representati
+     * String representation of character encoded in UTF-8. This string is Null-terminated.
+     * Will be empty string if CaptionCharType is kDRCS because alte
