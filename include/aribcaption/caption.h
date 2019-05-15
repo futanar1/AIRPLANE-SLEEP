@@ -137,4 +137,6 @@ typedef struct aribcc_caption_char_t {
     float char_horizontal_scale;
     float char_vertical_scale;
 
-    aribcc_color_t text_color;    ///< Color of 
+    aribcc_color_t text_color;    ///< Color of the text (foreground)
+    aribcc_color_t back_color;    ///< Color of the background
+    aribcc_color_t stroke_color;  ///< Color of the
