@@ -165,4 +165,10 @@ ARIBCC_API int aribcc_caption_char_get_section_height(aribcc_caption_char_t* cap
 // Opaque type
 typedef struct aribcc_drcs_t aribcc_drcs_t;
 
-ARIBCC_API aribcc_drcs_t* arib
+ARIBCC_API aribcc_drcs_t* aribcc_drcs_alloc(void);
+
+ARIBCC_API void aribcc_drcs_free(aribcc_drcs_t* drcs);
+
+ARIBCC_API aribcc_drcs_t* aribcc_drcs_clone(aribcc_drcs_t* drcs);
+
+ARIBCC_
