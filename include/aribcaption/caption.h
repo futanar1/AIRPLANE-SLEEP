@@ -154,4 +154,9 @@ typedef struct aribcc_caption_char_t {
 /**
  * Calculate the width of the character block
  */
-ARIBCC_API int aribcc_caption
+ARIBCC_API int aribcc_caption_char_get_section_width(aribcc_caption_char_t* caption_char);
+
+/**
+ * Calculate the height of the character block
+ */
+ARIBCC_API int aribcc_caption_char_get_secti
