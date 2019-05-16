@@ -159,4 +159,10 @@ ARIBCC_API int aribcc_caption_char_get_section_width(aribcc_caption_char_t* capt
 /**
  * Calculate the height of the character block
  */
-ARIBCC_API int aribcc_caption_char_get_secti
+ARIBCC_API int aribcc_caption_char_get_section_height(aribcc_caption_char_t* caption_char);
+
+
+// Opaque type
+typedef struct aribcc_drcs_t aribcc_drcs_t;
+
+ARIBCC_API aribcc_drcs_t* arib
