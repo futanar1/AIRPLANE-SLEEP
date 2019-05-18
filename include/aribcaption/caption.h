@@ -171,4 +171,6 @@ ARIBCC_API void aribcc_drcs_free(aribcc_drcs_t* drcs);
 
 ARIBCC_API aribcc_drcs_t* aribcc_drcs_clone(aribcc_drcs_t* drcs);
 
-ARIBCC_
+ARIBCC_API void aribcc_drcs_set_size(aribcc_drcs_t* drcs, int width, int height);
+
+ARIBCC_API void aribcc_drcs_get_size(aribcc_drcs_t* drcs, int* width, int* 
