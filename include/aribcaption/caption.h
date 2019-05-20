@@ -173,4 +173,8 @@ ARIBCC_API aribcc_drcs_t* aribcc_drcs_clone(aribcc_drcs_t* drcs);
 
 ARIBCC_API void aribcc_drcs_set_size(aribcc_drcs_t* drcs, int width, int height);
 
-ARIBCC_API void aribcc_drcs_get_size(aribcc_drcs_t* drcs, int* width, int* 
+ARIBCC_API void aribcc_drcs_get_size(aribcc_drcs_t* drcs, int* width, int* height);
+
+ARIBCC_API void aribcc_drcs_set_depth(aribcc_drcs_t* drcs, int depth, int depth_bits);
+
+ARIBCC_API void aribcc_drcs_get_depth(aribcc_drcs_t
