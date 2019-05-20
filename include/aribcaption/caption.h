@@ -180,3 +180,7 @@ ARIBCC_API void aribcc_drcs_set_depth(aribcc_drcs_t* drcs, int depth, int depth_
 ARIBCC_API void aribcc_drcs_get_depth(aribcc_drcs_t* drcs, int* depth, int* depth_bits);
 
 ARIBCC_API void aribcc_drcs_import_pixels(aribcc_drcs_t* drcs, const uint8_t* pixels, size_t size);
+
+ARIBCC_API void aribcc_drcs_get_pixels(aribcc_drcs_t* drcs, uint8_t** ppixels, size_t* psize);
+
+ARIBCC_API void aribcc_drcs_set_md5(aribcc_dr
