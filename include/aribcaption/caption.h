@@ -187,4 +187,8 @@ ARIBCC_API void aribcc_drcs_set_md5(aribcc_drcs_t* drcs, const char* md5);
 
 ARIBCC_API const char* aribcc_drcs_get_md5(aribcc_drcs_t* drcs);
 
-ARIBCC_API void aribc
+ARIBCC_API void aribcc_drcs_set_alternative_ucs4(aribcc_drcs_t* drcs, uint32_t ucs4);
+
+ARIBCC_API uint32_t aribcc_drcs_get_alternative_ucs4(aribcc_drcs_t* drcs);
+
+ARIBCC_API con
