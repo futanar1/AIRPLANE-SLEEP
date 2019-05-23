@@ -183,4 +183,8 @@ ARIBCC_API void aribcc_drcs_import_pixels(aribcc_drcs_t* drcs, const uint8_t* pi
 
 ARIBCC_API void aribcc_drcs_get_pixels(aribcc_drcs_t* drcs, uint8_t** ppixels, size_t* psize);
 
-ARIBCC_API void aribcc_drcs_set_md5(aribcc_dr
+ARIBCC_API void aribcc_drcs_set_md5(aribcc_drcs_t* drcs, const char* md5);
+
+ARIBCC_API const char* aribcc_drcs_get_md5(aribcc_drcs_t* drcs);
+
+ARIBCC_API void aribc
