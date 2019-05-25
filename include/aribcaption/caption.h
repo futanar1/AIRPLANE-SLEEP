@@ -191,4 +191,10 @@ ARIBCC_API void aribcc_drcs_set_alternative_ucs4(aribcc_drcs_t* drcs, uint32_t u
 
 ARIBCC_API uint32_t aribcc_drcs_get_alternative_ucs4(aribcc_drcs_t* drcs);
 
-ARIBCC_API con
+ARIBCC_API const char* aribcc_drcs_get_alternative_text(aribcc_drcs_t* drcs);
+
+
+// Opaque type
+typedef struct aribcc_drcsmap_t aribcc_drcsmap_t;
+
+ARIBC
