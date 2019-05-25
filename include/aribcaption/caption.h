@@ -197,4 +197,8 @@ ARIBCC_API const char* aribcc_drcs_get_alternative_text(aribcc_drcs_t* drcs);
 // Opaque type
 typedef struct aribcc_drcsmap_t aribcc_drcsmap_t;
 
-ARIBC
+ARIBCC_API aribcc_drcsmap_t* aribcc_drcsmap_alloc(void);
+
+ARIBCC_API void aribcc_drcsmap_free(aribcc_drcsmap_t* drcs_map);
+
+ARIBCC_
