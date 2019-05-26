@@ -203,4 +203,6 @@ ARIBCC_API void aribcc_drcsmap_free(aribcc_drcsmap_t* drcs_map);
 
 ARIBCC_API void aribcc_drcsmap_erase(aribcc_drcsmap_t* drcs_map, uint32_t key);
 
-ARIBCC_API void aribcc_drcsmap_put(aribcc_drcsmap_t* drcs_ma
+ARIBCC_API void aribcc_drcsmap_put(aribcc_drcsmap_t* drcs_map, uint32_t key, const aribcc_drcs_t* drcs);
+
+ARIBCC_API aribcc_drcs_t* aribcc_drcsmap_get(aribcc_drcsmap_t* drcs_
