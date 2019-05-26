@@ -205,4 +205,12 @@ ARIBCC_API void aribcc_drcsmap_erase(aribcc_drcsmap_t* drcs_map, uint32_t key);
 
 ARIBCC_API void aribcc_drcsmap_put(aribcc_drcsmap_t* drcs_map, uint32_t key, const aribcc_drcs_t* drcs);
 
-ARIBCC_API aribcc_drcs_t* aribcc_drcsmap_get(aribcc_drcsmap_t* drcs_
+ARIBCC_API aribcc_drcs_t* aribcc_drcsmap_get(aribcc_drcsmap_t* drcs_map, uint32_t key);
+
+ARIBCC_API void aribcc_drcsmap_clear(aribcc_drcsmap_t* drcs_map);
+
+
+/**
+ * Structure represents a caption region.
+ *
+ * Call @ari
