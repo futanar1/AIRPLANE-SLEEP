@@ -216,4 +216,8 @@ ARIBCC_API void aribcc_drcsmap_clear(aribcc_drcsmap_t* drcs_map);
  * Call @aribcc_caption_region_cleanup() if you need to release a region which is received from aribcc API.
  */
 typedef struct aribcc_caption_region_t {
-    int
+    int x;
+    int y;
+    int width;
+    int height;
+    bool is_ruby;           ///< Will be true if the region is likely to be ru
