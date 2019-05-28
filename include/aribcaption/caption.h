@@ -220,4 +220,9 @@ typedef struct aribcc_caption_region_t {
     int y;
     int width;
     int height;
-    bool is_ruby;           ///< Will be true if the region is likely to be ru
+    bool is_ruby;           ///< Will be true if the region is likely to be ruby text (furigana)
+
+    /**
+     * Caption char array. Element count is indicated by char_count.
+     *
+     * Do not manually free this arr
