@@ -225,4 +225,8 @@ typedef struct aribcc_caption_region_t {
     /**
      * Caption char array. Element count is indicated by char_count.
      *
-     * Do not manually free this arr
+     * Do not manually free this array if the region is received from aribcc API,
+     * instead, call @aribcc_caption_region_cleanup().
+     */
+    aribcc_caption_char_t* chars;
+    uint32_t char_c
