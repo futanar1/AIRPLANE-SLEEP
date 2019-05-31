@@ -240,4 +240,10 @@ typedef struct aribcc_caption_region_t {
  *
  * This function doesn't release the memory of the region itself.
  */
-ARIBCC_API void aribcc_caption_region_cleanu
+ARIBCC_API void aribcc_caption_region_cleanup(aribcc_caption_region_t* region);
+
+/**
+ * Constants for flags contained in Caption.
+ */
+typedef enum aribcc_captionflags_t {
+    ARIBCC
