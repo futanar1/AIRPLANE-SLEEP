@@ -236,4 +236,8 @@ typedef struct aribcc_caption_region_t {
  * Caption region cleanup function.
  *
  * Call this function only if if you received the region from aribcc API.
+ * Otherwise it may cause a crash.
  *
+ * This function doesn't release the memory of the region itself.
+ */
+ARIBCC_API void aribcc_caption_region_cleanu
