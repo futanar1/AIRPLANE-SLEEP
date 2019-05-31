@@ -229,4 +229,11 @@ typedef struct aribcc_caption_region_t {
      * instead, call @aribcc_caption_region_cleanup().
      */
     aribcc_caption_char_t* chars;
-    uint32_t char_c
+    uint32_t char_count;
+} aribcc_caption_region_t;
+
+/**
+ * Caption region cleanup function.
+ *
+ * Call this function only if if you received the region from aribcc API.
+ *
