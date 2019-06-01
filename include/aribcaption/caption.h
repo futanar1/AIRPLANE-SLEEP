@@ -246,4 +246,6 @@ ARIBCC_API void aribcc_caption_region_cleanup(aribcc_caption_region_t* region);
  * Constants for flags contained in Caption.
  */
 typedef enum aribcc_captionflags_t {
-    ARIBCC
+    ARIBCC_CAPTIONFLAGS_DEFAULT = 0,
+    ARIBCC_CAPTIONFLAGS_CLEARSCREEN = 1u << 0,     ///< Screen should be cleared before the caption presentation
+    ARIBCC_CA
