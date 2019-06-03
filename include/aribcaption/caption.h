@@ -248,4 +248,10 @@ ARIBCC_API void aribcc_caption_region_cleanup(aribcc_caption_region_t* region);
 typedef enum aribcc_captionflags_t {
     ARIBCC_CAPTIONFLAGS_DEFAULT = 0,
     ARIBCC_CAPTIONFLAGS_CLEARSCREEN = 1u << 0,     ///< Screen should be cleared before the caption presentation
-    ARIBCC_CA
+    ARIBCC_CAPTIONFLAGS_WAITDURATION =  1u << 1    ///< The caption has a determined duration
+} aribcc_captionflags_t;
+
+/**
+ * Structure represents a caption.
+ *
+ 
