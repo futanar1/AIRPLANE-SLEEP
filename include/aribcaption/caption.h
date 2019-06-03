@@ -254,4 +254,7 @@ typedef enum aribcc_captionflags_t {
 /**
  * Structure represents a caption.
  *
- 
+ * Call @aribcc_caption_cleanup() if you need to release a caption which is received from the decoder.
+ */
+typedef struct aribcc_caption_t {
+    ar
