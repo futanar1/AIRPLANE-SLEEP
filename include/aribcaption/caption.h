@@ -262,4 +262,10 @@ typedef struct aribcc_caption_t {
 
     /**
      * ISO 639-2 3-char language code
-     * e.g. "jpn" => 6A 70 6E => 0x00
+     * e.g. "jpn" => 6A 70 6E => 0x006A706E
+     */
+    uint32_t iso6392_language_code;
+
+    /**
+     * Caption statements represented in UTF-8 string.
+     * Ruby text is exclude
