@@ -268,4 +268,8 @@ typedef struct aribcc_caption_t {
 
     /**
      * Caption statements represented in UTF-8 string.
-     * Ruby text is exclude
+     * Ruby text is excluded in this string.
+     *
+     * Pay attention to the UTF-8 encoding if you are under Windows.
+     *
+     * Do not manually free this pointer if the c
