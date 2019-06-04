@@ -257,4 +257,9 @@ typedef enum aribcc_captionflags_t {
  * Call @aribcc_caption_cleanup() if you need to release a caption which is received from the decoder.
  */
 typedef struct aribcc_caption_t {
-    ar
+    aribcc_captiontype_t type;
+    aribcc_captionflags_t flags;
+
+    /**
+     * ISO 639-2 3-char language code
+     * e.g. "jpn" => 6A 70 6E => 0x00
