@@ -272,4 +272,10 @@ typedef struct aribcc_caption_t {
      *
      * Pay attention to the UTF-8 encoding if you are under Windows.
      *
-     * Do not manually free this pointer if the c
+     * Do not manually free this pointer if the caption is received from the decoder,
+     * instead, call @aribcc_caption_cleanup().
+     */
+    char* text;
+
+    /**
+     * Caption region array. 
