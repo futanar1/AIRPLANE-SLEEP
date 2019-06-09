@@ -284,4 +284,9 @@ typedef struct aribcc_caption_t {
      * instead, call @aribcc_caption_cleanup().
      */
     aribcc_caption_region_t* regions;
-    uint32_t region_count;           
+    uint32_t region_count;             ///< element count of regions array
+
+    /**
+     * DRCS hashmap, may be NULL if DRCS not exists
+     *
+     * Do not manual
