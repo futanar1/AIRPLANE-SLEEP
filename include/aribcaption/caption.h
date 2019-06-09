@@ -281,4 +281,7 @@ typedef struct aribcc_caption_t {
      * Caption region array. Element count is indicated by region_count.
      *
      * Do not manually free this array if the caption is received from the decoder,
-     * inst
+     * instead, call @aribcc_caption_cleanup().
+     */
+    aribcc_caption_region_t* regions;
+    uint32_t region_count;           
