@@ -289,4 +289,7 @@ typedef struct aribcc_caption_t {
     /**
      * DRCS hashmap, may be NULL if DRCS not exists
      *
-     * Do not manual
+     * Do not manually free this pointer if the caption is received from the decoder,
+     * instead, call @aribcc_caption_cleanup().
+     */
+    aribcc_drcsm
