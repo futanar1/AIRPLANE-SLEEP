@@ -297,4 +297,10 @@ typedef struct aribcc_caption_t {
     /**
      * Caption't presentation timestamp, in milliseconds
      *
-     * Will be @ARIBCC_PTS_NOPTS if pass
+     * Will be @ARIBCC_PTS_NOPTS if passed as @ARIBCC_PTS_NOPTS into decoder, otherwise in milliseconds.
+     */
+    int64_t pts;
+
+    /**
+     * Caption's duration, in milliseconds
+   
