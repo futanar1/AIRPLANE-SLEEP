@@ -292,4 +292,9 @@ typedef struct aribcc_caption_t {
      * Do not manually free this pointer if the caption is received from the decoder,
      * instead, call @aribcc_caption_cleanup().
      */
-    aribcc_drcsm
+    aribcc_drcsmap_t* drcs_map;
+
+    /**
+     * Caption't presentation timestamp, in milliseconds
+     *
+     * Will be @ARIBCC_PTS_NOPTS if pass
