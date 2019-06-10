@@ -303,4 +303,10 @@ typedef struct aribcc_caption_t {
 
     /**
      * Caption's duration, in milliseconds
-   
+     *
+     * Will be @ARIBCC_DURATION_INDEFINITE if undetermined, otherwise in milliseconds.
+     */
+    int64_t wait_duration;
+
+    /**
+     * Width of 
