@@ -309,4 +309,9 @@ typedef struct aribcc_caption_t {
     int64_t wait_duration;
 
     /**
-     * Width of 
+     * Width of the original(logical) caption plane. Usually has a value of 960 or 720.
+     */
+    int plane_width;
+
+    /**
+     * Height of the original(logic
