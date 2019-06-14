@@ -314,4 +314,9 @@ typedef struct aribcc_caption_t {
     int plane_width;
 
     /**
-     * Height of the original(logic
+     * Height of the original(logical) caption plane. Usually has a value of 540 or 480.
+     */
+    int plane_height;
+
+    /**
+     * Represents whether the caption indicat
