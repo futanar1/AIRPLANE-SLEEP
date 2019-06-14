@@ -319,4 +319,9 @@ typedef struct aribcc_caption_t {
     int plane_height;
 
     /**
-     * Represents whether the caption indicat
+     * Represents whether the caption indicates a Built-in Sound Replay.
+     */
+    bool has_builtin_sound;
+
+    /**
+     * The ID of build-in sound for playback. Valid 
