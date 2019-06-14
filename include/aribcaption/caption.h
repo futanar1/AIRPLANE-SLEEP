@@ -324,4 +324,11 @@ typedef struct aribcc_caption_t {
     bool has_builtin_sound;
 
     /**
-     * The ID of build-in sound for playback. Valid 
+     * The ID of build-in sound for playback. Valid only if has_builtin_sound is true.
+     */
+    uint8_t builtin_sound_id;
+} aribcc_caption_t;
+
+
+/**
+ * Release all the dynamic-allocated inn
