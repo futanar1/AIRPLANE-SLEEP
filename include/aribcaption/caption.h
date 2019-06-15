@@ -334,4 +334,6 @@ typedef struct aribcc_caption_t {
  * Release all the dynamic-allocated inner fields of a caption.
  *
  * If you received a caption from the decoder, you should always call this function for cleanup
- * rather than manuall
+ * rather than manually free the pointers inside the struct, otherwise it may cause a crash.
+ *
+ * On the other hand, if you constructed an aribcc_caption_t structure o
