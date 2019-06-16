@@ -338,4 +338,8 @@ typedef struct aribcc_caption_t {
  *
  * On the other hand, if you constructed an aribcc_caption_t structure on your own,
  * you should always manually free the pointers inside which is allocated by yourself.
- * Call this function on your self-allocated aribcc_caption_t structu
+ * Call this function on your self-allocated aribcc_caption_t structure may cause a crash.
+ *
+ * This function doesn't release the memory of the caption itself.
+ */
+ARIBCC_API void aribcc_caption_cleanup(aribcc_caption_t* caption
