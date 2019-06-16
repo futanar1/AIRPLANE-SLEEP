@@ -342,4 +342,12 @@ typedef struct aribcc_caption_t {
  *
  * This function doesn't release the memory of the caption itself.
  */
-ARIBCC_API void aribcc_caption_cleanup(aribcc_caption_t* caption
+ARIBCC_API void aribcc_caption_cleanup(aribcc_caption_t* caption);
+
+
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
+
+#endif  // ARIBCAPTION_CAPTION_H
