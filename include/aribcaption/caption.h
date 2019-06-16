@@ -336,4 +336,6 @@ typedef struct aribcc_caption_t {
  * If you received a caption from the decoder, you should always call this function for cleanup
  * rather than manually free the pointers inside the struct, otherwise it may cause a crash.
  *
- * On the other hand, if you constructed an aribcc_caption_t structure o
+ * On the other hand, if you constructed an aribcc_caption_t structure on your own,
+ * you should always manually free the pointers inside which is allocated by yourself.
+ * Call this function on your self-allocated aribcc_caption_t structu
