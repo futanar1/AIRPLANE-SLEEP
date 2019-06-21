@@ -210,3 +210,92 @@ public:
     CaptionRegion(const CaptionRegion&) = default;
     CaptionRegion(CaptionRegion&&) noexcept = default;
     CaptionRegion& operator=(const CaptionRegion&) = default;
+    CaptionRegion& operator=(CaptionRegion&&) noexcept = default;
+};
+
+/**
+ * Constants for flags contained in Caption.
+ */
+enum CaptionFlags : uint8_t {
+    kCaptionFlagsDefault = 0,
+    kCaptionFlagsClearScreen = 1u << 0,     ///< Screen should be cleared before the caption presentation
+    kCaptionFlagsWaitDuration =  1u << 1    ///< The caption has a determined duration
+};
+
+/**
+ * Structure represents a caption.
+ */
+struct Caption {
+    CaptionType type = CaptionType::kDefault;
+    CaptionFlags flags = CaptionFlags::kCaptionFlagsDefault;
+
+    /**
+     * ISO 639-2 3-char language code
+     * e.g. "jpn" => 6A 70 6E => 0x006A706E
+     */
+    uint32_t iso6392_language_code = 0;
+
+    /**
+     * Caption statements represented in UTF-8 string.
+     * Ruby text is excluded in this string.
+     *
+     * Pay attention to the UTF-8 encoding if you are under Windows.
+     */
+    std::string text;
+
+    /**
+     * Caption region array
+     */
+    std::vector<CaptionRegion> regions;
+
+    /**
+     * A hashmap that contains all DRCS characters transmitted in current caption.
+     *
+     * Use CaptionChar::drcs_code as key for retrieving DRCS.
+     */
+    std::unordered_map<uint32_t, DRCS> drcs_map;
+
+    /**
+     * Caption't presentation timestamp, in milliseconds
+     *
+     * Will be PTS_NOPTS if passed as PTS_NOPTS into decoder, otherwise in milliseconds.
+     */
+    int64_t pts = 0;
+
+    /**
+     * Caption's duration, in milliseconds
+     *
+     * Will be DURATION_INDEFINITE if undetermined, otherwise in milliseconds.
+     */
+    int64_t wait_duration = 0;
+
+    /**
+     * Width of the original(logical) caption plane. Usually has a value of 960 or 720.
+     */
+    int plane_width = 0;
+
+    /**
+     * Height of the original(logical) caption plane. Usually has a value of 540 or 480.
+     */
+    int plane_height = 0;
+
+    /**
+     * Represents whether the caption indicates a Built-in Sound Replay.
+     */
+    bool has_builtin_sound = false;
+
+    /**
+     * The ID of build-in sound for playback. Valid only if has_builtin_sound is true.
+     */
+    uint8_t builtin_sound_id = 0;
+public:
+    Caption() = default;
+    Caption(const Caption&) = default;
+    Caption(Caption&&) noexcept = default;
+    Caption& operator=(const Caption&) = default;
+    Caption& operator=(Caption&&) noexcept = default;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_CAPTION_HPP
