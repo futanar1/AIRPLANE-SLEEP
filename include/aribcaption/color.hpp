@@ -27,4 +27,10 @@ union ColorRGBA {
     struct {
         uint8_t r;
         uint8_t g;
-        uint8_
+        uint8_t b;
+        uint8_t a;
+    };
+    uint32_t u32;
+public:
+    constexpr ColorRGBA() : u32(0) {}
+    explicit constexpr ColorRGBA(uint32_t u32) : u32(u32) {}
