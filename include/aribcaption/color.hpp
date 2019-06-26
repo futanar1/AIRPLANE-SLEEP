@@ -17,4 +17,14 @@
  */
 
 #ifndef ARIBCAPTION_COLOR_HPP
-#define ARIBCAPTION_COLOR
+#define ARIBCAPTION_COLOR_HPP
+
+#include <cstdint>
+
+namespace aribcaption {
+
+union ColorRGBA {
+    struct {
+        uint8_t r;
+        uint8_t g;
+        uint8_
