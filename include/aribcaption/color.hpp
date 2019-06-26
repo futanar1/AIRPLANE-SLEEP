@@ -34,3 +34,5 @@ union ColorRGBA {
 public:
     constexpr ColorRGBA() : u32(0) {}
     explicit constexpr ColorRGBA(uint32_t u32) : u32(u32) {}
+    constexpr ColorRGBA(ColorRGBA rgb, uint8_t a) : r(rgb.r), g(rgb.g), b(rgb.b), a(a) {}
+    constexpr ColorRGBA(uint8_t r, uint8_t g, uint8_t b) : r(
