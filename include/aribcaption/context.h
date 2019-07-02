@@ -22,4 +22,10 @@
 #include "aribcc_export.h"
 
 #ifdef __cplusplus
-exter
+extern "C" {
+#endif
+
+typedef enum aribcc_loglevel_t {
+    ARIBCC_LOGLEVEL_ERROR = 0,
+    ARIBCC_LOGLEVEL_WARNING = 1,
+    ARIBCC_LOGLEVEL_
