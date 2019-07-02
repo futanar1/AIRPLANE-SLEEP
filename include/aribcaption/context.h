@@ -36,4 +36,9 @@ typedef enum aribcc_loglevel_t {
  *
  * See @aribcc_context_set_logcat_callback()
  */
-typedef void(*ari
+typedef void(*aribcc_logcat_callback_t)(aribcc_loglevel_t level, const char* message, void* userdata);
+
+/**
+ * An opaque type that is needed for other aribcc APIs.
+ *
+ * Construct a co
