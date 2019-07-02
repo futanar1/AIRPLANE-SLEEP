@@ -28,4 +28,12 @@ extern "C" {
 typedef enum aribcc_loglevel_t {
     ARIBCC_LOGLEVEL_ERROR = 0,
     ARIBCC_LOGLEVEL_WARNING = 1,
-    ARIBCC_LOGLEVEL_
+    ARIBCC_LOGLEVEL_VERBOSE = 2
+} aribcc_loglevel_t;
+
+/**
+ * Logcat callback function prototype
+ *
+ * See @aribcc_context_set_logcat_callback()
+ */
+typedef void(*ari
