@@ -41,4 +41,9 @@ typedef void(*aribcc_logcat_callback_t)(aribcc_loglevel_t level, const char* mes
 /**
  * An opaque type that is needed for other aribcc APIs.
  *
- * Construct a co
+ * Construct a context using @aribcc_context_alloc() before using any other aribcc APIs.
+ */
+typedef struct aribcc_context_t aribcc_context_t;
+
+
+ARIBCC_API aribcc_con
