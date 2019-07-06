@@ -56,4 +56,9 @@ ARIBCC_API aribcc_context_t* aribcc_context_alloc(void);
 ARIBCC_API void aribcc_context_free(aribcc_context_t* context);
 
 /**
- * Indicate a callback function to context for receiving logcat messages
+ * Indicate a callback function to context for receiving logcat messages.
+ * To clear the callback, pass NULL for the callback parameter.
+ *
+ * @param context  aribcc_context_t*
+ * @param callback See @aribcc_logcat_callback_t
+ * @param userdat
