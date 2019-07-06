@@ -46,4 +46,11 @@ typedef void(*aribcc_logcat_callback_t)(aribcc_loglevel_t level, const char* mes
 typedef struct aribcc_context_t aribcc_context_t;
 
 
-ARIBCC_API aribcc_con
+ARIBCC_API aribcc_context_t* aribcc_context_alloc(void);
+
+/**
+ * Free a context
+ *
+ * Context must be freed after all the objects constructed from the context have been freed.
+ */
+AR
