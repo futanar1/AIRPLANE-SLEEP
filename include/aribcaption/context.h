@@ -53,4 +53,7 @@ ARIBCC_API aribcc_context_t* aribcc_context_alloc(void);
  *
  * Context must be freed after all the objects constructed from the context have been freed.
  */
-AR
+ARIBCC_API void aribcc_context_free(aribcc_context_t* context);
+
+/**
+ * Indicate a callback function to context for receiving logcat messages
