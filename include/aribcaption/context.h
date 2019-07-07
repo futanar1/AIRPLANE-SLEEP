@@ -64,4 +64,8 @@ ARIBCC_API void aribcc_context_free(aribcc_context_t* context);
  * @param userdata User data that will be passed in callback
  */
 ARIBCC_API void aribcc_context_set_logcat_callback(aribcc_context_t* context,
-                              
+                                                   aribcc_logcat_callback_t callback,
+                                                   void* userdata);
+
+
+#ifdef __cplusplus
