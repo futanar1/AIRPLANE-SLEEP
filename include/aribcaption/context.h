@@ -69,3 +69,7 @@ ARIBCC_API void aribcc_context_set_logcat_callback(aribcc_context_t* context,
 
 
 #ifdef __cplusplus
+}  // extern "C"
+#endif
+
+#endif  // ARIBCAPTION_CONTEXT_H
