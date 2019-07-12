@@ -21,4 +21,15 @@
 
 #include <memory>
 #include <functional>
-#include "aribcc_exp
+#include "aribcc_export.h"
+
+namespace aribcaption {
+
+enum class LogLevel {
+    kError,
+    kWarning,
+    kVerbose
+};
+
+/**
+ * Logcat callback function prototyp
