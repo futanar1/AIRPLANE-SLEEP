@@ -32,4 +32,10 @@ enum class LogLevel {
 };
 
 /**
- * Logcat callback function prototyp
+ * Logcat callback function prototype
+ *
+ * See @Context::SetLogcatCallback()
+ */
+using LogcatCB = std::function<void(LogLevel level, const char* message)>;
+
+class Log
