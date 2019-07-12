@@ -38,4 +38,9 @@ enum class LogLevel {
  */
 using LogcatCB = std::function<void(LogLevel level, const char* message)>;
 
-class Log
+class Logger;
+
+/**
+ * Construct a context before using any other aribcc APIs.
+ *
+ * Context must be freed after all the objects constructed from the 
