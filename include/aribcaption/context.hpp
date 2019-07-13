@@ -54,4 +54,8 @@ public:
 public:
     /**
      * Indicate a callback function for receiving logcat messages.
- 
+     * To clear the callback, pass nullptr for logcat_cb.
+     *
+     * @param logcat_cb See @LogcatCB
+     */
+    ARIBCC_API void SetLogcatCallback(const LogcatCB& log
