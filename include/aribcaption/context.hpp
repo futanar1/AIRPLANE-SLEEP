@@ -49,4 +49,9 @@ class Context {
 public:
     ARIBCC_API Context();
     ARIBCC_API ~Context();
-    ARIBCC_API Context(Context&&) noe
+    ARIBCC_API Context(Context&&) noexcept;
+    ARIBCC_API Context& operator=(Context&&) noexcept;
+public:
+    /**
+     * Indicate a callback function for receiving logcat messages.
+ 
