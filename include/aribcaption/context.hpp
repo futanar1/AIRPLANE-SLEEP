@@ -65,4 +65,9 @@ public:
 private:
     std::shared_ptr<Logger> logger_;
 private:
-  
+    friend std::shared_ptr<Logger> GetContextLogger(Context& context);
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_CONTEXT_HPP
