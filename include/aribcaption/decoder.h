@@ -146,3 +146,66 @@ ARIBCC_API void aribcc_decoder_set_encoding_scheme(aribcc_decoder_t* decoder,
  * @param decoder  @aribcc_decoder_t
  * @param type     @aribcc_captiontype_t
  */
+ARIBCC_API void aribcc_decoder_set_caption_type(aribcc_decoder_t* decoder, aribcc_captiontype_t type);
+
+/**
+ * Indicate caption profile
+ * @param decoder  @aribcc_decoder_t
+ * @param profile  @aribcc_profile_t
+ */
+ARIBCC_API void aribcc_decoder_set_profile(aribcc_decoder_t* decoder, aribcc_profile_t profile);
+
+/**
+ * Switch caption language
+ * @param decoder      @aribcc_decoder_t
+ * @param language_id  @aribcc_languageid_t
+ */
+ARIBCC_API void aribcc_decoder_switch_language(aribcc_decoder_t* decoder, aribcc_languageid_t language_id);
+
+/**
+ * Set whether to replace MSZ (Middle Size, half width) fullwidth alphanumerics with halfwidth alphanumerics
+ * @param decoder  @aribcc_decoder_t
+ * @param replace  bool
+ */
+ARIBCC_API void aribcc_decoder_set_replace_msz_fullwidth_ascii(aribcc_decoder_t* decoder, bool replace);
+
+/**
+ * Query ISO639-2 Language Code for specific language id
+ * @param decoder      @aribcc_decoder_t
+ * @param language_id  @aribcc_languageid_t
+ * @return uint32_t, e.g. "jpn" => 6A 70 6E => 0x006A706E. May be 0 if language is unknown.
+ */
+ARIBCC_API uint32_t aribcc_decoder_query_iso6392_language_code(aribcc_decoder_t* decoder,
+                                                               aribcc_languageid_t language_id);
+
+/**
+ * Decode caption PES data
+ *
+ * @param decoder     @aribcc_decoder_t
+ * @param pes_data    pointer pointed to PES data, must be non-null
+ * @param length      PES data length, must be greater than 0
+ * @param pts         PES packet PTS, in milliseconds
+ * @param out_caption Parameter for writing back decoded caption, must be non-null
+ * @return            ARIBCC_DECODE_STATUS_ERROR on failure,
+ *                    ARIBCC_DECODE_STATUS_NO_CAPTION if nothing obtained,
+ *                    ARIBCC_DECODE_STATUS_GOT_CAPTION if got a caption
+ */
+ARIBCC_API aribcc_decode_status_t aribcc_decoder_decode(aribcc_decoder_t* decoder,
+                                                        const uint8_t* pes_data,
+                                                        size_t length,
+                                                        int64_t pts,
+                                                        aribcc_caption_t* out_caption);
+
+/**
+ * Reset decoder internal states
+ *
+ * @param decoder  @aribcc_decoder_t
+ */
+ARIBCC_API void aribcc_decoder_flush(aribcc_decoder_t* decoder);
+
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
+
+#endif  // ARIBCAPTION_DECODER_H
