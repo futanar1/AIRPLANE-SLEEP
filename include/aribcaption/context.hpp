@@ -58,4 +58,11 @@ public:
      *
      * @param logcat_cb See @LogcatCB
      */
-    ARIBCC_API void SetLogcatCallback(const LogcatCB& log
+    ARIBCC_API void SetLogcatCallback(const LogcatCB& logcat_cb);
+public:
+    Context(const Context&) = delete;
+    Context& operator=(const Context&) = delete;
+private:
+    std::shared_ptr<Logger> logger_;
+private:
+  
