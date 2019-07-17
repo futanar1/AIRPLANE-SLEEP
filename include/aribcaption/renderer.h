@@ -281,3 +281,121 @@ ARIBCC_API void aribcc_renderer_set_merge_region_images(aribcc_renderer_t* rende
  * aribcc_renderer_set_default_font_family(renderer, font_families, 3, false);
  * @endcode
  */
+ARIBCC_API bool aribcc_renderer_set_default_font_family(aribcc_renderer_t* renderer,
+                                                        const char * const * font_family,
+                                                        size_t family_count,
+                                                        bool force_default);
+
+/**
+ * Indicate font families (an array of font family names) for specific language
+ *
+ * The renderer contains an auto-fallback mechanism among indicated font families.
+ * The renderer also contains predefined font indications for Windows / macOS / Linux / Android.
+ *
+ * @param language_code  ISO639-2 Language Code, e.g. ARIBCC_MAKE_LANG('j', 'p', 'n')
+ * @param font_family    Array of font family names
+ * @param family_count   Element count of font_family array
+ * @return true on success
+ *
+ * @code
+ * const char* font_families[] = {
+ *     "Rounded M+ 1m for ARIB",
+ *     "Hiragino Maru Gothic ProN",
+ *     "sans-serif"
+ * }
+ * aribcc_renderer_set_language_specific_font_family(renderer, ARIBCC_MAKE_LANG('j', 'p', 'n'), font_families, 3);
+ * @endcode
+ */
+ARIBCC_API bool aribcc_renderer_set_language_specific_font_family(aribcc_renderer_t* renderer,
+                                                                  uint32_t language_code,
+                                                                  const char * const * font_family,
+                                                                  size_t family_count);
+
+/**
+ * Set the renderer frame size in pixels, include margins. This function must be called before any render call.
+ *
+ * Usually rendered images will be inside this frame area, unless negative margin values are specified.
+ *
+ * @param renderer      @aribcc_renderer_t
+ * @param frame_width   must be >= 0
+ * @param frame_height  must be >= 0
+ * @return true on success
+ */
+ARIBCC_API bool aribcc_renderer_set_frame_size(aribcc_renderer_t* renderer, int frame_width, int frame_height);
+
+/**
+ * Set the frame margins in pixels. This function must be called after calling to @aribcc_renderer_set_frame_size().
+ * Call to this function is optional.
+ *
+ * Each value specifics the distance from the video rectangle to the renderer frame.
+ * Positive margin value means there will be free space between renderer frame and video area,
+ * while negative margin value lets renderer frame (visible area) inside the video, i.e. the video is cropped.
+ *
+ * If negative margin value has been indicated, rendered images may outside the renderer frame.
+ *
+ * @return true on success
+ */
+ARIBCC_API bool aribcc_renderer_set_margins(aribcc_renderer_t* renderer, int top, int bottom, int left, int right);
+
+/**
+ * Set storage policy for renderer's internal caption storage
+ *
+ * @param renderer       @aribcc_renderer_t
+ * @param storage_policy See @aribcc_caption_storage_policy_t
+ * @param upper_limit    Must be non-zero value for ARIBCC_CAPTION_STORAGE_POLICY_UPPER_LIMIT_COUNT or
+ *                       ARIBCC_CAPTION_STORAGE_POLICY_UPPER_LIMIT_DURATION
+ */
+ARIBCC_API void aribcc_renderer_set_storage_policy(aribcc_renderer_t* renderer,
+                                                   aribcc_caption_storage_policy_t storage_policy,
+                                                   size_t upper_limit);
+
+/**
+ * Append a caption into renderer's internal storage for subsequent rendering
+ *
+ * If a caption with same PTS already exists in the storage, it will be replaced by the new one.
+ *
+ * @param renderer  @aribcc_renderer_t
+ * @param caption   @aribcc_caption_t
+ * @return true on success
+ */
+ARIBCC_API bool aribcc_renderer_append_caption(aribcc_renderer_t* renderer, const aribcc_caption_t* caption);
+
+/**
+ * Retrieve expected render status at specific PTS, rather than actually do rendering.
+ *
+ * Useful for detecting whether will got an identical image that is unchanged from the previous rendering.
+ *
+ * @param renderer    @aribcc_renderer_t
+ * @param pts         Presentation timestamp, in milliseconds
+ * @return            ARIBCC_RENDER_STATUS_GOT_IMAGE_UNCHANGED means a aribcc_renderer_render() call
+ *                    at this PTS will return an image identical to the previous.
+ */
+ARIBCC_API aribcc_render_status_t aribcc_renderer_try_render(aribcc_renderer_t* renderer,
+                                                             int64_t pts);
+
+/**
+ * Render caption at specific PTS
+ *
+ * @param renderer    @aribcc_renderer_t
+ * @param pts         Presentation timestamp, in milliseconds
+ * @param out_result  Write back parameter for passing rendered images, images will be NULL if status is kError / kNoImage
+ * @return            ARIBCC_RENDER_STATUS_GOT_IMAGE / ARIBCC_RENDER_STATUS_GOT_IMAGE_UNCHANGED if rendered images provided
+ *                    ARIBCC_RENDER_STATUS_GOT_IMAGE_UNCHANGED means this batch of images is completely identical to the previous call
+ */
+ARIBCC_API aribcc_render_status_t aribcc_renderer_render(aribcc_renderer_t* renderer,
+                                                         int64_t pts,
+                                                         aribcc_render_result_t* out_result);
+
+/**
+ * Clear caption storage inside the renderer. Will evict all the appended captions.
+ *
+ * Call this function if the stream has been seeked, or met non-monotonic PTS.
+ */
+ARIBCC_API void aribcc_renderer_flush(aribcc_renderer_t* renderer);
+
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
+
+#endif  // ARIBCAPTION_RENDERER_H
