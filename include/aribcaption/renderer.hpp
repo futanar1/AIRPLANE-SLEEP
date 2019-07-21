@@ -34,4 +34,10 @@ namespace aribcaption {
  */
 enum class FontProviderType {
     /**
-     *
+     * Detect and select FontProvider automatically. Should be used in most cases.
+     */
+    kAuto = 0,
+
+#if defined(ARIBCC_USE_CORETEXT)
+    /**
+   
