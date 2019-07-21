@@ -45,4 +45,10 @@ enum class FontProviderType {
     kCoreText = 1,
 #endif
 
-#if defined(ARIBCC_USE_D
+#if defined(ARIBCC_USE_DIRECTWRITE)
+    /**
+     * FontProvider relies on DirectWrite API. Available on Windows 7+.
+     */
+    kDirectWrite = 2,
+#endif
+
