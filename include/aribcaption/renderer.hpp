@@ -25,3 +25,13 @@
 #include "aribcc_export.h"
 #include "context.hpp"
 #include "caption.hpp"
+#include "image.hpp"
+
+namespace aribcaption {
+
+/**
+ * Enums for FontProvider indication
+ */
+enum class FontProviderType {
+    /**
+     *
