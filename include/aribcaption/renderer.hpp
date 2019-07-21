@@ -17,4 +17,11 @@
  */
 
 #ifndef ARIBCAPTION_RENDERER_HPP
-#define ARIBCAPTION_RENDER
+#define ARIBCAPTION_RENDERER_HPP
+
+#include <memory>
+#include <optional>
+#include "aribcc_config.h"
+#include "aribcc_export.h"
+#include "context.hpp"
+#include "caption.hpp"
