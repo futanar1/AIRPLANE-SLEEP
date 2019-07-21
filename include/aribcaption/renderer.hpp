@@ -40,4 +40,9 @@ enum class FontProviderType {
 
 #if defined(ARIBCC_USE_CORETEXT)
     /**
-   
+     * FontProvider relies on Apple CoreText API. Available on macOS and iOS.
+     */
+    kCoreText = 1,
+#endif
+
+#if defined(ARIBCC_USE_D
