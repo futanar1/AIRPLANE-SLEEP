@@ -52,3 +52,9 @@ enum class FontProviderType {
     kDirectWrite = 2,
 #endif
 
+#if defined(ARIBCC_USE_FONTCONFIG)
+    /**
+     * FontProvider using libfontconfig. Usually been used on Linux platforms.
+     */
+    kFontconfig = 3,
+#endif
