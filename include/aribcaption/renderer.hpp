@@ -66,4 +66,13 @@ enum class FontProviderType {
     kAndroid = 4,
 #endif
 
-#if defined(A
+#if defined(ARIBCC_USE_GDI_FONT)
+    /**
+     * FontProvder based on Win32 GDI API. Available on Windows 2000+.
+     */
+    kGDI = 5,
+#endif
+};
+
+/**
+ * E
