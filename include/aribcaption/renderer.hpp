@@ -85,4 +85,11 @@ enum class TextRendererType {
 
 #if defined(ARIBCC_USE_CORETEXT)
     /**
-     * Apple CoreText API based TextRenderer. Available on macOS an
+     * Apple CoreText API based TextRenderer. Available on macOS and iOS.
+     */
+    kCoreText = 1,
+#endif
+
+#if defined(ARIBCC_USE_DIRECTWRITE)
+    /**
+     * DirectWrite API based TextRenderer
