@@ -75,4 +75,8 @@ enum class FontProviderType {
 };
 
 /**
- * E
+ * Enums for TextRenderer indication
+ */
+enum class TextRendererType {
+    /**
+     * Detect and select TextRenderer automatically. Should be used in 
