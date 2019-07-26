@@ -58,3 +58,12 @@ enum class FontProviderType {
      */
     kFontconfig = 3,
 #endif
+
+#if defined(ARIBCC_IS_ANDROID)
+    /**
+     * FontProvider for Android. Available on Android 2.x+.
+     */
+    kAndroid = 4,
+#endif
+
+#if defined(A
