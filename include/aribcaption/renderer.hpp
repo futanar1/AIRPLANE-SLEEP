@@ -79,4 +79,10 @@ enum class FontProviderType {
  */
 enum class TextRendererType {
     /**
-     * Detect and select TextRenderer automatically. Should be used in 
+     * Detect and select TextRenderer automatically. Should be used in most cases.
+     */
+    kAuto = 0,
+
+#if defined(ARIBCC_USE_CORETEXT)
+    /**
+     * Apple CoreText API based TextRenderer. Available on macOS an
