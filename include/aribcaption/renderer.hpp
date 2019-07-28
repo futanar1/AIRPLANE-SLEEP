@@ -108,4 +108,8 @@ enum class TextRendererType {
 namespace internal { class RendererImpl; }
 
 /**
- * Enums for Re
+ * Enums for Renderer's caption storage policy indication
+ */
+enum class CaptionStoragePolicy {
+    /**
+     * The renderer will only keep minimal amou
