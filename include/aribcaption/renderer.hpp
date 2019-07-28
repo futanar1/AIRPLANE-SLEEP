@@ -99,4 +99,13 @@ enum class TextRendererType {
 
 #if defined(ARIBCC_USE_FREETYPE)
     /**
-     * Freetype based TextRenderer.
+     * Freetype based TextRenderer. Available on all platforms.
+     */
+    kFreetype = 3,
+#endif
+};
+
+namespace internal { class RendererImpl; }
+
+/**
+ * Enums for Re
