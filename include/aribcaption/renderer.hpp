@@ -92,4 +92,11 @@ enum class TextRendererType {
 
 #if defined(ARIBCC_USE_DIRECTWRITE)
     /**
-     * DirectWrite API based TextRenderer
+     * DirectWrite API based TextRenderer. Available on Windows 7+.
+     */
+    kDirectWrite = 2,
+#endif
+
+#if defined(ARIBCC_USE_FREETYPE)
+    /**
+     * Freetype based TextRenderer.
