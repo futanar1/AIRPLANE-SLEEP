@@ -120,3 +120,10 @@ enum class CaptionStoragePolicy {
     /**
      * The renderer will never evict appended captions unless you call the @Renderer::Flush().
      * This may result in memory waste. Use at your own risk.
+     */
+    kUnlimited = 1,
+
+    /**
+     * The renderer will keep appended captions at an upper limit of count.
+     */
+ 
