@@ -112,4 +112,10 @@ namespace internal { class RendererImpl; }
  */
 enum class CaptionStoragePolicy {
     /**
-     * The renderer will only keep minimal amou
+     * The renderer will only keep minimal amount of captions for subsequent rendering if necessary.
+     * This is the default behavior.
+     */
+    kMinimum = 0,
+
+    /**
+     * The rendere
