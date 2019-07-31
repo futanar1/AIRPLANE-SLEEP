@@ -126,4 +126,9 @@ enum class CaptionStoragePolicy {
     /**
      * The renderer will keep appended captions at an upper limit of count.
      */
- 
+    kUpperLimitCount = 2,
+
+    /**
+     * The renderer will keep appended captions at an upper limit of duration, in milliseconds.
+     */
+    kUpperLimitDu
