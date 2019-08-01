@@ -131,4 +131,13 @@ enum class CaptionStoragePolicy {
     /**
      * The renderer will keep appended captions at an upper limit of duration, in milliseconds.
      */
-    kUpperLimitDu
+    kUpperLimitDuration = 3,
+};
+
+/**
+ * Enums for reporting rendering status
+ *
+ * See @Renderer::Render()
+ */
+enum class RenderStatus {
+    kError = 
