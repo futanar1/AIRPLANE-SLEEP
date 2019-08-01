@@ -140,4 +140,14 @@ enum class CaptionStoragePolicy {
  * See @Renderer::Render()
  */
 enum class RenderStatus {
-    kError = 
+    kError = 0,
+    kNoImage = 1,
+    kGotImage = 2,
+    kGotImageUnchanged = 3,
+};
+
+/**
+ * Structure for holding rendered caption images
+ */
+struct RenderResult {
+    int64
