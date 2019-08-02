@@ -150,4 +150,6 @@ enum class RenderStatus {
  * Structure for holding rendered caption images
  */
 struct RenderResult {
-    int64
+    int64_t pts = 0;             ///< PTS of rendered caption
+    int64_t duration = 0;        ///< duration of rendered caption, may be DURATION_INDEFINITE
+    
