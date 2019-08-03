@@ -152,4 +152,13 @@ enum class RenderStatus {
 struct RenderResult {
     int64_t pts = 0;             ///< PTS of rendered caption
     int64_t duration = 0;        ///< duration of rendered caption, may be DURATION_INDEFINITE
-    
+    std::vector<Image> images;
+};
+
+/**
+ * ARIB STD-B24 caption renderer
+ */
+class Renderer {
+public:
+    /**
+     * A context is needed for construct
