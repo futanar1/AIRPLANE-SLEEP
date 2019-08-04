@@ -161,4 +161,7 @@ struct RenderResult {
 class Renderer {
 public:
     /**
-     * A context is needed for construct
+     * A context is needed for constructing the Renderer.
+     *
+     * The context shouldn't be destructed before any other object constructed from the context has been destructed.
+     */
