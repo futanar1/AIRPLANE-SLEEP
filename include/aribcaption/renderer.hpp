@@ -165,3 +165,7 @@ public:
      *
      * The context shouldn't be destructed before any other object constructed from the context has been destructed.
      */
+    ARIBCC_API explicit Renderer(Context& context);
+    ARIBCC_API ~Renderer();
+    ARIBCC_API Renderer(Renderer&&) noexcept;
+    ARIBCC_API Renderer& ope
