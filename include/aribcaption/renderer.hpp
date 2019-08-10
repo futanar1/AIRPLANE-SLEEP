@@ -171,4 +171,7 @@ public:
     ARIBCC_API Renderer& operator=(Renderer&&) noexcept;
 public:
     /**
-     * Initialize function must be called before calling any other member functions
+     * Initialize function must be called before calling any other member functions.
+     *
+     * @param caption_type        Indicate caption type (kCaption / kSuperimpose)
+     * @param font_provider_type  Indicate @FontProviderType. U
