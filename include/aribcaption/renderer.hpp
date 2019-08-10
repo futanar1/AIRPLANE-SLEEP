@@ -168,4 +168,7 @@ public:
     ARIBCC_API explicit Renderer(Context& context);
     ARIBCC_API ~Renderer();
     ARIBCC_API Renderer(Renderer&&) noexcept;
-    ARIBCC_API Renderer& ope
+    ARIBCC_API Renderer& operator=(Renderer&&) noexcept;
+public:
+    /**
+     * Initialize function must be called before calling any other member functions
