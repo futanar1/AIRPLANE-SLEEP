@@ -178,4 +178,5 @@ public:
      * @param text_renderer_type  Indicate @TextRendererType. Use kAuto in most cases.
      * @return true on success
      */
- 
+    ARIBCC_API bool Initialize(CaptionType caption_type = CaptionType::kCaption,
+                               FontProv
