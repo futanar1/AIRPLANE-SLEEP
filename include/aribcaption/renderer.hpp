@@ -174,4 +174,8 @@ public:
      * Initialize function must be called before calling any other member functions.
      *
      * @param caption_type        Indicate caption type (kCaption / kSuperimpose)
-     * @param font_provider_type  Indicate @FontProviderType. U
+     * @param font_provider_type  Indicate @FontProviderType. Use kAuto in most cases.
+     * @param text_renderer_type  Indicate @TextRendererType. Use kAuto in most cases.
+     * @return true on success
+     */
+ 
