@@ -179,4 +179,5 @@ public:
      * @return true on success
      */
     ARIBCC_API bool Initialize(CaptionType caption_type = CaptionType::kCaption,
-                               FontProv
+                               FontProviderType font_provider_type = FontProviderType::kAuto,
+                               TextRendererType text_renderer_type = TextRendererTyp
