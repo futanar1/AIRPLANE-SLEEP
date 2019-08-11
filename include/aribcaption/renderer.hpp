@@ -180,4 +180,10 @@ public:
      */
     ARIBCC_API bool Initialize(CaptionType caption_type = CaptionType::kCaption,
                                FontProviderType font_provider_type = FontProviderType::kAuto,
-                               TextRendererType text_renderer_type = TextRendererTyp
+                               TextRendererType text_renderer_type = TextRendererType::kAuto);
+
+    /**
+     * Indicate stroke width for stroke text, in dots (relative)
+     * @param dots must >= 0.0f
+     */
+    ARIBCC_A
