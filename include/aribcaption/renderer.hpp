@@ -186,4 +186,8 @@ public:
      * Indicate stroke width for stroke text, in dots (relative)
      * @param dots must >= 0.0f
      */
-    ARIBCC_A
+    ARIBCC_API void SetStrokeWidth(float dots);
+
+    /**
+     * Indicate whether render replaced DRCS characters as Unicode characters
+     * @param replace default as 
