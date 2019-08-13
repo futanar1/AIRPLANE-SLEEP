@@ -190,4 +190,9 @@ public:
 
     /**
      * Indicate whether render replaced DRCS characters as Unicode characters
-     * @param replace default as 
+     * @param replace default as true
+     */
+    ARIBCC_API void SetReplaceDRCS(bool replace);
+
+    /**
+     * Indicate whether always render stroke text for all ch
