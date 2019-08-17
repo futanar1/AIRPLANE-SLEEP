@@ -195,4 +195,7 @@ public:
     ARIBCC_API void SetReplaceDRCS(bool replace);
 
     /**
-     * Indicate whether always render stroke text for all ch
+     * Indicate whether always render stroke text for all characters regardless of the indication by CharStyle
+     * @param force_stroke default as false
+     */
+    ARIBCC_API void SetForceStrokeText(bool
