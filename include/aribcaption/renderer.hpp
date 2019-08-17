@@ -202,4 +202,10 @@ public:
 
     /**
      * Indicate whether ignore rendering for ruby-like (furigana) characters
-     * @param force_no_ruby default as f
+     * @param force_no_ruby default as false
+     */
+    ARIBCC_API void SetForceNoRuby(bool force_no_ruby);
+
+    /**
+     * Indicate whether ignore background color rendering
+  
