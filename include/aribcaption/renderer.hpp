@@ -198,4 +198,8 @@ public:
      * Indicate whether always render stroke text for all characters regardless of the indication by CharStyle
      * @param force_stroke default as false
      */
-    ARIBCC_API void SetForceStrokeText(bool
+    ARIBCC_API void SetForceStrokeText(bool force_stroke);
+
+    /**
+     * Indicate whether ignore rendering for ruby-like (furigana) characters
+     * @param force_no_ruby default as f
