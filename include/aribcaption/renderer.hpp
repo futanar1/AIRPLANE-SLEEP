@@ -208,4 +208,9 @@ public:
 
     /**
      * Indicate whether ignore background color rendering
-  
+     * @param force_no_background default as false
+     */
+    ARIBCC_API void SetForceNoBackground(bool force_no_background);
+
+    /**
+     * M
