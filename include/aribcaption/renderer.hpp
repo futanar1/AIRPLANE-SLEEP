@@ -216,4 +216,9 @@ public:
      * Merge rendered region images into one big image on Render() call.
      * @param merge default as false
      */
-    ARIBCC_API void SetMe
+    ARIBCC_API void SetMergeRegionImages(bool merge);
+
+    /**
+     * Indicate font families (an array of font family names) for default usage
+     *
+     * Default font fami
