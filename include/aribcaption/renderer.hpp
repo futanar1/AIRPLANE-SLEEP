@@ -213,4 +213,7 @@ public:
     ARIBCC_API void SetForceNoBackground(bool force_no_background);
 
     /**
-     * M
+     * Merge rendered region images into one big image on Render() call.
+     * @param merge default as false
+     */
+    ARIBCC_API void SetMe
