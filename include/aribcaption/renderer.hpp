@@ -221,4 +221,5 @@ public:
     /**
      * Indicate font families (an array of font family names) for default usage
      *
-     * Default font fami
+     * Default font family will be used only if captions' language is unknown (iso6392_language_code == 0).
+     * Indicate force_default = true to force use thes
