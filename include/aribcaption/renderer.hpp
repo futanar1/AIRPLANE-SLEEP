@@ -222,4 +222,7 @@ public:
      * Indicate font families (an array of font family names) for default usage
      *
      * Default font family will be used only if captions' language is unknown (iso6392_language_code == 0).
-     * Indicate force_default = true to force use thes
+     * Indicate force_default = true to force use these fonts always.
+     *
+     * The renderer contains an auto-fallback mechanism among indicated font families.
+     * The renderer also contains predefined font
