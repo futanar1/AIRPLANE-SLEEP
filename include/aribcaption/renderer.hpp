@@ -225,4 +225,7 @@ public:
      * Indicate force_default = true to force use these fonts always.
      *
      * The renderer contains an auto-fallback mechanism among indicated font families.
-     * The renderer also contains predefined font
+     * The renderer also contains predefined font indications for Windows / macOS / Linux / Android.
+     *
+     * @param font_family    Array of font family names
+     * @param force_default  Whether force use these fon
