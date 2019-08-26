@@ -228,4 +228,7 @@ public:
      * The renderer also contains predefined font indications for Windows / macOS / Linux / Android.
      *
      * @param font_family    Array of font family names
-     * @param force_default  Whether force use these fon
+     * @param force_default  Whether force use these font families for all languages
+     * @return true on success
+     */
+    ARIBCC_API bool SetDefaultFontFamily(const std::vector<std::string>&
