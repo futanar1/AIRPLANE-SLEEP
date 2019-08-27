@@ -231,4 +231,9 @@ public:
      * @param force_default  Whether force use these font families for all languages
      * @return true on success
      */
-    ARIBCC_API bool SetDefaultFontFamily(const std::vector<std::string>&
+    ARIBCC_API bool SetDefaultFontFamily(const std::vector<std::string>& font_family, bool force_default);
+
+    /**
+     * Indicate font families (an array of font family names) for specific language
+     *
+     * The renderer
