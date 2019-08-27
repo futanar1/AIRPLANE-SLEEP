@@ -237,4 +237,8 @@ public:
      * Indicate font families (an array of font family names) for specific language
      *
      * The renderer contains an auto-fallback mechanism among indicated font families.
-     * The renderer also contains predefined font indications for Windows / ma
+     * The renderer also contains predefined font indications for Windows / macOS / Linux / Android.
+     *
+     * @param language_code ISO639-2 Language Code, e.g. ThreeCC("jpn")
+     * @param font_family   Array of font family names
+     
