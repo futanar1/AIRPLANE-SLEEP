@@ -241,4 +241,6 @@ public:
      *
      * @param language_code ISO639-2 Language Code, e.g. ThreeCC("jpn")
      * @param font_family   Array of font family names
-     
+     * @return true on success
+     */
+    ARIBCC_API bool SetLanguageSpecificFontFamily(uint32_t language_code, const std::vector<std::string>& font
