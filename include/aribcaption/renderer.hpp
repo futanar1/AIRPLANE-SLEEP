@@ -243,4 +243,9 @@ public:
      * @param font_family   Array of font family names
      * @return true on success
      */
-    ARIBCC_API bool SetLanguageSpecificFontFamily(uint32_t language_code, const std::vector<std::string>& font
+    ARIBCC_API bool SetLanguageSpecificFontFamily(uint32_t language_code, const std::vector<std::string>& font_family);
+
+    /**
+     * Set the renderer frame size in pixels, include margins. This function must be called before any @Render() call.
+     *
+     * Usua
