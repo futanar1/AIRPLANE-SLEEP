@@ -248,4 +248,6 @@ public:
     /**
      * Set the renderer frame size in pixels, include margins. This function must be called before any @Render() call.
      *
-     * Usua
+     * Usually rendered images will be inside this frame area, unless negative margin values are specified.
+     *
+     * @param frame_width   
