@@ -254,4 +254,7 @@ public:
      * @param frame_height  must be >= 0
      * @return true on success
      */
-    ARIBCC_API bool SetFrameSize
+    ARIBCC_API bool SetFrameSize(int frame_width, int frame_height);
+
+    /**
+     * Set the frame margins in pixels. This function must be called a
