@@ -260,4 +260,6 @@ public:
      * Set the frame margins in pixels. This function must be called after calling to @SetFrameSize().
      * Call to this function is optional.
      *
-     * Each value specifics the distance from the video re
+     * Each value specifics the distance from the video rectangle to the renderer frame.
+     * Positive margin value means there will be free space between renderer frame and video area,
+     * while negativ
