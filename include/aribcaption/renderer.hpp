@@ -264,4 +264,8 @@ public:
      * Positive margin value means there will be free space between renderer frame and video area,
      * while negative margin value lets renderer frame (visible area) inside the video, i.e. the video is cropped.
      *
-     * If negative margin value has been indicat
+     * If negative margin value has been indicated, rendered images may outside the renderer frame.
+     *
+     * @return true on success
+     */
+    ARIBCC_API bool SetMargins(int top, int botto
