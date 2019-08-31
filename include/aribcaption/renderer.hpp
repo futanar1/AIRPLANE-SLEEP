@@ -262,4 +262,6 @@ public:
      *
      * Each value specifics the distance from the video rectangle to the renderer frame.
      * Positive margin value means there will be free space between renderer frame and video area,
-     * while negativ
+     * while negative margin value lets renderer frame (visible area) inside the video, i.e. the video is cropped.
+     *
+     * If negative margin value has been indicat
