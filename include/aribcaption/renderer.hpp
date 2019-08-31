@@ -257,4 +257,7 @@ public:
     ARIBCC_API bool SetFrameSize(int frame_width, int frame_height);
 
     /**
-     * Set the frame margins in pixels. This function must be called a
+     * Set the frame margins in pixels. This function must be called after calling to @SetFrameSize().
+     * Call to this function is optional.
+     *
+     * Each value specifics the distance from the video re
