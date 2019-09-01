@@ -268,4 +268,9 @@ public:
      *
      * @return true on success
      */
-    ARIBCC_API bool SetMargins(int top, int botto
+    ARIBCC_API bool SetMargins(int top, int bottom, int left, int right);
+
+    /**
+     * Set storage policy for renderer's internal caption storage
+     *
+     * @param p
