@@ -274,4 +274,9 @@ public:
      * Set storage policy for renderer's internal caption storage
      *
      * @param policy       See @CaptionStoragePolicy
-     * @param upper_limit  Optional parameter, but must has a value for kUpperLimitCount & kUpperLim
+     * @param upper_limit  Optional parameter, but must has a value for kUpperLimitCount & kUpperLimitDuration
+     */
+    ARIBCC_API void SetStoragePolicy(CaptionStoragePolicy policy, std::optional<size_t> upper_limit = std::nullopt);
+
+    /**
+    
