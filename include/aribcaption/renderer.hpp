@@ -273,4 +273,5 @@ public:
     /**
      * Set storage policy for renderer's internal caption storage
      *
-     * @param p
+     * @param policy       See @CaptionStoragePolicy
+     * @param upper_limit  Optional parameter, but must has a value for kUpperLimitCount & kUpperLim
