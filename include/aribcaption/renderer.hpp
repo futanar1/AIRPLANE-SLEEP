@@ -281,4 +281,9 @@ public:
     /**
      * Append a caption into renderer's internal storage for subsequent rendering
      *
-     * If a caption with same PTS already exists in the storage, it 
+     * If a caption with same PTS already exists in the storage, it will be replaced by the new one.
+     *
+     * @param caption Caption's const reference
+     * @return true on success
+     */
+    ARIBCC_API b
