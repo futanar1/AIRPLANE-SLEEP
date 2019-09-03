@@ -279,4 +279,6 @@ public:
     ARIBCC_API void SetStoragePolicy(CaptionStoragePolicy policy, std::optional<size_t> upper_limit = std::nullopt);
 
     /**
-    
+     * Append a caption into renderer's internal storage for subsequent rendering
+     *
+     * If a caption with same PTS already exists in the storage, it 
