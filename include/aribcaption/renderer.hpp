@@ -286,4 +286,7 @@ public:
      * @param caption Caption's const reference
      * @return true on success
      */
-    ARIBCC_API b
+    ARIBCC_API bool AppendCaption(const Caption& caption);
+
+    /**
+     * Append a caption into renderer's internal storage for subsequent rendering
