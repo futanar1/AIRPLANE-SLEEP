@@ -293,4 +293,9 @@ public:
      *
      * If a caption with same PTS already exists in the storage, it will be replaced by the new one.
      *
-     * @param cap
+     * @param caption Caption's Rvalue reference, use std::move()
+     * @return true on success
+     */
+    ARIBCC_API bool AppendCaption(Caption&& caption);
+
+ 
