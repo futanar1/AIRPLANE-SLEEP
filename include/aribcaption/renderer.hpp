@@ -290,3 +290,7 @@ public:
 
     /**
      * Append a caption into renderer's internal storage for subsequent rendering
+     *
+     * If a caption with same PTS already exists in the storage, it will be replaced by the new one.
+     *
+     * @param cap
