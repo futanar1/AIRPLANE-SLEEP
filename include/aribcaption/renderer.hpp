@@ -301,4 +301,6 @@ public:
     /**
      * Retrieve expected RenderStatus at specific PTS, rather than actually do rendering.
      *
-     * Useful fo
+     * Useful for detecting whether will got an identical image that is unchanged from the previous rendering.
+     *
+     * @param pts    Presentation times
