@@ -305,4 +305,9 @@ public:
      *
      * @param pts    Presentation timestamp, in milliseconds
      * @return       kError / kNoImage / kGotImage / kGotImageUnchanged
-     *               kGotImageUnchanged means a Render() call at this
+     *               kGotImageUnchanged means a Render() call at this PTS will return an image identical to the previous
+     */
+    ARIBCC_API RenderStatus TryRender(int64_t pts);
+
+    /**
+     * Render captio
