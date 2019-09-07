@@ -298,4 +298,7 @@ public:
      */
     ARIBCC_API bool AppendCaption(Caption&& caption);
 
- 
+    /**
+     * Retrieve expected RenderStatus at specific PTS, rather than actually do rendering.
+     *
+     * Useful fo
