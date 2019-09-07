@@ -303,4 +303,6 @@ public:
      *
      * Useful for detecting whether will got an identical image that is unchanged from the previous rendering.
      *
-     * @param pts    Presentation times
+     * @param pts    Presentation timestamp, in milliseconds
+     * @return       kError / kNoImage / kGotImage / kGotImageUnchanged
+     *               kGotImageUnchanged means a Render() call at this
