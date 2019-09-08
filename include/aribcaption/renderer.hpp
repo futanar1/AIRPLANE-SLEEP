@@ -317,4 +317,7 @@ public:
      * @param pts         Presentation timestamp, in milliseconds
      * @param out_result  Write back parameter for passing rendered images, will be empty if status is kError / kNoImage
      *
-     * @return            kGotImage / kGotImageUnchanged if rendered images pr
+     * @return            kGotImage / kGotImageUnchanged if rendered images provided
+     *                    kGotImageUnchanged means this batch of images is completely identical to the previous call
+     */
+    ARI
