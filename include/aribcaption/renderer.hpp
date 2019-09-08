@@ -310,4 +310,8 @@ public:
     ARIBCC_API RenderStatus TryRender(int64_t pts);
 
     /**
-     * Render captio
+     * Render caption at specific PTS
+     *
+     * This function queries a caption from the specified PTS and render it into images if exists.
+     *
+   
