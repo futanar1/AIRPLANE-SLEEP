@@ -314,4 +314,5 @@ public:
      *
      * This function queries a caption from the specified PTS and render it into images if exists.
      *
-   
+     * @param pts         Presentation timestamp, in milliseconds
+     * @param out_result  Write back parameter for passing rendered images
