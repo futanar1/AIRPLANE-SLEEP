@@ -328,4 +328,11 @@ public:
      * Call this function if the stream has been seeked, or met non-monotonic PTS.
      */
     ARIBCC_API void Flush();
-public
+public:
+    Renderer(const Renderer&) = delete;
+    Renderer& operator=(const Renderer&) = delete;
+private:
+    std::unique_ptr<internal::RendererImpl> pimpl_;
+};
+
+}  // namespace a
