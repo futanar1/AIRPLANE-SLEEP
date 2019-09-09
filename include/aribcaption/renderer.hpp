@@ -320,4 +320,7 @@ public:
      * @return            kGotImage / kGotImageUnchanged if rendered images provided
      *                    kGotImageUnchanged means this batch of images is completely identical to the previous call
      */
-    ARI
+    ARIBCC_API RenderStatus Render(int64_t pts, RenderResult& out_result);
+
+    /**
+     * Clear caption storage inside the renderer. Will evict all the appended captio
