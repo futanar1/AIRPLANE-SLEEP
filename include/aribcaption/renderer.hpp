@@ -323,4 +323,9 @@ public:
     ARIBCC_API RenderStatus Render(int64_t pts, RenderResult& out_result);
 
     /**
-     * Clear caption storage inside the renderer. Will evict all the appended captio
+     * Clear caption storage inside the renderer. Will evict all the appended captions.
+     *
+     * Call this function if the stream has been seeked, or met non-monotonic PTS.
+     */
+    ARIBCC_API void Flush();
+public
