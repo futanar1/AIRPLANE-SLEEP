@@ -335,4 +335,6 @@ private:
     std::unique_ptr<internal::RendererImpl> pimpl_;
 };
 
-}  // namespace a
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_RENDERER_HPP
