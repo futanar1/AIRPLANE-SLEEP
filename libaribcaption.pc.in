@@ -7,3 +7,8 @@ Name: @CMAKE_PROJECT_NAME@
 Description: @CMAKE_PROJECT_DESCRIPTION@
 URL: @CMAKE_PROJECT_HOMEPAGE_URL@
 Version: @PROJECT_VERSION@
+Requires: @PKG_REQUIRES@
+Requires.private:
+Cflags: -I${includedir}
+Libs: -L${libdir} @PKG_LIBS@
+Libs.private:
