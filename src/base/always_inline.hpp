@@ -22,4 +22,9 @@
 #if defined(__GNUC__) && defined(NDEBUG)
     #define ALWAYS_INLINE inline __attribute__((__always_inline__))
 #elif defined(_MSC_VER) && defined(NDEBUG)
-    #define 
+    #define ALWAYS_INLINE __forceinline
+#else
+    #define ALWAYS_INLINE inline
+#endif
+
+#endif  // ARIBCAPTION_ALWAYS_INLINE_HPP
