@@ -19,4 +19,7 @@
 #ifndef ARIBCAPTION_ALWAYS_INLINE_HPP
 #define ARIBCAPTION_ALWAYS_INLINE_HPP
 
-#if defined(__GNUC__) && defi
+#if defined(__GNUC__) && defined(NDEBUG)
+    #define ALWAYS_INLINE inline __attribute__((__always_inline__))
+#elif defined(_MSC_VER) && defined(NDEBUG)
+    #define 
