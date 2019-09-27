@@ -17,4 +17,10 @@
  */
 
 #ifndef ARIBCAPTION_CFSTR_HELPER_HPP
-#
+#define ARIBCAPTION_CFSTR_HELPER_HPP
+
+#include <CoreFoundation/CFBase.h>
+#include <string>
+#include "base/scoped_cfref.hpp"
+
+namespace aribcaption::
