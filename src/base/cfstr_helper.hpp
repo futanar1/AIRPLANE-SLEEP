@@ -32,4 +32,8 @@ inline std::string CFStringToStdString(CFStringRef cfstr) {
         return str;
     }
 
-  
+    const char* cstring_ptr = CFStringGetCStringPtr(cfstr, kCFStringEncodingUTF8);
+
+    if (cstring_ptr) {
+        str = cstring_ptr;
+    } else 
