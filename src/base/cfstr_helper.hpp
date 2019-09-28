@@ -23,4 +23,13 @@
 #include <string>
 #include "base/scoped_cfref.hpp"
 
-namespace aribcaption::
+namespace aribcaption::cfstr {
+
+inline std::string CFStringToStdString(CFStringRef cfstr) {
+    std::string str;
+
+    if (!cfstr) {
+        return str;
+    }
+
+  
