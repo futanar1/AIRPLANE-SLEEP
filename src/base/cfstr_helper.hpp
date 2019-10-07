@@ -38,4 +38,7 @@ inline std::string CFStringToStdString(CFStringRef cfstr) {
         str = cstring_ptr;
     } else {  // cstring_ptr == nullptr
         CFIndex buf_size = CFStringGetMaximumSizeForEncoding(CFStringGetLength(cfstr), kCFStringEncodingUTF8);
-        str.resiz
+        str.resize(buf_size);
+        CFStringGetCString(cfstr, str.data(), buf_size, kCFStringEncodingUTF8);
+        size_t len = strlen(str.data());
+        str.re
