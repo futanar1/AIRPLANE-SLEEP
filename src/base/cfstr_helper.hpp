@@ -41,4 +41,11 @@ inline std::string CFStringToStdString(CFStringRef cfstr) {
         str.resize(buf_size);
         CFStringGetCString(cfstr, str.data(), buf_size, kCFStringEncodingUTF8);
         size_t len = strlen(str.data());
-        str.re
+        str.resize(len);
+    }
+
+    return str;
+}
+
+inline ScopedCFRef<CFStringRef> StdStringToCFString(const std::string& str) {
+    ScopedCFRef<CFStringRef> cfstr(CFStrin
