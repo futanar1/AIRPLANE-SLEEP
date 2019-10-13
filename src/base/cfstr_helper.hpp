@@ -48,4 +48,6 @@ inline std::string CFStringToStdString(CFStringRef cfstr) {
 }
 
 inline ScopedCFRef<CFStringRef> StdStringToCFString(const std::string& str) {
-    ScopedCFRef<CFStringRef> cfstr(CFStrin
+    ScopedCFRef<CFStringRef> cfstr(CFStringCreateWithCString(nullptr,
+                                                             str.c_str(),
+                                                   
