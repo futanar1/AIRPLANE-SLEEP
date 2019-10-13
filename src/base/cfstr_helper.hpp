@@ -50,4 +50,10 @@ inline std::string CFStringToStdString(CFStringRef cfstr) {
 inline ScopedCFRef<CFStringRef> StdStringToCFString(const std::string& str) {
     ScopedCFRef<CFStringRef> cfstr(CFStringCreateWithCString(nullptr,
                                                              str.c_str(),
-                                                   
+                                                             kCFStringEncodingUTF8));
+    return cfstr;
+}
+
+}  // namespace aribcaption::cfstr
+
+#endif  // ARIBCAPTION_CFSTR_HELPER_HPP
