@@ -16,4 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef ARIBCAPTION_LOGGER_H
+#ifndef ARIBCAPTION_LOGGER_HPP
+#define ARIBCAPTION_LOGGER_HPP
+
+#include "aribcaption/context.hpp"
+
+#if defined(__clang__) || defined(__GNUC__)
+    #define ATTRIBUT
