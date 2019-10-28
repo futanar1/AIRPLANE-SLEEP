@@ -22,4 +22,7 @@
 #include "aribcaption/context.hpp"
 
 #if defined(__clang__) || defined(__GNUC__)
-    #define ATTRIBUT
+    #define ATTRIBUTE_FORMAT_PRINTF(a,b) __attribute__((__format__ (__printf__, a, b)))
+    #define MSVC_FORMAT_CHECK(p) p
+#elif defined(_MSC_VER)
+    #include <sa
