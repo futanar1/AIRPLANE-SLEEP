@@ -25,4 +25,9 @@
     #define ATTRIBUTE_FORMAT_PRINTF(a,b) __attribute__((__format__ (__printf__, a, b)))
     #define MSVC_FORMAT_CHECK(p) p
 #elif defined(_MSC_VER)
-    #include <sa
+    #include <sal.h>
+    #define ATTRIBUTE_FORMAT_PRINTF(a,b)
+    #define MSVC_FORMAT_CHECK(p) _Printf_format_string_ p
+#else
+    #define ATTRIBUTE_FORMAT_PRINTF(a,b)
+   
