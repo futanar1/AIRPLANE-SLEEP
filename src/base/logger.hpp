@@ -39,4 +39,8 @@ class Logger {
 public:
     Logger() = default;
 
-    void SetCallback(const L
+    void SetCallback(const LogcatCB& logcat_cb) {
+        logcat_cb_ = logcat_cb;
+    }
+
+    void e(MSVC_FORMAT_CHECK(const char* format), ...) ATTRIBUTE_FOR
