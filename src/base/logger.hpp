@@ -30,4 +30,13 @@
     #define MSVC_FORMAT_CHECK(p) _Printf_format_string_ p
 #else
     #define ATTRIBUTE_FORMAT_PRINTF(a,b)
-   
+    #define MSVC_FORMAT_CHECK(p) p
+#endif
+
+namespace aribcaption {
+
+class Logger {
+public:
+    Logger() = default;
+
+    void SetCallback(const L
