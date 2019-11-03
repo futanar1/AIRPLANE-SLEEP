@@ -50,4 +50,12 @@ public:
     void v(MSVC_FORMAT_CHECK(const char* format), ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
 public:
     Logger(const Logger&) = delete;
-    Logger& operator=(const Logger&) = dele
+    Logger& operator=(const Logger&) = delete;
+private:
+    LogcatCB logcat_cb_;
+};
+
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_LOGGER_HPP
