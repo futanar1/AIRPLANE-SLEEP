@@ -172,3 +172,121 @@ static const void *body(MD5_CTX *ctx, const void *data, unsigned long size)
         STEP(H2, b, c, d, a, GET(2), 0xc4ac5665, 23)
 
 /* Round 4 */
+        STEP(I, a, b, c, d, GET(0), 0xf4292244, 6)
+        STEP(I, d, a, b, c, GET(7), 0x432aff97, 10)
+        STEP(I, c, d, a, b, GET(14), 0xab9423a7, 15)
+        STEP(I, b, c, d, a, GET(5), 0xfc93a039, 21)
+        STEP(I, a, b, c, d, GET(12), 0x655b59c3, 6)
+        STEP(I, d, a, b, c, GET(3), 0x8f0ccc92, 10)
+        STEP(I, c, d, a, b, GET(10), 0xffeff47d, 15)
+        STEP(I, b, c, d, a, GET(1), 0x85845dd1, 21)
+        STEP(I, a, b, c, d, GET(8), 0x6fa87e4f, 6)
+        STEP(I, d, a, b, c, GET(15), 0xfe2ce6e0, 10)
+        STEP(I, c, d, a, b, GET(6), 0xa3014314, 15)
+        STEP(I, b, c, d, a, GET(13), 0x4e0811a1, 21)
+        STEP(I, a, b, c, d, GET(4), 0xf7537e82, 6)
+        STEP(I, d, a, b, c, GET(11), 0xbd3af235, 10)
+        STEP(I, c, d, a, b, GET(2), 0x2ad7d2bb, 15)
+        STEP(I, b, c, d, a, GET(9), 0xeb86d391, 21)
+
+        a += saved_a;
+        b += saved_b;
+        c += saved_c;
+        d += saved_d;
+
+        ptr += 64;
+    } while (size -= 64);
+
+    ctx->a = a;
+    ctx->b = b;
+    ctx->c = c;
+    ctx->d = d;
+
+    return ptr;
+}
+
+void MD5_Init(MD5_CTX *ctx)
+{
+    ctx->a = 0x67452301;
+    ctx->b = 0xefcdab89;
+    ctx->c = 0x98badcfe;
+    ctx->d = 0x10325476;
+
+    ctx->lo = 0;
+    ctx->hi = 0;
+}
+
+void MD5_Update(MD5_CTX *ctx, const void *data, unsigned long size)
+{
+    MD5_u32plus saved_lo;
+    unsigned long used, available;
+
+    saved_lo = ctx->lo;
+    if ((ctx->lo = (saved_lo + size) & 0x1fffffff) < saved_lo)
+        ctx->hi++;
+    ctx->hi += size >> 29;
+
+    used = saved_lo & 0x3f;
+
+    if (used) {
+        available = 64 - used;
+
+        if (size < available) {
+            memcpy(&ctx->buffer[used], data, size);
+            return;
+        }
+
+        memcpy(&ctx->buffer[used], data, available);
+        data = (const unsigned char *)data + available;
+        size -= available;
+        body(ctx, ctx->buffer, 64);
+    }
+
+    if (size >= 64) {
+        data = body(ctx, data, size & ~(unsigned long)0x3f);
+        size &= 0x3f;
+    }
+
+    memcpy(ctx->buffer, data, size);
+}
+
+#define OUT(dst, src) \
+	(dst)[0] = (unsigned char)(src); \
+	(dst)[1] = (unsigned char)((src) >> 8); \
+	(dst)[2] = (unsigned char)((src) >> 16); \
+	(dst)[3] = (unsigned char)((src) >> 24);
+
+void MD5_Final(unsigned char *result, MD5_CTX *ctx)
+{
+    unsigned long used, available;
+
+    used = ctx->lo & 0x3f;
+
+    ctx->buffer[used++] = 0x80;
+
+    available = 64 - used;
+
+    if (available < 8) {
+        memset(&ctx->buffer[used], 0, available);
+        body(ctx, ctx->buffer, 64);
+        used = 0;
+        available = 64;
+    }
+
+    memset(&ctx->buffer[used], 0, available - 8);
+
+    ctx->lo <<= 3;
+    OUT(&ctx->buffer[56], ctx->lo)
+    OUT(&ctx->buffer[60], ctx->hi)
+
+    body(ctx, ctx->buffer, 64);
+
+    OUT(&result[0], ctx->a)
+    OUT(&result[4], ctx->b)
+    OUT(&result[8], ctx->c)
+    OUT(&result[12], ctx->d)
+
+    memset(ctx, 0, sizeof(*ctx));
+}
+
+#endif
