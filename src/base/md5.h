@@ -3,4 +3,7 @@
  * MD5 Message-Digest Algorithm (RFC 1321).
  *
  * Homepage:
- * http://o
+ * http://openwall.info/wiki/people/solar/software/public-domain-source-code/md5
+ *
+ * Author:
+ * Alexander Peslyak, better known as Solar Designer <solar at openwall.com
