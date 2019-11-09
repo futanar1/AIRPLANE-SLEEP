@@ -6,4 +6,7 @@
  * http://openwall.info/wiki/people/solar/software/public-domain-source-code/md5
  *
  * Author:
- * Alexander Peslyak, better known as Solar Designer <solar at openwall.com
+ * Alexander Peslyak, better known as Solar Designer <solar at openwall.com>
+ *
+ * This software was written by Alexander Peslyak in 2001.  No copyright is
+ * claimed, and the software is hereby placed in the public d
