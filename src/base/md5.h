@@ -9,4 +9,7 @@
  * Alexander Peslyak, better known as Solar Designer <solar at openwall.com>
  *
  * This software was written by Alexander Peslyak in 2001.  No copyright is
- * claimed, and the software is hereby placed in the public d
+ * claimed, and the software is hereby placed in the public domain.
+ * In case this attempt to disclaim copyright and place the software in the
+ * public domain is deemed null and void, then the software is
+ *
