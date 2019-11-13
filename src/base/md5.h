@@ -18,4 +18,12 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted.
  *
- * There's ABSOLUTELY NO WARRANTY, express or
+ * There's ABSOLUTELY NO WARRANTY, express or implied.
+ *
+ * See md5.c for more information.
+ */
+
+#ifdef HAVE_OPENSSL
+#include <openssl/md5.h>
+#elif !defined(_MD5_H)
+#
