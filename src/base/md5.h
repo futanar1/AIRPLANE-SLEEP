@@ -26,4 +26,12 @@
 #ifdef HAVE_OPENSSL
 #include <openssl/md5.h>
 #elif !defined(_MD5_H)
-#
+#define _MD5_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+/* Any 32-bit or wider unsigned integer data type will do */
+typedef unsigned int M
