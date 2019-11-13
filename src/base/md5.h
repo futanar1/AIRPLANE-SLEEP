@@ -34,4 +34,10 @@ extern "C" {
 
 
 /* Any 32-bit or wider unsigned integer data type will do */
-typedef unsigned int M
+typedef unsigned int MD5_u32plus;
+
+typedef struct {
+    MD5_u32plus lo, hi;
+    MD5_u32plus a, b, c, d;
+    unsigned char buffer[64];
+    MD5_u32plu
