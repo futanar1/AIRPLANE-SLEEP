@@ -28,4 +28,11 @@
 namespace aribcaption::md5 {
 
 inline std::string GetDigest(const uint8_t* buffer, size_t length) {
-    const uint8_t* ptr 
+    const uint8_t* ptr = buffer;
+    MD5_CTX ctx;
+    MD5_Init(&ctx);
+
+    while (length) {
+        if (length > 64) {
+            MD5_Update(&ctx, ptr, 64);
+        
