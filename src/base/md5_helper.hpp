@@ -22,4 +22,10 @@
 #include <cstdint>
 #include <cstdio>
 #include <vector>
-#include <strin
+#include <string>
+#include "base/md5.h"
+
+namespace aribcaption::md5 {
+
+inline std::string GetDigest(const uint8_t* buffer, size_t length) {
+    const uint8_t* ptr 
