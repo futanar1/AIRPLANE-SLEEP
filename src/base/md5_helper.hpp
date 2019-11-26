@@ -35,4 +35,7 @@ inline std::string GetDigest(const uint8_t* buffer, size_t length) {
     while (length) {
         if (length > 64) {
             MD5_Update(&ctx, ptr, 64);
-        
+            length -= 64;
+            ptr += 64;
+        } else {
+            MD5_Update(&ctx, ptr, static_cast<unsigned long>(length));
