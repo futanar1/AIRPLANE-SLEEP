@@ -39,3 +39,10 @@ inline std::string GetDigest(const uint8_t* buffer, size_t length) {
             ptr += 64;
         } else {
             MD5_Update(&ctx, ptr, static_cast<unsigned long>(length));
+            length -= length;
+            ptr += length;
+        }
+    }
+
+    std::vector<uint8_t> digest(16, 0);
+    MD5_Final(&digest[
