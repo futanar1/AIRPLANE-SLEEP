@@ -57,4 +57,4 @@ inline std::string GetDigest(const uint8_t* buffer, size_t length) {
 
 }  // namespace aribcaption::md5
 
-#endif  // ARIBCAP
+#endif  // ARIBCAPTION_MD5_HELPER_HPP
