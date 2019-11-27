@@ -49,4 +49,12 @@ inline std::string GetDigest(const uint8_t* buffer, size_t length) {
 
     std::string digest_str(32, '\0');
     for (size_t i = 0; i < 16; i++) {
-        snprintf(&digest_str[i
+        snprintf(&digest_str[i * 2], 16 * 2, "%02x", static_cast<uint32_t>(digest[i]));
+    }
+
+    return digest_str;
+}
+
+}  // namespace aribcaption::md5
+
+#endif  // ARIBCAP
