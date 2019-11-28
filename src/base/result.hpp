@@ -116,3 +116,78 @@ public:
     }
 
     constexpr T& operator*() & noexcept {
+        assert(is_ok());
+        T* val = std::get_if<0>(&variant_);
+        return *val;
+    }
+
+    constexpr T&& operator*() && noexcept {
+        assert(is_ok());
+        T* val = std::get_if<0>(&variant_);
+        return std::move(*val);
+    }
+
+    constexpr T* operator->() const noexcept {
+        assert(is_ok());
+        return std::get_if<0>(&variant_);
+    }
+
+    constexpr T* operator->() noexcept {
+        assert(is_ok());
+        return std::get_if<0>(&variant_);
+    }
+
+    //----------------------------------------------------
+    // error
+    [[nodiscard]]
+    constexpr E& error() & noexcept {
+        assert(is_err());
+        E* err = std::get_if<1>(&variant_);
+        return *err;
+    }
+
+    [[nodiscard]]
+    constexpr const E& error() const& noexcept {
+        assert(is_err());
+        const E* err = std::get_if<1>(&variant_);
+        return *err;
+    }
+
+    [[nodiscard]]
+    constexpr E&& error() && noexcept {
+        assert(is_err());
+        E* err = std::get_if<1>(&variant_);
+        return std::move(*err);
+    }
+
+    constexpr bool operator==(const internal::Ok<T>& ok) const {
+        return is_ok() && value() == ok.val;
+    }
+
+    constexpr bool operator!=(const internal::Ok<T>& ok) const {
+        return !operator==(ok);
+    }
+
+    constexpr bool operator==(const internal::Err<E>& err) const {
+        return is_err() && error() == err.val;
+    }
+
+    constexpr bool operator!=(const internal::Err<E>& err) const {
+        return !operator==(err);
+    }
+public:
+    friend constexpr bool operator==(const Result<T, E>& lhs, const Result<T, E>& rhs) {
+        return lhs.variant_ == rhs.variant_;
+    }
+
+    friend constexpr bool operator!=(const Result<T, E>& lhs, const Result<T, E>& rhs) {
+        return lhs.variant_ != rhs.variant_;
+    }
+private:
+    std::variant<T, E> variant_;
+};
+
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_RESULT_HPP
