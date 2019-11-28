@@ -16,3 +16,30 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+
+#ifndef ARIBCAPTION_SCOPED_COM_INITIALIZER_HPP
+#define ARIBCAPTION_SCOPED_COM_INITIALIZER_HPP
+
+#include <objbase.h>
+
+namespace aribcaption {
+
+class ScopedCOMInitializer {
+public:
+    ScopedCOMInitializer() {
+        HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+        init_succeeded_ = SUCCEEDED(hr);
+    }
+
+    ~ScopedCOMInitializer() {
+        if (init_succeeded_) {
+            CoUninitialize();
+        }
+    }
+private:
+    bool init_succeeded_ = false;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_SCOPED_COM_INITIALIZER_HPP
