@@ -93,3 +93,33 @@ public:
     }
 
     ScopedHolder& operator=(T new_inner) noexcept {
+        if (inner_) {
+            deleter_(inner_);
+        }
+        inner_ = new_inner;
+        return *this;
+    }
+
+    // Allow move assign
+    ScopedHolder& operator=(ScopedHolder<T, Deleter>&& rhs) noexcept {
+        if (inner_) {
+            deleter_(inner_);
+        }
+        inner_ = rhs.inner_;
+        deleter_ = rhs.deleter_;
+        rhs.inner_ = 0;
+        rhs.deleter_ = nullptr;
+        return *this;
+    }
+public:
+    // Disallow copy and assign
+    ScopedHolder(const ScopedHolder&) = delete;
+    ScopedHolder& operator=(const ScopedHolder&) = delete;
+private:
+    T inner_;
+    Deleter deleter_;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_SCOPED_HOLDER_HPP
