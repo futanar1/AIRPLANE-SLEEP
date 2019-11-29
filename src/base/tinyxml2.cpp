@@ -277,3 +277,162 @@ namespace tinyxml2
             }
             *q = 0;
         }
+    }
+
+
+    const char* StrPair::GetStr()
+    {
+        TIXMLASSERT( _start );
+        TIXMLASSERT( _end );
+        if ( _flags & NEEDS_FLUSH ) {
+            *_end = 0;
+            _flags ^= NEEDS_FLUSH;
+
+            if ( _flags ) {
+                const char* p = _start;	// the read pointer
+                char* q = _start;	// the write pointer
+
+                while( p < _end ) {
+                    if ( (_flags & NEEDS_NEWLINE_NORMALIZATION) && *p == CR ) {
+                        // CR-LF pair becomes LF
+                        // CR alone becomes LF
+                        // LF-CR becomes LF
+                        if ( *(p+1) == LF ) {
+                            p += 2;
+                        }
+                        else {
+                            ++p;
+                        }
+                        *q = LF;
+                        ++q;
+                    }
+                    else if ( (_flags & NEEDS_NEWLINE_NORMALIZATION) && *p == LF ) {
+                        if ( *(p+1) == CR ) {
+                            p += 2;
+                        }
+                        else {
+                            ++p;
+                        }
+                        *q = LF;
+                        ++q;
+                    }
+                    else if ( (_flags & NEEDS_ENTITY_PROCESSING) && *p == '&' ) {
+                        // Entities handled by tinyXML2:
+                        // - special entities in the entity table [in/out]
+                        // - numeric character reference [in]
+                        //   &#20013; or &#x4e2d;
+
+                        if ( *(p+1) == '#' ) {
+                            const int buflen = 10;
+                            char buf[buflen] = { 0 };
+                            int len = 0;
+                            const char* adjusted = const_cast<char*>( XMLUtil::GetCharacterRef( p, buf, &len ) );
+                            if ( adjusted == 0 ) {
+                                *q = *p;
+                                ++p;
+                                ++q;
+                            }
+                            else {
+                                TIXMLASSERT( 0 <= len && len <= buflen );
+                                TIXMLASSERT( q + len <= adjusted );
+                                p = adjusted;
+                                memcpy( q, buf, len );
+                                q += len;
+                            }
+                        }
+                        else {
+                            bool entityFound = false;
+                            for( int i = 0; i < NUM_ENTITIES; ++i ) {
+                                const Entity& entity = entities[i];
+                                if ( strncmp( p + 1, entity.pattern, entity.length ) == 0
+                                     && *( p + entity.length + 1 ) == ';' ) {
+                                    // Found an entity - convert.
+                                    *q = entity.value;
+                                    ++q;
+                                    p += entity.length + 2;
+                                    entityFound = true;
+                                    break;
+                                }
+                            }
+                            if ( !entityFound ) {
+                                // fixme: treat as error?
+                                ++p;
+                                ++q;
+                            }
+                        }
+                    }
+                    else {
+                        *q = *p;
+                        ++p;
+                        ++q;
+                    }
+                }
+                *q = 0;
+            }
+            // The loop below has plenty going on, and this
+            // is a less useful mode. Break it out.
+            if ( _flags & NEEDS_WHITESPACE_COLLAPSING ) {
+                CollapseWhitespace();
+            }
+            _flags = (_flags & NEEDS_DELETE);
+        }
+        TIXMLASSERT( _start );
+        return _start;
+    }
+
+
+
+
+// --------- XMLUtil ----------- //
+
+    const char* XMLUtil::writeBoolTrue  = "true";
+    const char* XMLUtil::writeBoolFalse = "false";
+
+    void XMLUtil::SetBoolSerialization(const char* writeTrue, const char* writeFalse)
+    {
+        static const char* defTrue  = "true";
+        static const char* defFalse = "false";
+
+        writeBoolTrue = (writeTrue) ? writeTrue : defTrue;
+        writeBoolFalse = (writeFalse) ? writeFalse : defFalse;
+    }
+
+
+    const char* XMLUtil::ReadBOM( const char* p, bool* bom )
+    {
+        TIXMLASSERT( p );
+        TIXMLASSERT( bom );
+        *bom = false;
+        const unsigned char* pu = reinterpret_cast<const unsigned char*>(p);
+        // Check for BOM:
+        if (    *(pu+0) == TIXML_UTF_LEAD_0
+                && *(pu+1) == TIXML_UTF_LEAD_1
+                && *(pu+2) == TIXML_UTF_LEAD_2 ) {
+            *bom = true;
+            p += 3;
+        }
+        TIXMLASSERT( p );
+        return p;
+    }
+
+
+    void XMLUtil::ConvertUTF32ToUTF8( unsigned long input, char* output, int* length )
+    {
+        const unsigned long BYTE_MASK = 0xBF;
+        const unsigned long BYTE_MARK = 0x80;
+        const unsigned long FIRST_BYTE_MARK[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
+
+        if (input < 0x80) {
+            *length = 1;
+        }
+        else if ( input < 0x800 ) {
+            *length = 2;
+        }
+        else if ( input < 0x10000 ) {
+            *length = 3;
+        }
+        else if ( input < 0x200000 ) {
+            *length = 4;
+        }
+        else {
+            *length = 0;    // This code won't convert this correctly anyway.
