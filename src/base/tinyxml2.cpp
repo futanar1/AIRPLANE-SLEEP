@@ -120,3 +120,160 @@ static inline int TIXML_VSCPRINTF( const char* format, va_list va )
 static const char LINE_FEED				= static_cast<char>(0x0a);			// all line endings are normalized to LF
 static const char LF = LINE_FEED;
 static const char CARRIAGE_RETURN		= static_cast<char>(0x0d);			// CR gets filtered out
+static const char CR = CARRIAGE_RETURN;
+static const char SINGLE_QUOTE			= '\'';
+static const char DOUBLE_QUOTE			= '\"';
+
+// Bunch of unicode info at:
+//		http://www.unicode.org/faq/utf_bom.html
+//	ef bb bf (Microsoft "lead bytes") - designates UTF-8
+
+static const unsigned char TIXML_UTF_LEAD_0 = 0xefU;
+static const unsigned char TIXML_UTF_LEAD_1 = 0xbbU;
+static const unsigned char TIXML_UTF_LEAD_2 = 0xbfU;
+
+namespace tinyxml2
+{
+
+    struct Entity {
+        const char* pattern;
+        int length;
+        char value;
+    };
+
+    static const int NUM_ENTITIES = 5;
+    static const Entity entities[NUM_ENTITIES] = {
+            { "quot", 4,	DOUBLE_QUOTE },
+            { "amp", 3,		'&'  },
+            { "apos", 4,	SINGLE_QUOTE },
+            { "lt",	2, 		'<'	 },
+            { "gt",	2,		'>'	 }
+    };
+
+
+    StrPair::~StrPair()
+    {
+        Reset();
+    }
+
+
+    void StrPair::TransferTo( StrPair* other )
+    {
+        if ( this == other ) {
+            return;
+        }
+        // This in effect implements the assignment operator by "moving"
+        // ownership (as in auto_ptr).
+
+        TIXMLASSERT( other != 0 );
+        TIXMLASSERT( other->_flags == 0 );
+        TIXMLASSERT( other->_start == 0 );
+        TIXMLASSERT( other->_end == 0 );
+
+        other->Reset();
+
+        other->_flags = _flags;
+        other->_start = _start;
+        other->_end = _end;
+
+        _flags = 0;
+        _start = 0;
+        _end = 0;
+    }
+
+
+    void StrPair::Reset()
+    {
+        if ( _flags & NEEDS_DELETE ) {
+            delete [] _start;
+        }
+        _flags = 0;
+        _start = 0;
+        _end = 0;
+    }
+
+
+    void StrPair::SetStr( const char* str, int flags )
+    {
+        TIXMLASSERT( str );
+        Reset();
+        size_t len = strlen( str );
+        TIXMLASSERT( _start == 0 );
+        _start = new char[ len+1 ];
+        memcpy( _start, str, len+1 );
+        _end = _start + len;
+        _flags = flags | NEEDS_DELETE;
+    }
+
+
+    char* StrPair::ParseText( char* p, const char* endTag, int strFlags, int* curLineNumPtr )
+    {
+        TIXMLASSERT( p );
+        TIXMLASSERT( endTag && *endTag );
+        TIXMLASSERT(curLineNumPtr);
+
+        char* start = p;
+        const char  endChar = *endTag;
+        size_t length = strlen( endTag );
+
+        // Inner loop of text parsing.
+        while ( *p ) {
+            if ( *p == endChar && strncmp( p, endTag, length ) == 0 ) {
+                Set( start, p, strFlags );
+                return p + length;
+            } else if (*p == '\n') {
+                ++(*curLineNumPtr);
+            }
+            ++p;
+            TIXMLASSERT( p );
+        }
+        return 0;
+    }
+
+
+    char* StrPair::ParseName( char* p )
+    {
+        if ( !p || !(*p) ) {
+            return 0;
+        }
+        if ( !XMLUtil::IsNameStartChar( (unsigned char) *p ) ) {
+            return 0;
+        }
+
+        char* const start = p;
+        ++p;
+        while ( *p && XMLUtil::IsNameChar( (unsigned char) *p ) ) {
+            ++p;
+        }
+
+        Set( start, p, 0 );
+        return p;
+    }
+
+
+    void StrPair::CollapseWhitespace()
+    {
+        // Adjusting _start would cause undefined behavior on delete[]
+        TIXMLASSERT( ( _flags & NEEDS_DELETE ) == 0 );
+        // Trim leading space.
+        _start = XMLUtil::SkipWhiteSpace( _start, 0 );
+
+        if ( *_start ) {
+            const char* p = _start;	// the read pointer
+            char* q = _start;	// the write pointer
+
+            while( *p ) {
+                if ( XMLUtil::IsWhiteSpace( *p )) {
+                    p = XMLUtil::SkipWhiteSpace( p, 0 );
+                    if ( *p == 0 ) {
+                        break;    // don't write to q; this trims the trailing space.
+                    }
+                    *q = ' ';
+                    ++q;
+                }
+                *q = *p;
+                ++q;
+                ++p;
+            }
+            *q = 0;
+        }
