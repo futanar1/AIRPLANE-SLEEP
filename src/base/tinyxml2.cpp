@@ -436,3 +436,133 @@ namespace tinyxml2
         }
         else {
             *length = 0;    // This code won't convert this correctly anyway.
+            return;
+        }
+
+        output += *length;
+
+        // Scary scary fall throughs are annotated with carefully designed comments
+        // to suppress compiler warnings such as -Wimplicit-fallthrough in gcc
+        switch (*length) {
+            case 4:
+                --output;
+                *output = static_cast<char>((input | BYTE_MARK) & BYTE_MASK);
+                input >>= 6;
+                //fall through
+            case 3:
+                --output;
+                *output = static_cast<char>((input | BYTE_MARK) & BYTE_MASK);
+                input >>= 6;
+                //fall through
+            case 2:
+                --output;
+                *output = static_cast<char>((input | BYTE_MARK) & BYTE_MASK);
+                input >>= 6;
+                //fall through
+            case 1:
+                --output;
+                *output = static_cast<char>(input | FIRST_BYTE_MARK[*length]);
+                break;
+            default:
+                TIXMLASSERT( false );
+        }
+    }
+
+
+    const char* XMLUtil::GetCharacterRef( const char* p, char* value, int* length )
+    {
+        // Presume an entity, and pull it out.
+        *length = 0;
+
+        if ( *(p+1) == '#' && *(p+2) ) {
+            unsigned long ucs = 0;
+            TIXMLASSERT( sizeof( ucs ) >= 4 );
+            ptrdiff_t delta = 0;
+            unsigned mult = 1;
+            static const char SEMICOLON = ';';
+
+            if ( *(p+2) == 'x' ) {
+                // Hexadecimal.
+                const char* q = p+3;
+                if ( !(*q) ) {
+                    return 0;
+                }
+
+                q = strchr( q, SEMICOLON );
+
+                if ( !q ) {
+                    return 0;
+                }
+                TIXMLASSERT( *q == SEMICOLON );
+
+                delta = q-p;
+                --q;
+
+                while ( *q != 'x' ) {
+                    unsigned int digit = 0;
+
+                    if ( *q >= '0' && *q <= '9' ) {
+                        digit = *q - '0';
+                    }
+                    else if ( *q >= 'a' && *q <= 'f' ) {
+                        digit = *q - 'a' + 10;
+                    }
+                    else if ( *q >= 'A' && *q <= 'F' ) {
+                        digit = *q - 'A' + 10;
+                    }
+                    else {
+                        return 0;
+                    }
+                    TIXMLASSERT( digit < 16 );
+                    TIXMLASSERT( digit == 0 || mult <= UINT_MAX / digit );
+                    const unsigned int digitScaled = mult * digit;
+                    TIXMLASSERT( ucs <= ULONG_MAX - digitScaled );
+                    ucs += digitScaled;
+                    TIXMLASSERT( mult <= UINT_MAX / 16 );
+                    mult *= 16;
+                    --q;
+                }
+            }
+            else {
+                // Decimal.
+                const char* q = p+2;
+                if ( !(*q) ) {
+                    return 0;
+                }
+
+                q = strchr( q, SEMICOLON );
+
+                if ( !q ) {
+                    return 0;
+                }
+                TIXMLASSERT( *q == SEMICOLON );
+
+                delta = q-p;
+                --q;
+
+                while ( *q != '#' ) {
+                    if ( *q >= '0' && *q <= '9' ) {
+                        const unsigned int digit = *q - '0';
+                        TIXMLASSERT( digit < 10 );
+                        TIXMLASSERT( digit == 0 || mult <= UINT_MAX / digit );
+                        const unsigned int digitScaled = mult * digit;
+                        TIXMLASSERT( ucs <= ULONG_MAX - digitScaled );
+                        ucs += digitScaled;
+                    }
+                    else {
+                        return 0;
+                    }
+                    TIXMLASSERT( mult <= UINT_MAX / 10 );
+                    mult *= 10;
+                    --q;
+                }
+            }
+            // convert the UCS to UTF-8
+            ConvertUTF32ToUTF8( ucs, value, length );
+            return p + delta + 1;
+        }
+        return p+1;
+    }
+
+
+    void XMLUtil::ToStr( int v, char* buffer, int bufferSize )
