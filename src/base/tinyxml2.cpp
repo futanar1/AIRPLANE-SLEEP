@@ -566,3 +566,139 @@ namespace tinyxml2
 
 
     void XMLUtil::ToStr( int v, char* buffer, int bufferSize )
+    {
+        TIXML_SNPRINTF( buffer, bufferSize, "%d", v );
+    }
+
+
+    void XMLUtil::ToStr( unsigned v, char* buffer, int bufferSize )
+    {
+        TIXML_SNPRINTF( buffer, bufferSize, "%u", v );
+    }
+
+
+    void XMLUtil::ToStr( bool v, char* buffer, int bufferSize )
+    {
+        TIXML_SNPRINTF( buffer, bufferSize, "%s", v ? writeBoolTrue : writeBoolFalse);
+    }
+
+/*
+	ToStr() of a number is a very tricky topic.
+	https://github.com/leethomason/tinyxml2/issues/106
+*/
+    void XMLUtil::ToStr( float v, char* buffer, int bufferSize )
+    {
+        TIXML_SNPRINTF( buffer, bufferSize, "%.8g", v );
+    }
+
+
+    void XMLUtil::ToStr( double v, char* buffer, int bufferSize )
+    {
+        TIXML_SNPRINTF( buffer, bufferSize, "%.17g", v );
+    }
+
+
+    void XMLUtil::ToStr( int64_t v, char* buffer, int bufferSize )
+    {
+        // horrible syntax trick to make the compiler happy about %lld
+        TIXML_SNPRINTF(buffer, bufferSize, "%lld", static_cast<long long>(v));
+    }
+
+    void XMLUtil::ToStr( uint64_t v, char* buffer, int bufferSize )
+    {
+        // horrible syntax trick to make the compiler happy about %llu
+        TIXML_SNPRINTF(buffer, bufferSize, "%llu", (long long)v);
+    }
+
+    bool XMLUtil::ToInt(const char* str, int* value)
+    {
+        if (IsPrefixHex(str)) {
+            unsigned v;
+            if (TIXML_SSCANF(str, "%x", &v) == 1) {
+                *value = static_cast<int>(v);
+                return true;
+            }
+        }
+        else {
+            if (TIXML_SSCANF(str, "%d", value) == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool XMLUtil::ToUnsigned(const char* str, unsigned* value)
+    {
+        if (TIXML_SSCANF(str, IsPrefixHex(str) ? "%x" : "%u", value) == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    bool XMLUtil::ToBool( const char* str, bool* value )
+    {
+        int ival = 0;
+        if ( ToInt( str, &ival )) {
+            *value = (ival==0) ? false : true;
+            return true;
+        }
+        static const char* TRUE_VALS[] = { "true", "True", "TRUE", 0 };
+        static const char* FALSE_VALS[] = { "false", "False", "FALSE", 0 };
+
+        for (int i = 0; TRUE_VALS[i]; ++i) {
+            if (StringEqual(str, TRUE_VALS[i])) {
+                *value = true;
+                return true;
+            }
+        }
+        for (int i = 0; FALSE_VALS[i]; ++i) {
+            if (StringEqual(str, FALSE_VALS[i])) {
+                *value = false;
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    bool XMLUtil::ToFloat( const char* str, float* value )
+    {
+        if ( TIXML_SSCANF( str, "%f", value ) == 1 ) {
+            return true;
+        }
+        return false;
+    }
+
+
+    bool XMLUtil::ToDouble( const char* str, double* value )
+    {
+        if ( TIXML_SSCANF( str, "%lf", value ) == 1 ) {
+            return true;
+        }
+        return false;
+    }
+
+
+    bool XMLUtil::ToInt64(const char* str, int64_t* value)
+    {
+        if (IsPrefixHex(str)) {
+            unsigned long long v = 0;	// horrible syntax trick to make the compiler happy about %llx
+            if (TIXML_SSCANF(str, "%llx", &v) == 1) {
+                *value = static_cast<int64_t>(v);
+                return true;
+            }
+        }
+        else {
+            long long v = 0;	// horrible syntax trick to make the compiler happy about %lld
+            if (TIXML_SSCANF(str, "%lld", &v) == 1) {
+                *value = static_cast<int64_t>(v);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    bool XMLUtil::ToUnsigned64(const char* str, uint64_t* value) {
+        unsigned long long v = 0;	// horrible syntax trick to make the compiler happy about %llu
+        if(TIXML_SSCANF(str, IsPrefixHex(str) ? "%llx" : "%llu", &v) == 1) {
