@@ -846,3 +846,158 @@ namespace tinyxml2
         }
         return clone;
     }
+
+    void XMLNode::DeleteChildren()
+    {
+        while( _firstChild ) {
+            TIXMLASSERT( _lastChild );
+            DeleteChild( _firstChild );
+        }
+        _firstChild = _lastChild = 0;
+    }
+
+
+    void XMLNode::Unlink( XMLNode* child )
+    {
+        TIXMLASSERT( child );
+        TIXMLASSERT( child->_document == _document );
+        TIXMLASSERT( child->_parent == this );
+        if ( child == _firstChild ) {
+            _firstChild = _firstChild->_next;
+        }
+        if ( child == _lastChild ) {
+            _lastChild = _lastChild->_prev;
+        }
+
+        if ( child->_prev ) {
+            child->_prev->_next = child->_next;
+        }
+        if ( child->_next ) {
+            child->_next->_prev = child->_prev;
+        }
+        child->_next = 0;
+        child->_prev = 0;
+        child->_parent = 0;
+    }
+
+
+    void XMLNode::DeleteChild( XMLNode* node )
+    {
+        TIXMLASSERT( node );
+        TIXMLASSERT( node->_document == _document );
+        TIXMLASSERT( node->_parent == this );
+        Unlink( node );
+        TIXMLASSERT(node->_prev == 0);
+        TIXMLASSERT(node->_next == 0);
+        TIXMLASSERT(node->_parent == 0);
+        DeleteNode( node );
+    }
+
+
+    XMLNode* XMLNode::InsertEndChild( XMLNode* addThis )
+    {
+        TIXMLASSERT( addThis );
+        if ( addThis->_document != _document ) {
+            TIXMLASSERT( false );
+            return 0;
+        }
+        InsertChildPreamble( addThis );
+
+        if ( _lastChild ) {
+            TIXMLASSERT( _firstChild );
+            TIXMLASSERT( _lastChild->_next == 0 );
+            _lastChild->_next = addThis;
+            addThis->_prev = _lastChild;
+            _lastChild = addThis;
+
+            addThis->_next = 0;
+        }
+        else {
+            TIXMLASSERT( _firstChild == 0 );
+            _firstChild = _lastChild = addThis;
+
+            addThis->_prev = 0;
+            addThis->_next = 0;
+        }
+        addThis->_parent = this;
+        return addThis;
+    }
+
+
+    XMLNode* XMLNode::InsertFirstChild( XMLNode* addThis )
+    {
+        TIXMLASSERT( addThis );
+        if ( addThis->_document != _document ) {
+            TIXMLASSERT( false );
+            return 0;
+        }
+        InsertChildPreamble( addThis );
+
+        if ( _firstChild ) {
+            TIXMLASSERT( _lastChild );
+            TIXMLASSERT( _firstChild->_prev == 0 );
+
+            _firstChild->_prev = addThis;
+            addThis->_next = _firstChild;
+            _firstChild = addThis;
+
+            addThis->_prev = 0;
+        }
+        else {
+            TIXMLASSERT( _lastChild == 0 );
+            _firstChild = _lastChild = addThis;
+
+            addThis->_prev = 0;
+            addThis->_next = 0;
+        }
+        addThis->_parent = this;
+        return addThis;
+    }
+
+
+    XMLNode* XMLNode::InsertAfterChild( XMLNode* afterThis, XMLNode* addThis )
+    {
+        TIXMLASSERT( addThis );
+        if ( addThis->_document != _document ) {
+            TIXMLASSERT( false );
+            return 0;
+        }
+
+        TIXMLASSERT( afterThis );
+
+        if ( afterThis->_parent != this ) {
+            TIXMLASSERT( false );
+            return 0;
+        }
+        if ( afterThis == addThis ) {
+            // Current state: BeforeThis -> AddThis -> OneAfterAddThis
+            // Now AddThis must disappear from it's location and then
+            // reappear between BeforeThis and OneAfterAddThis.
+            // So just leave it where it is.
+            return addThis;
+        }
+
+        if ( afterThis->_next == 0 ) {
+            // The last node or the only node.
+            return InsertEndChild( addThis );
+        }
+        InsertChildPreamble( addThis );
+        addThis->_prev = afterThis;
+        addThis->_next = afterThis->_next;
+        afterThis->_next->_prev = addThis;
+        afterThis->_next = addThis;
+        addThis->_parent = this;
+        return addThis;
+    }
+
+
+
+
+    const XMLElement* XMLNode::FirstChildElement( const char* name ) const
+    {
+        for( const XMLNode* node = _firstChild; node; node = node->_next ) {
+            const XMLElement* element = node->ToElementWithName( name );
+            if ( element ) {
+                return element;
+            }
+        }
