@@ -702,3 +702,147 @@ namespace tinyxml2
     bool XMLUtil::ToUnsigned64(const char* str, uint64_t* value) {
         unsigned long long v = 0;	// horrible syntax trick to make the compiler happy about %llu
         if(TIXML_SSCANF(str, IsPrefixHex(str) ? "%llx" : "%llu", &v) == 1) {
+            *value = (uint64_t)v;
+            return true;
+        }
+        return false;
+    }
+
+
+    char* XMLDocument::Identify( char* p, XMLNode** node )
+    {
+        TIXMLASSERT( node );
+        TIXMLASSERT( p );
+        char* const start = p;
+        int const startLine = _parseCurLineNum;
+        p = XMLUtil::SkipWhiteSpace( p, &_parseCurLineNum );
+        if( !*p ) {
+            *node = 0;
+            TIXMLASSERT( p );
+            return p;
+        }
+
+        // These strings define the matching patterns:
+        static const char* xmlHeader		= { "<?" };
+        static const char* commentHeader	= { "<!--" };
+        static const char* cdataHeader		= { "<![CDATA[" };
+        static const char* dtdHeader		= { "<!" };
+        static const char* elementHeader	= { "<" };	// and a header for everything else; check last.
+
+        static const int xmlHeaderLen		= 2;
+        static const int commentHeaderLen	= 4;
+        static const int cdataHeaderLen		= 9;
+        static const int dtdHeaderLen		= 2;
+        static const int elementHeaderLen	= 1;
+
+        TIXMLASSERT( sizeof( XMLComment ) == sizeof( XMLUnknown ) );		// use same memory pool
+        TIXMLASSERT( sizeof( XMLComment ) == sizeof( XMLDeclaration ) );	// use same memory pool
+        XMLNode* returnNode = 0;
+        if ( XMLUtil::StringEqual( p, xmlHeader, xmlHeaderLen ) ) {
+            returnNode = CreateUnlinkedNode<XMLDeclaration>( _commentPool );
+            returnNode->_parseLineNum = _parseCurLineNum;
+            p += xmlHeaderLen;
+        }
+        else if ( XMLUtil::StringEqual( p, commentHeader, commentHeaderLen ) ) {
+            returnNode = CreateUnlinkedNode<XMLComment>( _commentPool );
+            returnNode->_parseLineNum = _parseCurLineNum;
+            p += commentHeaderLen;
+        }
+        else if ( XMLUtil::StringEqual( p, cdataHeader, cdataHeaderLen ) ) {
+            XMLText* text = CreateUnlinkedNode<XMLText>( _textPool );
+            returnNode = text;
+            returnNode->_parseLineNum = _parseCurLineNum;
+            p += cdataHeaderLen;
+            text->SetCData( true );
+        }
+        else if ( XMLUtil::StringEqual( p, dtdHeader, dtdHeaderLen ) ) {
+            returnNode = CreateUnlinkedNode<XMLUnknown>( _commentPool );
+            returnNode->_parseLineNum = _parseCurLineNum;
+            p += dtdHeaderLen;
+        }
+        else if ( XMLUtil::StringEqual( p, elementHeader, elementHeaderLen ) ) {
+            returnNode =  CreateUnlinkedNode<XMLElement>( _elementPool );
+            returnNode->_parseLineNum = _parseCurLineNum;
+            p += elementHeaderLen;
+        }
+        else {
+            returnNode = CreateUnlinkedNode<XMLText>( _textPool );
+            returnNode->_parseLineNum = _parseCurLineNum; // Report line of first non-whitespace character
+            p = start;	// Back it up, all the text counts.
+            _parseCurLineNum = startLine;
+        }
+
+        TIXMLASSERT( returnNode );
+        TIXMLASSERT( p );
+        *node = returnNode;
+        return p;
+    }
+
+
+    bool XMLDocument::Accept( XMLVisitor* visitor ) const
+    {
+        TIXMLASSERT( visitor );
+        if ( visitor->VisitEnter( *this ) ) {
+            for ( const XMLNode* node=FirstChild(); node; node=node->NextSibling() ) {
+                if ( !node->Accept( visitor ) ) {
+                    break;
+                }
+            }
+        }
+        return visitor->VisitExit( *this );
+    }
+
+
+// --------- XMLNode ----------- //
+
+    XMLNode::XMLNode( XMLDocument* doc ) :
+            _document( doc ),
+            _parent( 0 ),
+            _value(),
+            _parseLineNum( 0 ),
+            _firstChild( 0 ), _lastChild( 0 ),
+            _prev( 0 ), _next( 0 ),
+            _userData( 0 ),
+            _memPool( 0 )
+    {
+    }
+
+
+    XMLNode::~XMLNode()
+    {
+        DeleteChildren();
+        if ( _parent ) {
+            _parent->Unlink( this );
+        }
+    }
+
+    const char* XMLNode::Value() const
+    {
+        // Edge case: XMLDocuments don't have a Value. Return null.
+        if ( this->ToDocument() )
+            return 0;
+        return _value.GetStr();
+    }
+
+    void XMLNode::SetValue( const char* str, bool staticMem )
+    {
+        if ( staticMem ) {
+            _value.SetInternedStr( str );
+        }
+        else {
+            _value.SetStr( str );
+        }
+    }
+
+    XMLNode* XMLNode::DeepClone(XMLDocument* target) const
+    {
+        XMLNode* clone = this->ShallowClone(target);
+        if (!clone) return 0;
+
+        for (const XMLNode* child = this->FirstChild(); child; child = child->NextSibling()) {
+            XMLNode* childClone = child->DeepClone(target);
+            TIXMLASSERT(childClone);
+            clone->InsertEndChild(childClone);
+        }
+        return clone;
+    }
