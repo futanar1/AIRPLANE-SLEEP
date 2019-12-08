@@ -1164,3 +1164,139 @@ namespace tinyxml2
         if (!node->ToDocument()) {
             node->_document->MarkInUse(node);
         }
+
+        MemPool* pool = node->_memPool;
+        node->~XMLNode();
+        pool->Free( node );
+    }
+
+    void XMLNode::InsertChildPreamble( XMLNode* insertThis ) const
+    {
+        TIXMLASSERT( insertThis );
+        TIXMLASSERT( insertThis->_document == _document );
+
+        if (insertThis->_parent) {
+            insertThis->_parent->Unlink( insertThis );
+        }
+        else {
+            insertThis->_document->MarkInUse(insertThis);
+            insertThis->_memPool->SetTracked();
+        }
+    }
+
+    const XMLElement* XMLNode::ToElementWithName( const char* name ) const
+    {
+        const XMLElement* element = this->ToElement();
+        if ( element == 0 ) {
+            return 0;
+        }
+        if ( name == 0 ) {
+            return element;
+        }
+        if ( XMLUtil::StringEqual( element->Name(), name ) ) {
+            return element;
+        }
+        return 0;
+    }
+
+// --------- XMLText ---------- //
+    char* XMLText::ParseDeep( char* p, StrPair*, int* curLineNumPtr )
+    {
+        if ( this->CData() ) {
+            p = _value.ParseText( p, "]]>", StrPair::NEEDS_NEWLINE_NORMALIZATION, curLineNumPtr );
+            if ( !p ) {
+                _document->SetError( XML_ERROR_PARSING_CDATA, _parseLineNum, 0 );
+            }
+            return p;
+        }
+        else {
+            int flags = _document->ProcessEntities() ? StrPair::TEXT_ELEMENT : StrPair::TEXT_ELEMENT_LEAVE_ENTITIES;
+            if ( _document->WhitespaceMode() == COLLAPSE_WHITESPACE ) {
+                flags |= StrPair::NEEDS_WHITESPACE_COLLAPSING;
+            }
+
+            p = _value.ParseText( p, "<", flags, curLineNumPtr );
+            if ( p && *p ) {
+                return p-1;
+            }
+            if ( !p ) {
+                _document->SetError( XML_ERROR_PARSING_TEXT, _parseLineNum, 0 );
+            }
+        }
+        return 0;
+    }
+
+
+    XMLNode* XMLText::ShallowClone( XMLDocument* doc ) const
+    {
+        if ( !doc ) {
+            doc = _document;
+        }
+        XMLText* text = doc->NewText( Value() );	// fixme: this will always allocate memory. Intern?
+        text->SetCData( this->CData() );
+        return text;
+    }
+
+
+    bool XMLText::ShallowEqual( const XMLNode* compare ) const
+    {
+        TIXMLASSERT( compare );
+        const XMLText* text = compare->ToText();
+        return ( text && XMLUtil::StringEqual( text->Value(), Value() ) );
+    }
+
+
+    bool XMLText::Accept( XMLVisitor* visitor ) const
+    {
+        TIXMLASSERT( visitor );
+        return visitor->Visit( *this );
+    }
+
+
+// --------- XMLComment ---------- //
+
+    XMLComment::XMLComment( XMLDocument* doc ) : XMLNode( doc )
+    {
+    }
+
+
+    XMLComment::~XMLComment()
+    {
+    }
+
+
+    char* XMLComment::ParseDeep( char* p, StrPair*, int* curLineNumPtr )
+    {
+        // Comment parses as text.
+        p = _value.ParseText( p, "-->", StrPair::COMMENT, curLineNumPtr );
+        if ( p == 0 ) {
+            _document->SetError( XML_ERROR_PARSING_COMMENT, _parseLineNum, 0 );
+        }
+        return p;
+    }
+
+
+    XMLNode* XMLComment::ShallowClone( XMLDocument* doc ) const
+    {
+        if ( !doc ) {
+            doc = _document;
+        }
+        XMLComment* comment = doc->NewComment( Value() );	// fixme: this will always allocate memory. Intern?
+        return comment;
+    }
+
+
+    bool XMLComment::ShallowEqual( const XMLNode* compare ) const
+    {
+        TIXMLASSERT( compare );
+        const XMLComment* comment = compare->ToComment();
+        return ( comment && XMLUtil::StringEqual( comment->Value(), Value() ));
+    }
+
+
+    bool XMLComment::Accept( XMLVisitor* visitor ) const
+    {
+        TIXMLASSERT( visitor );
+        return visitor->Visit( *this );
+    }
+
