@@ -1300,3 +1300,133 @@ namespace tinyxml2
         return visitor->Visit( *this );
     }
 
+
+// --------- XMLDeclaration ---------- //
+
+    XMLDeclaration::XMLDeclaration( XMLDocument* doc ) : XMLNode( doc )
+    {
+    }
+
+
+    XMLDeclaration::~XMLDeclaration()
+    {
+        //printf( "~XMLDeclaration\n" );
+    }
+
+
+    char* XMLDeclaration::ParseDeep( char* p, StrPair*, int* curLineNumPtr )
+    {
+        // Declaration parses as text.
+        p = _value.ParseText( p, "?>", StrPair::NEEDS_NEWLINE_NORMALIZATION, curLineNumPtr );
+        if ( p == 0 ) {
+            _document->SetError( XML_ERROR_PARSING_DECLARATION, _parseLineNum, 0 );
+        }
+        return p;
+    }
+
+
+    XMLNode* XMLDeclaration::ShallowClone( XMLDocument* doc ) const
+    {
+        if ( !doc ) {
+            doc = _document;
+        }
+        XMLDeclaration* dec = doc->NewDeclaration( Value() );	// fixme: this will always allocate memory. Intern?
+        return dec;
+    }
+
+
+    bool XMLDeclaration::ShallowEqual( const XMLNode* compare ) const
+    {
+        TIXMLASSERT( compare );
+        const XMLDeclaration* declaration = compare->ToDeclaration();
+        return ( declaration && XMLUtil::StringEqual( declaration->Value(), Value() ));
+    }
+
+
+
+    bool XMLDeclaration::Accept( XMLVisitor* visitor ) const
+    {
+        TIXMLASSERT( visitor );
+        return visitor->Visit( *this );
+    }
+
+// --------- XMLUnknown ---------- //
+
+    XMLUnknown::XMLUnknown( XMLDocument* doc ) : XMLNode( doc )
+    {
+    }
+
+
+    XMLUnknown::~XMLUnknown()
+    {
+    }
+
+
+    char* XMLUnknown::ParseDeep( char* p, StrPair*, int* curLineNumPtr )
+    {
+        // Unknown parses as text.
+        p = _value.ParseText( p, ">", StrPair::NEEDS_NEWLINE_NORMALIZATION, curLineNumPtr );
+        if ( !p ) {
+            _document->SetError( XML_ERROR_PARSING_UNKNOWN, _parseLineNum, 0 );
+        }
+        return p;
+    }
+
+
+    XMLNode* XMLUnknown::ShallowClone( XMLDocument* doc ) const
+    {
+        if ( !doc ) {
+            doc = _document;
+        }
+        XMLUnknown* text = doc->NewUnknown( Value() );	// fixme: this will always allocate memory. Intern?
+        return text;
+    }
+
+
+    bool XMLUnknown::ShallowEqual( const XMLNode* compare ) const
+    {
+        TIXMLASSERT( compare );
+        const XMLUnknown* unknown = compare->ToUnknown();
+        return ( unknown && XMLUtil::StringEqual( unknown->Value(), Value() ));
+    }
+
+
+    bool XMLUnknown::Accept( XMLVisitor* visitor ) const
+    {
+        TIXMLASSERT( visitor );
+        return visitor->Visit( *this );
+    }
+
+// --------- XMLAttribute ---------- //
+
+    const char* XMLAttribute::Name() const
+    {
+        return _name.GetStr();
+    }
+
+    const char* XMLAttribute::Value() const
+    {
+        return _value.GetStr();
+    }
+
+    char* XMLAttribute::ParseDeep( char* p, bool processEntities, int* curLineNumPtr )
+    {
+        // Parse using the name rules: bug fix, was using ParseText before
+        p = _name.ParseName( p );
+        if ( !p || !*p ) {
+            return 0;
+        }
+
+        // Skip white space before =
+        p = XMLUtil::SkipWhiteSpace( p, curLineNumPtr );
+        if ( *p != '=' ) {
+            return 0;
+        }
+
+        ++p;	// move up to opening quote
+        p = XMLUtil::SkipWhiteSpace( p, curLineNumPtr );
+        if ( *p != '\"' && *p != '\'' ) {
+            return 0;
+        }
+
+        const char endTag[2] = { *p, 0 };
