@@ -1430,3 +1430,166 @@ namespace tinyxml2
         }
 
         const char endTag[2] = { *p, 0 };
+        ++p;	// move past opening quote
+
+        p = _value.ParseText( p, endTag, processEntities ? StrPair::ATTRIBUTE_VALUE : StrPair::ATTRIBUTE_VALUE_LEAVE_ENTITIES, curLineNumPtr );
+        return p;
+    }
+
+
+    void XMLAttribute::SetName( const char* n )
+    {
+        _name.SetStr( n );
+    }
+
+
+    XMLError XMLAttribute::QueryIntValue( int* value ) const
+    {
+        if ( XMLUtil::ToInt( Value(), value )) {
+            return XML_SUCCESS;
+        }
+        return XML_WRONG_ATTRIBUTE_TYPE;
+    }
+
+
+    XMLError XMLAttribute::QueryUnsignedValue( unsigned int* value ) const
+    {
+        if ( XMLUtil::ToUnsigned( Value(), value )) {
+            return XML_SUCCESS;
+        }
+        return XML_WRONG_ATTRIBUTE_TYPE;
+    }
+
+
+    XMLError XMLAttribute::QueryInt64Value(int64_t* value) const
+    {
+        if (XMLUtil::ToInt64(Value(), value)) {
+            return XML_SUCCESS;
+        }
+        return XML_WRONG_ATTRIBUTE_TYPE;
+    }
+
+
+    XMLError XMLAttribute::QueryUnsigned64Value(uint64_t* value) const
+    {
+        if(XMLUtil::ToUnsigned64(Value(), value)) {
+            return XML_SUCCESS;
+        }
+        return XML_WRONG_ATTRIBUTE_TYPE;
+    }
+
+
+    XMLError XMLAttribute::QueryBoolValue( bool* value ) const
+    {
+        if ( XMLUtil::ToBool( Value(), value )) {
+            return XML_SUCCESS;
+        }
+        return XML_WRONG_ATTRIBUTE_TYPE;
+    }
+
+
+    XMLError XMLAttribute::QueryFloatValue( float* value ) const
+    {
+        if ( XMLUtil::ToFloat( Value(), value )) {
+            return XML_SUCCESS;
+        }
+        return XML_WRONG_ATTRIBUTE_TYPE;
+    }
+
+
+    XMLError XMLAttribute::QueryDoubleValue( double* value ) const
+    {
+        if ( XMLUtil::ToDouble( Value(), value )) {
+            return XML_SUCCESS;
+        }
+        return XML_WRONG_ATTRIBUTE_TYPE;
+    }
+
+
+    void XMLAttribute::SetAttribute( const char* v )
+    {
+        _value.SetStr( v );
+    }
+
+
+    void XMLAttribute::SetAttribute( int v )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( v, buf, BUF_SIZE );
+        _value.SetStr( buf );
+    }
+
+
+    void XMLAttribute::SetAttribute( unsigned v )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( v, buf, BUF_SIZE );
+        _value.SetStr( buf );
+    }
+
+
+    void XMLAttribute::SetAttribute(int64_t v)
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr(v, buf, BUF_SIZE);
+        _value.SetStr(buf);
+    }
+
+    void XMLAttribute::SetAttribute(uint64_t v)
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr(v, buf, BUF_SIZE);
+        _value.SetStr(buf);
+    }
+
+
+    void XMLAttribute::SetAttribute( bool v )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( v, buf, BUF_SIZE );
+        _value.SetStr( buf );
+    }
+
+    void XMLAttribute::SetAttribute( double v )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( v, buf, BUF_SIZE );
+        _value.SetStr( buf );
+    }
+
+    void XMLAttribute::SetAttribute( float v )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( v, buf, BUF_SIZE );
+        _value.SetStr( buf );
+    }
+
+
+// --------- XMLElement ---------- //
+    XMLElement::XMLElement( XMLDocument* doc ) : XMLNode( doc ),
+                                                 _closingType( OPEN ),
+                                                 _rootAttribute( 0 )
+    {
+    }
+
+
+    XMLElement::~XMLElement()
+    {
+        while( _rootAttribute ) {
+            XMLAttribute* next = _rootAttribute->_next;
+            DeleteAttribute( _rootAttribute );
+            _rootAttribute = next;
+        }
+    }
+
+
+    const XMLAttribute* XMLElement::FindAttribute( const char* name ) const
+    {
+        for( XMLAttribute* a = _rootAttribute; a; a = a->_next ) {
+            if ( XMLUtil::StringEqual( a->Name(), name ) ) {
+                return a;
+            }
+        }
+        return 0;
+    }
+
