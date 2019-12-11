@@ -2020,3 +2020,126 @@ namespace tinyxml2
 
     XMLText* XMLElement::InsertNewText(const char* text)
     {
+        XMLText* node = _document->NewText(text);
+        return InsertEndChild(node) ? node : 0;
+    }
+
+    XMLDeclaration* XMLElement::InsertNewDeclaration(const char* text)
+    {
+        XMLDeclaration* node = _document->NewDeclaration(text);
+        return InsertEndChild(node) ? node : 0;
+    }
+
+    XMLUnknown* XMLElement::InsertNewUnknown(const char* text)
+    {
+        XMLUnknown* node = _document->NewUnknown(text);
+        return InsertEndChild(node) ? node : 0;
+    }
+
+
+
+//
+//	<ele></ele>
+//	<ele>foo<b>bar</b></ele>
+//
+    char* XMLElement::ParseDeep( char* p, StrPair* parentEndTag, int* curLineNumPtr )
+    {
+        // Read the element name.
+        p = XMLUtil::SkipWhiteSpace( p, curLineNumPtr );
+
+        // The closing element is the </element> form. It is
+        // parsed just like a regular element then deleted from
+        // the DOM.
+        if ( *p == '/' ) {
+            _closingType = CLOSING;
+            ++p;
+        }
+
+        p = _value.ParseName( p );
+        if ( _value.Empty() ) {
+            return 0;
+        }
+
+        p = ParseAttributes( p, curLineNumPtr );
+        if ( !p || !*p || _closingType != OPEN ) {
+            return p;
+        }
+
+        p = XMLNode::ParseDeep( p, parentEndTag, curLineNumPtr );
+        return p;
+    }
+
+
+
+    XMLNode* XMLElement::ShallowClone( XMLDocument* doc ) const
+    {
+        if ( !doc ) {
+            doc = _document;
+        }
+        XMLElement* element = doc->NewElement( Value() );					// fixme: this will always allocate memory. Intern?
+        for( const XMLAttribute* a=FirstAttribute(); a; a=a->Next() ) {
+            element->SetAttribute( a->Name(), a->Value() );					// fixme: this will always allocate memory. Intern?
+        }
+        return element;
+    }
+
+
+    bool XMLElement::ShallowEqual( const XMLNode* compare ) const
+    {
+        TIXMLASSERT( compare );
+        const XMLElement* other = compare->ToElement();
+        if ( other && XMLUtil::StringEqual( other->Name(), Name() )) {
+
+            const XMLAttribute* a=FirstAttribute();
+            const XMLAttribute* b=other->FirstAttribute();
+
+            while ( a && b ) {
+                if ( !XMLUtil::StringEqual( a->Value(), b->Value() ) ) {
+                    return false;
+                }
+                a = a->Next();
+                b = b->Next();
+            }
+            if ( a || b ) {
+                // different count
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    bool XMLElement::Accept( XMLVisitor* visitor ) const
+    {
+        TIXMLASSERT( visitor );
+        if ( visitor->VisitEnter( *this, _rootAttribute ) ) {
+            for ( const XMLNode* node=FirstChild(); node; node=node->NextSibling() ) {
+                if ( !node->Accept( visitor ) ) {
+                    break;
+                }
+            }
+        }
+        return visitor->VisitExit( *this );
+    }
+
+
+// --------- XMLDocument ----------- //
+
+// Warning: List must match 'enum XMLError'
+    const char* XMLDocument::_errorNames[XML_ERROR_COUNT] = {
+            "XML_SUCCESS",
+            "XML_NO_ATTRIBUTE",
+            "XML_WRONG_ATTRIBUTE_TYPE",
+            "XML_ERROR_FILE_NOT_FOUND",
+            "XML_ERROR_FILE_COULD_NOT_BE_OPENED",
+            "XML_ERROR_FILE_READ_ERROR",
+            "XML_ERROR_PARSING_ELEMENT",
+            "XML_ERROR_PARSING_ATTRIBUTE",
+            "XML_ERROR_PARSING_TEXT",
+            "XML_ERROR_PARSING_CDATA",
+            "XML_ERROR_PARSING_COMMENT",
+            "XML_ERROR_PARSING_DECLARATION",
+            "XML_ERROR_PARSING_UNKNOWN",
+            "XML_ERROR_EMPTY_DOCUMENT",
+            "XML_ERROR_MISMATCHED_ELEMENT",
