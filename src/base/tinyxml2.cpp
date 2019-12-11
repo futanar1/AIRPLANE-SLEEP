@@ -1888,3 +1888,135 @@ namespace tinyxml2
              last = attrib, attrib = attrib->_next ) {
             if ( XMLUtil::StringEqual( attrib->Name(), name ) ) {
                 break;
+            }
+        }
+        if ( !attrib ) {
+            attrib = CreateAttribute();
+            TIXMLASSERT( attrib );
+            if ( last ) {
+                TIXMLASSERT( last->_next == 0 );
+                last->_next = attrib;
+            }
+            else {
+                TIXMLASSERT( _rootAttribute == 0 );
+                _rootAttribute = attrib;
+            }
+            attrib->SetName( name );
+        }
+        return attrib;
+    }
+
+
+    void XMLElement::DeleteAttribute( const char* name )
+    {
+        XMLAttribute* prev = 0;
+        for( XMLAttribute* a=_rootAttribute; a; a=a->_next ) {
+            if ( XMLUtil::StringEqual( name, a->Name() ) ) {
+                if ( prev ) {
+                    prev->_next = a->_next;
+                }
+                else {
+                    _rootAttribute = a->_next;
+                }
+                DeleteAttribute( a );
+                break;
+            }
+            prev = a;
+        }
+    }
+
+
+    char* XMLElement::ParseAttributes( char* p, int* curLineNumPtr )
+    {
+        XMLAttribute* prevAttribute = 0;
+
+        // Read the attributes.
+        while( p ) {
+            p = XMLUtil::SkipWhiteSpace( p, curLineNumPtr );
+            if ( !(*p) ) {
+                _document->SetError( XML_ERROR_PARSING_ELEMENT, _parseLineNum, "XMLElement name=%s", Name() );
+                return 0;
+            }
+
+            // attribute.
+            if (XMLUtil::IsNameStartChar( (unsigned char) *p ) ) {
+                XMLAttribute* attrib = CreateAttribute();
+                TIXMLASSERT( attrib );
+                attrib->_parseLineNum = _document->_parseCurLineNum;
+
+                const int attrLineNum = attrib->_parseLineNum;
+
+                p = attrib->ParseDeep( p, _document->ProcessEntities(), curLineNumPtr );
+                if ( !p || Attribute( attrib->Name() ) ) {
+                    DeleteAttribute( attrib );
+                    _document->SetError( XML_ERROR_PARSING_ATTRIBUTE, attrLineNum, "XMLElement name=%s", Name() );
+                    return 0;
+                }
+                // There is a minor bug here: if the attribute in the source xml
+                // document is duplicated, it will not be detected and the
+                // attribute will be doubly added. However, tracking the 'prevAttribute'
+                // avoids re-scanning the attribute list. Preferring performance for
+                // now, may reconsider in the future.
+                if ( prevAttribute ) {
+                    TIXMLASSERT( prevAttribute->_next == 0 );
+                    prevAttribute->_next = attrib;
+                }
+                else {
+                    TIXMLASSERT( _rootAttribute == 0 );
+                    _rootAttribute = attrib;
+                }
+                prevAttribute = attrib;
+            }
+                // end of the tag
+            else if ( *p == '>' ) {
+                ++p;
+                break;
+            }
+                // end of the tag
+            else if ( *p == '/' && *(p+1) == '>' ) {
+                _closingType = CLOSED;
+                return p+2;	// done; sealed element.
+            }
+            else {
+                _document->SetError( XML_ERROR_PARSING_ELEMENT, _parseLineNum, 0 );
+                return 0;
+            }
+        }
+        return p;
+    }
+
+    void XMLElement::DeleteAttribute( XMLAttribute* attribute )
+    {
+        if ( attribute == 0 ) {
+            return;
+        }
+        MemPool* pool = attribute->_memPool;
+        attribute->~XMLAttribute();
+        pool->Free( attribute );
+    }
+
+    XMLAttribute* XMLElement::CreateAttribute()
+    {
+        TIXMLASSERT( sizeof( XMLAttribute ) == _document->_attributePool.ItemSize() );
+        XMLAttribute* attrib = new (_document->_attributePool.Alloc() ) XMLAttribute();
+        TIXMLASSERT( attrib );
+        attrib->_memPool = &_document->_attributePool;
+        attrib->_memPool->SetTracked();
+        return attrib;
+    }
+
+
+    XMLElement* XMLElement::InsertNewChildElement(const char* name)
+    {
+        XMLElement* node = _document->NewElement(name);
+        return InsertEndChild(node) ? node : 0;
+    }
+
+    XMLComment* XMLElement::InsertNewComment(const char* comment)
+    {
+        XMLComment* node = _document->NewComment(comment);
+        return InsertEndChild(node) ? node : 0;
+    }
+
+    XMLText* XMLElement::InsertNewText(const char* text)
+    {
