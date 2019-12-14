@@ -2143,3 +2143,159 @@ namespace tinyxml2
             "XML_ERROR_PARSING_UNKNOWN",
             "XML_ERROR_EMPTY_DOCUMENT",
             "XML_ERROR_MISMATCHED_ELEMENT",
+            "XML_ERROR_PARSING",
+            "XML_CAN_NOT_CONVERT_TEXT",
+            "XML_NO_TEXT_NODE",
+            "XML_ELEMENT_DEPTH_EXCEEDED"
+    };
+
+
+    XMLDocument::XMLDocument( bool processEntities, Whitespace whitespaceMode ) :
+            XMLNode( 0 ),
+            _writeBOM( false ),
+            _processEntities( processEntities ),
+            _errorID(XML_SUCCESS),
+            _whitespaceMode( whitespaceMode ),
+            _errorStr(),
+            _errorLineNum( 0 ),
+            _charBuffer( 0 ),
+            _parseCurLineNum( 0 ),
+            _parsingDepth(0),
+            _unlinked(),
+            _elementPool(),
+            _attributePool(),
+            _textPool(),
+            _commentPool()
+    {
+        // avoid VC++ C4355 warning about 'this' in initializer list (C4355 is off by default in VS2012+)
+        _document = this;
+    }
+
+
+    XMLDocument::~XMLDocument()
+    {
+        Clear();
+    }
+
+
+    void XMLDocument::MarkInUse(const XMLNode* const node)
+    {
+        TIXMLASSERT(node);
+        TIXMLASSERT(node->_parent == 0);
+
+        for (int i = 0; i < _unlinked.Size(); ++i) {
+            if (node == _unlinked[i]) {
+                _unlinked.SwapRemove(i);
+                break;
+            }
+        }
+    }
+
+    void XMLDocument::Clear()
+    {
+        DeleteChildren();
+        while( _unlinked.Size()) {
+            DeleteNode(_unlinked[0]);	// Will remove from _unlinked as part of delete.
+        }
+
+#ifdef TINYXML2_DEBUG
+        const bool hadError = Error();
+#endif
+        ClearError();
+
+        delete [] _charBuffer;
+        _charBuffer = 0;
+        _parsingDepth = 0;
+
+#if 0
+        _textPool.Trace( "text" );
+    _elementPool.Trace( "element" );
+    _commentPool.Trace( "comment" );
+    _attributePool.Trace( "attribute" );
+#endif
+
+#ifdef TINYXML2_DEBUG
+        if ( !hadError ) {
+        TIXMLASSERT( _elementPool.CurrentAllocs()   == _elementPool.Untracked() );
+        TIXMLASSERT( _attributePool.CurrentAllocs() == _attributePool.Untracked() );
+        TIXMLASSERT( _textPool.CurrentAllocs()      == _textPool.Untracked() );
+        TIXMLASSERT( _commentPool.CurrentAllocs()   == _commentPool.Untracked() );
+    }
+#endif
+    }
+
+
+    void XMLDocument::DeepCopy(XMLDocument* target) const
+    {
+        TIXMLASSERT(target);
+        if (target == this) {
+            return; // technically success - a no-op.
+        }
+
+        target->Clear();
+        for (const XMLNode* node = this->FirstChild(); node; node = node->NextSibling()) {
+            target->InsertEndChild(node->DeepClone(target));
+        }
+    }
+
+    XMLElement* XMLDocument::NewElement( const char* name )
+    {
+        XMLElement* ele = CreateUnlinkedNode<XMLElement>( _elementPool );
+        ele->SetName( name );
+        return ele;
+    }
+
+
+    XMLComment* XMLDocument::NewComment( const char* str )
+    {
+        XMLComment* comment = CreateUnlinkedNode<XMLComment>( _commentPool );
+        comment->SetValue( str );
+        return comment;
+    }
+
+
+    XMLText* XMLDocument::NewText( const char* str )
+    {
+        XMLText* text = CreateUnlinkedNode<XMLText>( _textPool );
+        text->SetValue( str );
+        return text;
+    }
+
+
+    XMLDeclaration* XMLDocument::NewDeclaration( const char* str )
+    {
+        XMLDeclaration* dec = CreateUnlinkedNode<XMLDeclaration>( _commentPool );
+        dec->SetValue( str ? str : "xml version=\"1.0\" encoding=\"UTF-8\"" );
+        return dec;
+    }
+
+
+    XMLUnknown* XMLDocument::NewUnknown( const char* str )
+    {
+        XMLUnknown* unk = CreateUnlinkedNode<XMLUnknown>( _commentPool );
+        unk->SetValue( str );
+        return unk;
+    }
+
+    static FILE* callfopen( const char* filepath, const char* mode )
+    {
+        TIXMLASSERT( filepath );
+        TIXMLASSERT( mode );
+#if defined(_MSC_VER) && (_MSC_VER >= 1400 ) && (!defined WINCE)
+        FILE* fp = 0;
+    const errno_t err = fopen_s( &fp, filepath, mode );
+    if ( err ) {
+        return 0;
+    }
+#else
+        FILE* fp = fopen( filepath, mode );
+#endif
+        return fp;
+    }
+
+    void XMLDocument::DeleteNode( XMLNode* node )	{
+        TIXMLASSERT( node );
+        TIXMLASSERT(node->_document == this );
+        if (node->_parent) {
+            node->_parent->DeleteChild( node );
+        }
