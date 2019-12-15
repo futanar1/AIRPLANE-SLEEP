@@ -2299,3 +2299,151 @@ namespace tinyxml2
         if (node->_parent) {
             node->_parent->DeleteChild( node );
         }
+        else {
+            // Isn't in the tree.
+            // Use the parent delete.
+            // Also, we need to mark it tracked: we 'know'
+            // it was never used.
+            node->_memPool->SetTracked();
+            // Call the static XMLNode version:
+            XMLNode::DeleteNode(node);
+        }
+    }
+
+
+    XMLError XMLDocument::LoadFile( const char* filename )
+    {
+        if ( !filename ) {
+            TIXMLASSERT( false );
+            SetError( XML_ERROR_FILE_COULD_NOT_BE_OPENED, 0, "filename=<null>" );
+            return _errorID;
+        }
+
+        Clear();
+        FILE* fp = callfopen( filename, "rb" );
+        if ( !fp ) {
+            SetError( XML_ERROR_FILE_NOT_FOUND, 0, "filename=%s", filename );
+            return _errorID;
+        }
+        LoadFile( fp );
+        fclose( fp );
+        return _errorID;
+    }
+
+    XMLError XMLDocument::LoadFile( FILE* fp )
+    {
+        Clear();
+
+        TIXML_FSEEK( fp, 0, SEEK_SET );
+        if ( fgetc( fp ) == EOF && ferror( fp ) != 0 ) {
+            SetError( XML_ERROR_FILE_READ_ERROR, 0, 0 );
+            return _errorID;
+        }
+
+        TIXML_FSEEK( fp, 0, SEEK_END );
+
+        unsigned long long filelength;
+        {
+            const long long fileLengthSigned = TIXML_FTELL( fp );
+            TIXML_FSEEK( fp, 0, SEEK_SET );
+            if ( fileLengthSigned == -1L ) {
+                SetError( XML_ERROR_FILE_READ_ERROR, 0, 0 );
+                return _errorID;
+            }
+            TIXMLASSERT( fileLengthSigned >= 0 );
+            filelength = static_cast<unsigned long long>(fileLengthSigned);
+        }
+
+        const size_t maxSizeT = static_cast<size_t>(-1);
+        // We'll do the comparison as an unsigned long long, because that's guaranteed to be at
+        // least 8 bytes, even on a 32-bit platform.
+        if ( filelength >= static_cast<unsigned long long>(maxSizeT) ) {
+            // Cannot handle files which won't fit in buffer together with null terminator
+            SetError( XML_ERROR_FILE_READ_ERROR, 0, 0 );
+            return _errorID;
+        }
+
+        if ( filelength == 0 ) {
+            SetError( XML_ERROR_EMPTY_DOCUMENT, 0, 0 );
+            return _errorID;
+        }
+
+        const size_t size = static_cast<size_t>(filelength);
+        TIXMLASSERT( _charBuffer == 0 );
+        _charBuffer = new char[size+1];
+        const size_t read = fread( _charBuffer, 1, size, fp );
+        if ( read != size ) {
+            SetError( XML_ERROR_FILE_READ_ERROR, 0, 0 );
+            return _errorID;
+        }
+
+        _charBuffer[size] = 0;
+
+        Parse();
+        return _errorID;
+    }
+
+
+    XMLError XMLDocument::SaveFile( const char* filename, bool compact )
+    {
+        if ( !filename ) {
+            TIXMLASSERT( false );
+            SetError( XML_ERROR_FILE_COULD_NOT_BE_OPENED, 0, "filename=<null>" );
+            return _errorID;
+        }
+
+        FILE* fp = callfopen( filename, "w" );
+        if ( !fp ) {
+            SetError( XML_ERROR_FILE_COULD_NOT_BE_OPENED, 0, "filename=%s", filename );
+            return _errorID;
+        }
+        SaveFile(fp, compact);
+        fclose( fp );
+        return _errorID;
+    }
+
+
+    XMLError XMLDocument::SaveFile( FILE* fp, bool compact )
+    {
+        // Clear any error from the last save, otherwise it will get reported
+        // for *this* call.
+        ClearError();
+        XMLPrinter stream( fp, compact );
+        Print( &stream );
+        return _errorID;
+    }
+
+
+    XMLError XMLDocument::Parse( const char* p, size_t len )
+    {
+        Clear();
+
+        if ( len == 0 || !p || !*p ) {
+            SetError( XML_ERROR_EMPTY_DOCUMENT, 0, 0 );
+            return _errorID;
+        }
+        if ( len == static_cast<size_t>(-1) ) {
+            len = strlen( p );
+        }
+        TIXMLASSERT( _charBuffer == 0 );
+        _charBuffer = new char[ len+1 ];
+        memcpy( _charBuffer, p, len );
+        _charBuffer[len] = 0;
+
+        Parse();
+        if ( Error() ) {
+            // clean up now essentially dangling memory.
+            // and the parse fail can put objects in the
+            // pools that are dead and inaccessible.
+            DeleteChildren();
+            _elementPool.Clear();
+            _attributePool.Clear();
+            _textPool.Clear();
+            _commentPool.Clear();
+        }
+        return _errorID;
+    }
+
+
+    void XMLDocument::Print( XMLPrinter* streamer ) const
+    {
