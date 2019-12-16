@@ -2447,3 +2447,131 @@ namespace tinyxml2
 
     void XMLDocument::Print( XMLPrinter* streamer ) const
     {
+        if ( streamer ) {
+            Accept( streamer );
+        }
+        else {
+            XMLPrinter stdoutStreamer( stdout );
+            Accept( &stdoutStreamer );
+        }
+    }
+
+
+    void XMLDocument::ClearError() {
+        _errorID = XML_SUCCESS;
+        _errorLineNum = 0;
+        _errorStr.Reset();
+    }
+
+
+    void XMLDocument::SetError( XMLError error, int lineNum, const char* format, ... )
+    {
+        TIXMLASSERT( error >= 0 && error < XML_ERROR_COUNT );
+        _errorID = error;
+        _errorLineNum = lineNum;
+        _errorStr.Reset();
+
+        const size_t BUFFER_SIZE = 1000;
+        char* buffer = new char[BUFFER_SIZE];
+
+        TIXMLASSERT(sizeof(error) <= sizeof(int));
+        TIXML_SNPRINTF(buffer, BUFFER_SIZE, "Error=%s ErrorID=%d (0x%x) Line number=%d", ErrorIDToName(error), int(error), int(error), lineNum);
+
+        if (format) {
+            size_t len = strlen(buffer);
+            TIXML_SNPRINTF(buffer + len, BUFFER_SIZE - len, ": ");
+            len = strlen(buffer);
+
+            va_list va;
+            va_start(va, format);
+            TIXML_VSNPRINTF(buffer + len, BUFFER_SIZE - len, format, va);
+            va_end(va);
+        }
+        _errorStr.SetStr(buffer);
+        delete[] buffer;
+    }
+
+
+/*static*/ const char* XMLDocument::ErrorIDToName(XMLError errorID)
+    {
+        TIXMLASSERT( errorID >= 0 && errorID < XML_ERROR_COUNT );
+        const char* errorName = _errorNames[errorID];
+        TIXMLASSERT( errorName && errorName[0] );
+        return errorName;
+    }
+
+    const char* XMLDocument::ErrorStr() const
+    {
+        return _errorStr.Empty() ? "" : _errorStr.GetStr();
+    }
+
+
+    void XMLDocument::PrintError() const
+    {
+        printf("%s\n", ErrorStr());
+    }
+
+    const char* XMLDocument::ErrorName() const
+    {
+        return ErrorIDToName(_errorID);
+    }
+
+    void XMLDocument::Parse()
+    {
+        TIXMLASSERT( NoChildren() ); // Clear() must have been called previously
+        TIXMLASSERT( _charBuffer );
+        _parseCurLineNum = 1;
+        _parseLineNum = 1;
+        char* p = _charBuffer;
+        p = XMLUtil::SkipWhiteSpace( p, &_parseCurLineNum );
+        p = const_cast<char*>( XMLUtil::ReadBOM( p, &_writeBOM ) );
+        if ( !*p ) {
+            SetError( XML_ERROR_EMPTY_DOCUMENT, 0, 0 );
+            return;
+        }
+        ParseDeep(p, 0, &_parseCurLineNum );
+    }
+
+    void XMLDocument::PushDepth()
+    {
+        _parsingDepth++;
+        if (_parsingDepth == TINYXML2_MAX_ELEMENT_DEPTH) {
+            SetError(XML_ELEMENT_DEPTH_EXCEEDED, _parseCurLineNum, "Element nesting is too deep." );
+        }
+    }
+
+    void XMLDocument::PopDepth()
+    {
+        TIXMLASSERT(_parsingDepth > 0);
+        --_parsingDepth;
+    }
+
+    XMLPrinter::XMLPrinter( FILE* file, bool compact, int depth ) :
+            _elementJustOpened( false ),
+            _stack(),
+            _firstElement( true ),
+            _fp( file ),
+            _depth( depth ),
+            _textDepth( -1 ),
+            _processEntities( true ),
+            _compactMode( compact ),
+            _buffer()
+    {
+        for( int i=0; i<ENTITY_RANGE; ++i ) {
+            _entityFlag[i] = false;
+            _restrictedEntityFlag[i] = false;
+        }
+        for( int i=0; i<NUM_ENTITIES; ++i ) {
+            const char entityValue = entities[i].value;
+            const unsigned char flagIndex = static_cast<unsigned char>(entityValue);
+            TIXMLASSERT( flagIndex < ENTITY_RANGE );
+            _entityFlag[flagIndex] = true;
+        }
+        _restrictedEntityFlag[static_cast<unsigned char>('&')] = true;
+        _restrictedEntityFlag[static_cast<unsigned char>('<')] = true;
+        _restrictedEntityFlag[static_cast<unsigned char>('>')] = true;	// not required, but consistency is nice
+        _buffer.Push( 0 );
+    }
+
+
+    void XMLPrinter::Print( const char* format, ... )
