@@ -2575,3 +2575,145 @@ namespace tinyxml2
 
 
     void XMLPrinter::Print( const char* format, ... )
+    {
+        va_list     va;
+        va_start( va, format );
+
+        if ( _fp ) {
+            vfprintf( _fp, format, va );
+        }
+        else {
+            const int len = TIXML_VSCPRINTF( format, va );
+            // Close out and re-start the va-args
+            va_end( va );
+            TIXMLASSERT( len >= 0 );
+            va_start( va, format );
+            TIXMLASSERT( _buffer.Size() > 0 && _buffer[_buffer.Size() - 1] == 0 );
+            char* p = _buffer.PushArr( len ) - 1;	// back up over the null terminator.
+            TIXML_VSNPRINTF( p, len+1, format, va );
+        }
+        va_end( va );
+    }
+
+
+    void XMLPrinter::Write( const char* data, size_t size )
+    {
+        if ( _fp ) {
+            fwrite ( data , sizeof(char), size, _fp);
+        }
+        else {
+            char* p = _buffer.PushArr( static_cast<int>(size) ) - 1;   // back up over the null terminator.
+            memcpy( p, data, size );
+            p[size] = 0;
+        }
+    }
+
+
+    void XMLPrinter::Putc( char ch )
+    {
+        if ( _fp ) {
+            fputc ( ch, _fp);
+        }
+        else {
+            char* p = _buffer.PushArr( sizeof(char) ) - 1;   // back up over the null terminator.
+            p[0] = ch;
+            p[1] = 0;
+        }
+    }
+
+
+    void XMLPrinter::PrintSpace( int depth )
+    {
+        for( int i=0; i<depth; ++i ) {
+            Write( "    " );
+        }
+    }
+
+
+    void XMLPrinter::PrintString( const char* p, bool restricted )
+    {
+        // Look for runs of bytes between entities to print.
+        const char* q = p;
+
+        if ( _processEntities ) {
+            const bool* flag = restricted ? _restrictedEntityFlag : _entityFlag;
+            while ( *q ) {
+                TIXMLASSERT( p <= q );
+                // Remember, char is sometimes signed. (How many times has that bitten me?)
+                if ( *q > 0 && *q < ENTITY_RANGE ) {
+                    // Check for entities. If one is found, flush
+                    // the stream up until the entity, write the
+                    // entity, and keep looking.
+                    if ( flag[static_cast<unsigned char>(*q)] ) {
+                        while ( p < q ) {
+                            const size_t delta = q - p;
+                            const int toPrint = ( INT_MAX < delta ) ? INT_MAX : static_cast<int>(delta);
+                            Write( p, toPrint );
+                            p += toPrint;
+                        }
+                        bool entityPatternPrinted = false;
+                        for( int i=0; i<NUM_ENTITIES; ++i ) {
+                            if ( entities[i].value == *q ) {
+                                Putc( '&' );
+                                Write( entities[i].pattern, entities[i].length );
+                                Putc( ';' );
+                                entityPatternPrinted = true;
+                                break;
+                            }
+                        }
+                        if ( !entityPatternPrinted ) {
+                            // TIXMLASSERT( entityPatternPrinted ) causes gcc -Wunused-but-set-variable in release
+                            TIXMLASSERT( false );
+                        }
+                        ++p;
+                    }
+                }
+                ++q;
+                TIXMLASSERT( p <= q );
+            }
+            // Flush the remaining string. This will be the entire
+            // string if an entity wasn't found.
+            if ( p < q ) {
+                const size_t delta = q - p;
+                const int toPrint = ( INT_MAX < delta ) ? INT_MAX : static_cast<int>(delta);
+                Write( p, toPrint );
+            }
+        }
+        else {
+            Write( p );
+        }
+    }
+
+
+    void XMLPrinter::PushHeader( bool writeBOM, bool writeDec )
+    {
+        if ( writeBOM ) {
+            static const unsigned char bom[] = { TIXML_UTF_LEAD_0, TIXML_UTF_LEAD_1, TIXML_UTF_LEAD_2, 0 };
+            Write( reinterpret_cast< const char* >( bom ) );
+        }
+        if ( writeDec ) {
+            PushDeclaration( "xml version=\"1.0\"" );
+        }
+    }
+
+    void XMLPrinter::PrepareForNewNode( bool compactMode )
+    {
+        SealElementIfJustOpened();
+
+        if ( compactMode ) {
+            return;
+        }
+
+        if ( _firstElement ) {
+            PrintSpace (_depth);
+        } else if ( _textDepth < 0) {
+            Putc( '\n' );
+            PrintSpace( _depth );
+        }
+
+        _firstElement = false;
+    }
+
+    void XMLPrinter::OpenElement( const char* name, bool compactMode )
+    {
+        PrepareForNewNode( compactMode );
