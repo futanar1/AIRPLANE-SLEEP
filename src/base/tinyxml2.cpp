@@ -2860,3 +2860,129 @@ namespace tinyxml2
     {
         char buf[BUF_SIZE];
         XMLUtil::ToStr( value, buf, BUF_SIZE );
+        PushText( buf, false );
+    }
+
+
+    void XMLPrinter::PushText( unsigned value )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( value, buf, BUF_SIZE );
+        PushText( buf, false );
+    }
+
+
+    void XMLPrinter::PushText( bool value )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( value, buf, BUF_SIZE );
+        PushText( buf, false );
+    }
+
+
+    void XMLPrinter::PushText( float value )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( value, buf, BUF_SIZE );
+        PushText( buf, false );
+    }
+
+
+    void XMLPrinter::PushText( double value )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( value, buf, BUF_SIZE );
+        PushText( buf, false );
+    }
+
+
+    void XMLPrinter::PushComment( const char* comment )
+    {
+        PrepareForNewNode( _compactMode );
+
+        Write( "<!--" );
+        Write( comment );
+        Write( "-->" );
+    }
+
+
+    void XMLPrinter::PushDeclaration( const char* value )
+    {
+        PrepareForNewNode( _compactMode );
+
+        Write( "<?" );
+        Write( value );
+        Write( "?>" );
+    }
+
+
+    void XMLPrinter::PushUnknown( const char* value )
+    {
+        PrepareForNewNode( _compactMode );
+
+        Write( "<!" );
+        Write( value );
+        Putc( '>' );
+    }
+
+
+    bool XMLPrinter::VisitEnter( const XMLDocument& doc )
+    {
+        _processEntities = doc.ProcessEntities();
+        if ( doc.HasBOM() ) {
+            PushHeader( true, false );
+        }
+        return true;
+    }
+
+
+    bool XMLPrinter::VisitEnter( const XMLElement& element, const XMLAttribute* attribute )
+    {
+        const XMLElement* parentElem = 0;
+        if ( element.Parent() ) {
+            parentElem = element.Parent()->ToElement();
+        }
+        const bool compactMode = parentElem ? CompactMode( *parentElem ) : _compactMode;
+        OpenElement( element.Name(), compactMode );
+        while ( attribute ) {
+            PushAttribute( attribute->Name(), attribute->Value() );
+            attribute = attribute->Next();
+        }
+        return true;
+    }
+
+
+    bool XMLPrinter::VisitExit( const XMLElement& element )
+    {
+        CloseElement( CompactMode(element) );
+        return true;
+    }
+
+
+    bool XMLPrinter::Visit( const XMLText& text )
+    {
+        PushText( text.Value(), text.CData() );
+        return true;
+    }
+
+
+    bool XMLPrinter::Visit( const XMLComment& comment )
+    {
+        PushComment( comment.Value() );
+        return true;
+    }
+
+    bool XMLPrinter::Visit( const XMLDeclaration& declaration )
+    {
+        PushDeclaration( declaration.Value() );
+        return true;
+    }
+
+
+    bool XMLPrinter::Visit( const XMLUnknown& unknown )
+    {
+        PushUnknown( unknown.Value() );
+        return true;
+    }
+
+}   // namespace tinyxml2
