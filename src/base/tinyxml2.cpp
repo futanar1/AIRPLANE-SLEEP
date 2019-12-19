@@ -2717,3 +2717,146 @@ namespace tinyxml2
     void XMLPrinter::OpenElement( const char* name, bool compactMode )
     {
         PrepareForNewNode( compactMode );
+        _stack.Push( name );
+
+        Write ( "<" );
+        Write ( name );
+
+        _elementJustOpened = true;
+        ++_depth;
+    }
+
+
+    void XMLPrinter::PushAttribute( const char* name, const char* value )
+    {
+        TIXMLASSERT( _elementJustOpened );
+        Putc ( ' ' );
+        Write( name );
+        Write( "=\"" );
+        PrintString( value, false );
+        Putc ( '\"' );
+    }
+
+
+    void XMLPrinter::PushAttribute( const char* name, int v )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( v, buf, BUF_SIZE );
+        PushAttribute( name, buf );
+    }
+
+
+    void XMLPrinter::PushAttribute( const char* name, unsigned v )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( v, buf, BUF_SIZE );
+        PushAttribute( name, buf );
+    }
+
+
+    void XMLPrinter::PushAttribute(const char* name, int64_t v)
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr(v, buf, BUF_SIZE);
+        PushAttribute(name, buf);
+    }
+
+
+    void XMLPrinter::PushAttribute(const char* name, uint64_t v)
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr(v, buf, BUF_SIZE);
+        PushAttribute(name, buf);
+    }
+
+
+    void XMLPrinter::PushAttribute( const char* name, bool v )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( v, buf, BUF_SIZE );
+        PushAttribute( name, buf );
+    }
+
+
+    void XMLPrinter::PushAttribute( const char* name, double v )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( v, buf, BUF_SIZE );
+        PushAttribute( name, buf );
+    }
+
+
+    void XMLPrinter::CloseElement( bool compactMode )
+    {
+        --_depth;
+        const char* name = _stack.Pop();
+
+        if ( _elementJustOpened ) {
+            Write( "/>" );
+        }
+        else {
+            if ( _textDepth < 0 && !compactMode) {
+                Putc( '\n' );
+                PrintSpace( _depth );
+            }
+            Write ( "</" );
+            Write ( name );
+            Write ( ">" );
+        }
+
+        if ( _textDepth == _depth ) {
+            _textDepth = -1;
+        }
+        if ( _depth == 0 && !compactMode) {
+            Putc( '\n' );
+        }
+        _elementJustOpened = false;
+    }
+
+
+    void XMLPrinter::SealElementIfJustOpened()
+    {
+        if ( !_elementJustOpened ) {
+            return;
+        }
+        _elementJustOpened = false;
+        Putc( '>' );
+    }
+
+
+    void XMLPrinter::PushText( const char* text, bool cdata )
+    {
+        _textDepth = _depth-1;
+
+        SealElementIfJustOpened();
+        if ( cdata ) {
+            Write( "<![CDATA[" );
+            Write( text );
+            Write( "]]>" );
+        }
+        else {
+            PrintString( text, true );
+        }
+    }
+
+
+    void XMLPrinter::PushText( int64_t value )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( value, buf, BUF_SIZE );
+        PushText( buf, false );
+    }
+
+
+    void XMLPrinter::PushText( uint64_t value )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr(value, buf, BUF_SIZE);
+        PushText(buf, false);
+    }
+
+
+    void XMLPrinter::PushText( int value )
+    {
+        char buf[BUF_SIZE];
+        XMLUtil::ToStr( value, buf, BUF_SIZE );
