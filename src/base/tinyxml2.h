@@ -470,3 +470,144 @@ namespace tinyxml2
     class TINYXML2_LIB XMLVisitor
     {
     public:
+        virtual ~XMLVisitor() {}
+
+        /// Visit a document.
+        virtual bool VisitEnter( const XMLDocument& /*doc*/ )			{
+            return true;
+        }
+        /// Visit a document.
+        virtual bool VisitExit( const XMLDocument& /*doc*/ )			{
+            return true;
+        }
+
+        /// Visit an element.
+        virtual bool VisitEnter( const XMLElement& /*element*/, const XMLAttribute* /*firstAttribute*/ )	{
+            return true;
+        }
+        /// Visit an element.
+        virtual bool VisitExit( const XMLElement& /*element*/ )			{
+            return true;
+        }
+
+        /// Visit a declaration.
+        virtual bool Visit( const XMLDeclaration& /*declaration*/ )		{
+            return true;
+        }
+        /// Visit a text node.
+        virtual bool Visit( const XMLText& /*text*/ )					{
+            return true;
+        }
+        /// Visit a comment node.
+        virtual bool Visit( const XMLComment& /*comment*/ )				{
+            return true;
+        }
+        /// Visit an unknown node.
+        virtual bool Visit( const XMLUnknown& /*unknown*/ )				{
+            return true;
+        }
+    };
+
+// WARNING: must match XMLDocument::_errorNames[]
+    enum XMLError {
+        XML_SUCCESS = 0,
+        XML_NO_ATTRIBUTE,
+        XML_WRONG_ATTRIBUTE_TYPE,
+        XML_ERROR_FILE_NOT_FOUND,
+        XML_ERROR_FILE_COULD_NOT_BE_OPENED,
+        XML_ERROR_FILE_READ_ERROR,
+        XML_ERROR_PARSING_ELEMENT,
+        XML_ERROR_PARSING_ATTRIBUTE,
+        XML_ERROR_PARSING_TEXT,
+        XML_ERROR_PARSING_CDATA,
+        XML_ERROR_PARSING_COMMENT,
+        XML_ERROR_PARSING_DECLARATION,
+        XML_ERROR_PARSING_UNKNOWN,
+        XML_ERROR_EMPTY_DOCUMENT,
+        XML_ERROR_MISMATCHED_ELEMENT,
+        XML_ERROR_PARSING,
+        XML_CAN_NOT_CONVERT_TEXT,
+        XML_NO_TEXT_NODE,
+        XML_ELEMENT_DEPTH_EXCEEDED,
+
+        XML_ERROR_COUNT
+    };
+
+
+/*
+	Utility functionality.
+*/
+    class TINYXML2_LIB XMLUtil
+    {
+    public:
+        static const char* SkipWhiteSpace( const char* p, int* curLineNumPtr )	{
+            TIXMLASSERT( p );
+
+            while( IsWhiteSpace(*p) ) {
+                if (curLineNumPtr && *p == '\n') {
+                    ++(*curLineNumPtr);
+                }
+                ++p;
+            }
+            TIXMLASSERT( p );
+            return p;
+        }
+        static char* SkipWhiteSpace( char* const p, int* curLineNumPtr ) {
+            return const_cast<char*>( SkipWhiteSpace( const_cast<const char*>(p), curLineNumPtr ) );
+        }
+
+        // Anything in the high order range of UTF-8 is assumed to not be whitespace. This isn't
+        // correct, but simple, and usually works.
+        static bool IsWhiteSpace( char p )					{
+            return !IsUTF8Continuation(p) && isspace( static_cast<unsigned char>(p) );
+        }
+
+        inline static bool IsNameStartChar( unsigned char ch ) {
+            if ( ch >= 128 ) {
+                // This is a heuristic guess in attempt to not implement Unicode-aware isalpha()
+                return true;
+            }
+            if ( isalpha( ch ) ) {
+                return true;
+            }
+            return ch == ':' || ch == '_';
+        }
+
+        inline static bool IsNameChar( unsigned char ch ) {
+            return IsNameStartChar( ch )
+                   || isdigit( ch )
+                   || ch == '.'
+                   || ch == '-';
+        }
+
+        inline static bool IsPrefixHex( const char* p) {
+            p = SkipWhiteSpace(p, 0);
+            return p && *p == '0' && ( *(p + 1) == 'x' || *(p + 1) == 'X');
+        }
+
+        inline static bool StringEqual( const char* p, const char* q, int nChar=INT_MAX )  {
+            if ( p == q ) {
+                return true;
+            }
+            TIXMLASSERT( p );
+            TIXMLASSERT( q );
+            TIXMLASSERT( nChar >= 0 );
+            return strncmp( p, q, nChar ) == 0;
+        }
+
+        inline static bool IsUTF8Continuation( const char p ) {
+            return ( p & 0x80 ) != 0;
+        }
+
+        static const char* ReadBOM( const char* p, bool* hasBOM );
+        // p is the starting location,
+        // the UTF-8 value of the entity will be placed in value, and length filled in.
+        static const char* GetCharacterRef( const char* p, char* value, int* length );
+        static void ConvertUTF32ToUTF8( unsigned long input, char* output, int* length );
+
+        // converts primitive types to strings
+        static void ToStr( int v, char* buffer, int bufferSize );
+        static void ToStr( unsigned v, char* buffer, int bufferSize );
+        static void ToStr( bool v, char* buffer, int bufferSize );
+        static void ToStr( float v, char* buffer, int bufferSize );
+        static void ToStr( double v, char* buffer, int bufferSize );
