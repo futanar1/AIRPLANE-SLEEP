@@ -611,3 +611,142 @@ namespace tinyxml2
         static void ToStr( bool v, char* buffer, int bufferSize );
         static void ToStr( float v, char* buffer, int bufferSize );
         static void ToStr( double v, char* buffer, int bufferSize );
+        static void ToStr(int64_t v, char* buffer, int bufferSize);
+        static void ToStr(uint64_t v, char* buffer, int bufferSize);
+
+        // converts strings to primitive types
+        static bool	ToInt( const char* str, int* value );
+        static bool ToUnsigned( const char* str, unsigned* value );
+        static bool	ToBool( const char* str, bool* value );
+        static bool	ToFloat( const char* str, float* value );
+        static bool ToDouble( const char* str, double* value );
+        static bool ToInt64(const char* str, int64_t* value);
+        static bool ToUnsigned64(const char* str, uint64_t* value);
+        // Changes what is serialized for a boolean value.
+        // Default to "true" and "false". Shouldn't be changed
+        // unless you have a special testing or compatibility need.
+        // Be careful: static, global, & not thread safe.
+        // Be sure to set static const memory as parameters.
+        static void SetBoolSerialization(const char* writeTrue, const char* writeFalse);
+
+    private:
+        static const char* writeBoolTrue;
+        static const char* writeBoolFalse;
+    };
+
+
+/** XMLNode is a base class for every object that is in the
+	XML Document Object Model (DOM), except XMLAttributes.
+	Nodes have siblings, a parent, and children which can
+	be navigated. A node is always in a XMLDocument.
+	The type of a XMLNode can be queried, and it can
+	be cast to its more defined type.
+
+	A XMLDocument allocates memory for all its Nodes.
+	When the XMLDocument gets deleted, all its Nodes
+	will also be deleted.
+
+	@verbatim
+	A Document can contain:	Element	(container or leaf)
+							Comment (leaf)
+							Unknown (leaf)
+							Declaration( leaf )
+
+	An Element can contain:	Element (container or leaf)
+							Text	(leaf)
+							Attributes (not on tree)
+							Comment (leaf)
+							Unknown (leaf)
+
+	@endverbatim
+*/
+    class TINYXML2_LIB XMLNode
+    {
+        friend class XMLDocument;
+        friend class XMLElement;
+    public:
+
+        /// Get the XMLDocument that owns this XMLNode.
+        const XMLDocument* GetDocument() const	{
+            TIXMLASSERT( _document );
+            return _document;
+        }
+        /// Get the XMLDocument that owns this XMLNode.
+        XMLDocument* GetDocument()				{
+            TIXMLASSERT( _document );
+            return _document;
+        }
+
+        /// Safely cast to an Element, or null.
+        virtual XMLElement*		ToElement()		{
+            return 0;
+        }
+        /// Safely cast to Text, or null.
+        virtual XMLText*		ToText()		{
+            return 0;
+        }
+        /// Safely cast to a Comment, or null.
+        virtual XMLComment*		ToComment()		{
+            return 0;
+        }
+        /// Safely cast to a Document, or null.
+        virtual XMLDocument*	ToDocument()	{
+            return 0;
+        }
+        /// Safely cast to a Declaration, or null.
+        virtual XMLDeclaration*	ToDeclaration()	{
+            return 0;
+        }
+        /// Safely cast to an Unknown, or null.
+        virtual XMLUnknown*		ToUnknown()		{
+            return 0;
+        }
+
+        virtual const XMLElement*		ToElement() const		{
+            return 0;
+        }
+        virtual const XMLText*			ToText() const			{
+            return 0;
+        }
+        virtual const XMLComment*		ToComment() const		{
+            return 0;
+        }
+        virtual const XMLDocument*		ToDocument() const		{
+            return 0;
+        }
+        virtual const XMLDeclaration*	ToDeclaration() const	{
+            return 0;
+        }
+        virtual const XMLUnknown*		ToUnknown() const		{
+            return 0;
+        }
+
+        /** The meaning of 'value' changes for the specific type.
+            @verbatim
+            Document:	empty (NULL is returned, not an empty string)
+            Element:	name of the element
+            Comment:	the comment text
+            Unknown:	the tag contents
+            Text:		the text string
+            @endverbatim
+        */
+        const char* Value() const;
+
+        /** Set the Value of an XML node.
+            @sa Value()
+        */
+        void SetValue( const char* val, bool staticMem=false );
+
+        /// Gets the line number the node is in, if the document was parsed from a file.
+        int GetLineNum() const { return _parseLineNum; }
+
+        /// Get the parent of this node on the DOM.
+        const XMLNode*	Parent() const			{
+            return _parent;
+        }
+
+        XMLNode* Parent()						{
+            return _parent;
+        }
+
+        /// Returns true if this node has no children.
