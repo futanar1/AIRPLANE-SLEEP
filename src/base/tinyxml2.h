@@ -750,3 +750,142 @@ namespace tinyxml2
         }
 
         /// Returns true if this node has no children.
+        bool NoChildren() const					{
+            return !_firstChild;
+        }
+
+        /// Get the first child node, or null if none exists.
+        const XMLNode*  FirstChild() const		{
+            return _firstChild;
+        }
+
+        XMLNode*		FirstChild()			{
+            return _firstChild;
+        }
+
+        /** Get the first child element, or optionally the first child
+            element with the specified name.
+        */
+        const XMLElement* FirstChildElement( const char* name = 0 ) const;
+
+        XMLElement* FirstChildElement( const char* name = 0 )	{
+            return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->FirstChildElement( name ));
+        }
+
+        /// Get the last child node, or null if none exists.
+        const XMLNode*	LastChild() const						{
+            return _lastChild;
+        }
+
+        XMLNode*		LastChild()								{
+            return _lastChild;
+        }
+
+        /** Get the last child element or optionally the last child
+            element with the specified name.
+        */
+        const XMLElement* LastChildElement( const char* name = 0 ) const;
+
+        XMLElement* LastChildElement( const char* name = 0 )	{
+            return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->LastChildElement(name) );
+        }
+
+        /// Get the previous (left) sibling node of this node.
+        const XMLNode*	PreviousSibling() const					{
+            return _prev;
+        }
+
+        XMLNode*	PreviousSibling()							{
+            return _prev;
+        }
+
+        /// Get the previous (left) sibling element of this node, with an optionally supplied name.
+        const XMLElement*	PreviousSiblingElement( const char* name = 0 ) const ;
+
+        XMLElement*	PreviousSiblingElement( const char* name = 0 ) {
+            return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->PreviousSiblingElement( name ) );
+        }
+
+        /// Get the next (right) sibling node of this node.
+        const XMLNode*	NextSibling() const						{
+            return _next;
+        }
+
+        XMLNode*	NextSibling()								{
+            return _next;
+        }
+
+        /// Get the next (right) sibling element of this node, with an optionally supplied name.
+        const XMLElement*	NextSiblingElement( const char* name = 0 ) const;
+
+        XMLElement*	NextSiblingElement( const char* name = 0 )	{
+            return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->NextSiblingElement( name ) );
+        }
+
+        /**
+            Add a child node as the last (right) child.
+            If the child node is already part of the document,
+            it is moved from its old location to the new location.
+            Returns the addThis argument or 0 if the node does not
+            belong to the same document.
+        */
+        XMLNode* InsertEndChild( XMLNode* addThis );
+
+        XMLNode* LinkEndChild( XMLNode* addThis )	{
+            return InsertEndChild( addThis );
+        }
+        /**
+            Add a child node as the first (left) child.
+            If the child node is already part of the document,
+            it is moved from its old location to the new location.
+            Returns the addThis argument or 0 if the node does not
+            belong to the same document.
+        */
+        XMLNode* InsertFirstChild( XMLNode* addThis );
+        /**
+            Add a node after the specified child node.
+            If the child node is already part of the document,
+            it is moved from its old location to the new location.
+            Returns the addThis argument or 0 if the afterThis node
+            is not a child of this node, or if the node does not
+            belong to the same document.
+        */
+        XMLNode* InsertAfterChild( XMLNode* afterThis, XMLNode* addThis );
+
+        /**
+            Delete all the children of this node.
+        */
+        void DeleteChildren();
+
+        /**
+            Delete a child of this node.
+        */
+        void DeleteChild( XMLNode* node );
+
+        /**
+            Make a copy of this node, but not its children.
+            You may pass in a Document pointer that will be
+            the owner of the new Node. If the 'document' is
+            null, then the node returned will be allocated
+            from the current Document. (this->GetDocument())
+
+            Note: if called on a XMLDocument, this will return null.
+        */
+        virtual XMLNode* ShallowClone( XMLDocument* document ) const = 0;
+
+        /**
+            Make a copy of this node and all its children.
+
+            If the 'target' is null, then the nodes will
+            be allocated in the current document. If 'target'
+            is specified, the memory will be allocated is the
+            specified XMLDocument.
+
+            NOTE: This is probably not the correct tool to
+            copy a document, since XMLDocuments can have multiple
+            top level XMLNodes. You probably want to use
+            XMLDocument::DeepCopy()
+        */
+        XMLNode* DeepClone( XMLDocument* target ) const;
+
+        /**
