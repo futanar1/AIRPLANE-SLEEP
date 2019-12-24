@@ -889,3 +889,152 @@ namespace tinyxml2
         XMLNode* DeepClone( XMLDocument* target ) const;
 
         /**
+            Test if 2 nodes are the same, but don't test children.
+            The 2 nodes do not need to be in the same Document.
+
+            Note: if called on a XMLDocument, this will return false.
+        */
+        virtual bool ShallowEqual( const XMLNode* compare ) const = 0;
+
+        /** Accept a hierarchical visit of the nodes in the TinyXML-2 DOM. Every node in the
+            XML tree will be conditionally visited and the host will be called back
+            via the XMLVisitor interface.
+
+            This is essentially a SAX interface for TinyXML-2. (Note however it doesn't re-parse
+            the XML for the callbacks, so the performance of TinyXML-2 is unchanged by using this
+            interface versus any other.)
+
+            The interface has been based on ideas from:
+
+            - http://www.saxproject.org/
+            - http://c2.com/cgi/wiki?HierarchicalVisitorPattern
+
+            Which are both good references for "visiting".
+
+            An example of using Accept():
+            @verbatim
+            XMLPrinter printer;
+            tinyxmlDoc.Accept( &printer );
+            const char* xmlcstr = printer.CStr();
+            @endverbatim
+        */
+        virtual bool Accept( XMLVisitor* visitor ) const = 0;
+
+        /**
+            Set user data into the XMLNode. TinyXML-2 in
+            no way processes or interprets user data.
+            It is initially 0.
+        */
+        void SetUserData(void* userData)	{ _userData = userData; }
+
+        /**
+            Get user data set into the XMLNode. TinyXML-2 in
+            no way processes or interprets user data.
+            It is initially 0.
+        */
+        void* GetUserData() const			{ return _userData; }
+
+    protected:
+        explicit XMLNode( XMLDocument* );
+        virtual ~XMLNode();
+
+        virtual char* ParseDeep( char* p, StrPair* parentEndTag, int* curLineNumPtr);
+
+        XMLDocument*	_document;
+        XMLNode*		_parent;
+        mutable StrPair	_value;
+        int             _parseLineNum;
+
+        XMLNode*		_firstChild;
+        XMLNode*		_lastChild;
+
+        XMLNode*		_prev;
+        XMLNode*		_next;
+
+        void*			_userData;
+
+    private:
+        MemPool*		_memPool;
+        void Unlink( XMLNode* child );
+        static void DeleteNode( XMLNode* node );
+        void InsertChildPreamble( XMLNode* insertThis ) const;
+        const XMLElement* ToElementWithName( const char* name ) const;
+
+        XMLNode( const XMLNode& );	// not supported
+        XMLNode& operator=( const XMLNode& );	// not supported
+    };
+
+
+/** XML text.
+
+	Note that a text node can have child element nodes, for example:
+	@verbatim
+	<root>This is <b>bold</b></root>
+	@endverbatim
+
+	A text node can have 2 ways to output the next. "normal" output
+	and CDATA. It will default to the mode it was parsed from the XML file and
+	you generally want to leave it alone, but you can change the output mode with
+	SetCData() and query it with CData().
+*/
+    class TINYXML2_LIB XMLText : public XMLNode
+    {
+        friend class XMLDocument;
+    public:
+        virtual bool Accept( XMLVisitor* visitor ) const;
+
+        virtual XMLText* ToText()			{
+            return this;
+        }
+        virtual const XMLText* ToText() const	{
+            return this;
+        }
+
+        /// Declare whether this should be CDATA or standard text.
+        void SetCData( bool isCData )			{
+            _isCData = isCData;
+        }
+        /// Returns true if this is a CDATA text element.
+        bool CData() const						{
+            return _isCData;
+        }
+
+        virtual XMLNode* ShallowClone( XMLDocument* document ) const;
+        virtual bool ShallowEqual( const XMLNode* compare ) const;
+
+    protected:
+        explicit XMLText( XMLDocument* doc )	: XMLNode( doc ), _isCData( false )	{}
+        virtual ~XMLText()												{}
+
+        char* ParseDeep( char* p, StrPair* parentEndTag, int* curLineNumPtr );
+
+    private:
+        bool _isCData;
+
+        XMLText( const XMLText& );	// not supported
+        XMLText& operator=( const XMLText& );	// not supported
+    };
+
+
+/** An XML Comment. */
+    class TINYXML2_LIB XMLComment : public XMLNode
+    {
+        friend class XMLDocument;
+    public:
+        virtual XMLComment*	ToComment()					{
+            return this;
+        }
+        virtual const XMLComment* ToComment() const		{
+            return this;
+        }
+
+        virtual bool Accept( XMLVisitor* visitor ) const;
+
+        virtual XMLNode* ShallowClone( XMLDocument* document ) const;
+        virtual bool ShallowEqual( const XMLNode* compare ) const;
+
+    protected:
+        explicit XMLComment( XMLDocument* doc );
+        virtual ~XMLComment();
+
+        char* ParseDeep( char* p, StrPair* parentEndTag, int* curLineNumPtr);
