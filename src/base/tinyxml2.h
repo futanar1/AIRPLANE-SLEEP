@@ -1204,3 +1204,161 @@ namespace tinyxml2
         XMLError QueryUnsigned64Value(uint64_t* value) const;
         /// See QueryIntValue
         XMLError QueryBoolValue( bool* value ) const;
+        /// See QueryIntValue
+        XMLError QueryDoubleValue( double* value ) const;
+        /// See QueryIntValue
+        XMLError QueryFloatValue( float* value ) const;
+
+        /// Set the attribute to a string value.
+        void SetAttribute( const char* value );
+        /// Set the attribute to value.
+        void SetAttribute( int value );
+        /// Set the attribute to value.
+        void SetAttribute( unsigned value );
+        /// Set the attribute to value.
+        void SetAttribute(int64_t value);
+        /// Set the attribute to value.
+        void SetAttribute(uint64_t value);
+        /// Set the attribute to value.
+        void SetAttribute( bool value );
+        /// Set the attribute to value.
+        void SetAttribute( double value );
+        /// Set the attribute to value.
+        void SetAttribute( float value );
+
+    private:
+        enum { BUF_SIZE = 200 };
+
+        XMLAttribute() : _name(), _value(),_parseLineNum( 0 ), _next( 0 ), _memPool( 0 ) {}
+        virtual ~XMLAttribute()	{}
+
+        XMLAttribute( const XMLAttribute& );	// not supported
+        void operator=( const XMLAttribute& );	// not supported
+        void SetName( const char* name );
+
+        char* ParseDeep( char* p, bool processEntities, int* curLineNumPtr );
+
+        mutable StrPair _name;
+        mutable StrPair _value;
+        int             _parseLineNum;
+        XMLAttribute*   _next;
+        MemPool*        _memPool;
+    };
+
+
+/** The element is a container class. It has a value, the element name,
+	and can contain other elements, text, comments, and unknowns.
+	Elements also contain an arbitrary number of attributes.
+*/
+    class TINYXML2_LIB XMLElement : public XMLNode
+    {
+        friend class XMLDocument;
+    public:
+        /// Get the name of an element (which is the Value() of the node.)
+        const char* Name() const		{
+            return Value();
+        }
+        /// Set the name of the element.
+        void SetName( const char* str, bool staticMem=false )	{
+            SetValue( str, staticMem );
+        }
+
+        virtual XMLElement* ToElement()				{
+            return this;
+        }
+        virtual const XMLElement* ToElement() const {
+            return this;
+        }
+        virtual bool Accept( XMLVisitor* visitor ) const;
+
+        /** Given an attribute name, Attribute() returns the value
+            for the attribute of that name, or null if none
+            exists. For example:
+
+            @verbatim
+            const char* value = ele->Attribute( "foo" );
+            @endverbatim
+
+            The 'value' parameter is normally null. However, if specified,
+            the attribute will only be returned if the 'name' and 'value'
+            match. This allow you to write code:
+
+            @verbatim
+            if ( ele->Attribute( "foo", "bar" ) ) callFooIsBar();
+            @endverbatim
+
+            rather than:
+            @verbatim
+            if ( ele->Attribute( "foo" ) ) {
+                if ( strcmp( ele->Attribute( "foo" ), "bar" ) == 0 ) callFooIsBar();
+            }
+            @endverbatim
+        */
+        const char* Attribute( const char* name, const char* value=0 ) const;
+
+        /** Given an attribute name, IntAttribute() returns the value
+            of the attribute interpreted as an integer. The default
+            value will be returned if the attribute isn't present,
+            or if there is an error. (For a method with error
+            checking, see QueryIntAttribute()).
+        */
+        int IntAttribute(const char* name, int defaultValue = 0) const;
+        /// See IntAttribute()
+        unsigned UnsignedAttribute(const char* name, unsigned defaultValue = 0) const;
+        /// See IntAttribute()
+        int64_t Int64Attribute(const char* name, int64_t defaultValue = 0) const;
+        /// See IntAttribute()
+        uint64_t Unsigned64Attribute(const char* name, uint64_t defaultValue = 0) const;
+        /// See IntAttribute()
+        bool BoolAttribute(const char* name, bool defaultValue = false) const;
+        /// See IntAttribute()
+        double DoubleAttribute(const char* name, double defaultValue = 0) const;
+        /// See IntAttribute()
+        float FloatAttribute(const char* name, float defaultValue = 0) const;
+
+        /** Given an attribute name, QueryIntAttribute() returns
+            XML_SUCCESS, XML_WRONG_ATTRIBUTE_TYPE if the conversion
+            can't be performed, or XML_NO_ATTRIBUTE if the attribute
+            doesn't exist. If successful, the result of the conversion
+            will be written to 'value'. If not successful, nothing will
+            be written to 'value'. This allows you to provide default
+            value:
+
+            @verbatim
+            int value = 10;
+            QueryIntAttribute( "foo", &value );		// if "foo" isn't found, value will still be 10
+            @endverbatim
+        */
+        XMLError QueryIntAttribute( const char* name, int* value ) const				{
+            const XMLAttribute* a = FindAttribute( name );
+            if ( !a ) {
+                return XML_NO_ATTRIBUTE;
+            }
+            return a->QueryIntValue( value );
+        }
+
+        /// See QueryIntAttribute()
+        XMLError QueryUnsignedAttribute( const char* name, unsigned int* value ) const	{
+            const XMLAttribute* a = FindAttribute( name );
+            if ( !a ) {
+                return XML_NO_ATTRIBUTE;
+            }
+            return a->QueryUnsignedValue( value );
+        }
+
+        /// See QueryIntAttribute()
+        XMLError QueryInt64Attribute(const char* name, int64_t* value) const {
+            const XMLAttribute* a = FindAttribute(name);
+            if (!a) {
+                return XML_NO_ATTRIBUTE;
+            }
+            return a->QueryInt64Value(value);
+        }
+
+        /// See QueryIntAttribute()
+        XMLError QueryUnsigned64Attribute(const char* name, uint64_t* value) const {
+            const XMLAttribute* a = FindAttribute(name);
+            if(!a) {
+                return XML_NO_ATTRIBUTE;
+            }
+            return a->QueryUnsigned64Value(value);
