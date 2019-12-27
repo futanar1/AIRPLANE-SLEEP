@@ -1631,3 +1631,135 @@ namespace tinyxml2
         /// See QueryIntText()
         unsigned UnsignedText(unsigned defaultValue = 0) const;
         /// See QueryIntText()
+        int64_t Int64Text(int64_t defaultValue = 0) const;
+        /// See QueryIntText()
+        uint64_t Unsigned64Text(uint64_t defaultValue = 0) const;
+        /// See QueryIntText()
+        bool BoolText(bool defaultValue = false) const;
+        /// See QueryIntText()
+        double DoubleText(double defaultValue = 0) const;
+        /// See QueryIntText()
+        float FloatText(float defaultValue = 0) const;
+
+        /**
+            Convenience method to create a new XMLElement and add it as last (right)
+            child of this node. Returns the created and inserted element.
+        */
+        XMLElement* InsertNewChildElement(const char* name);
+        /// See InsertNewChildElement()
+        XMLComment* InsertNewComment(const char* comment);
+        /// See InsertNewChildElement()
+        XMLText* InsertNewText(const char* text);
+        /// See InsertNewChildElement()
+        XMLDeclaration* InsertNewDeclaration(const char* text);
+        /// See InsertNewChildElement()
+        XMLUnknown* InsertNewUnknown(const char* text);
+
+
+        // internal:
+        enum ElementClosingType {
+            OPEN,		// <foo>
+            CLOSED,		// <foo/>
+            CLOSING		// </foo>
+        };
+        ElementClosingType ClosingType() const {
+            return _closingType;
+        }
+        virtual XMLNode* ShallowClone( XMLDocument* document ) const;
+        virtual bool ShallowEqual( const XMLNode* compare ) const;
+
+    protected:
+        char* ParseDeep( char* p, StrPair* parentEndTag, int* curLineNumPtr );
+
+    private:
+        XMLElement( XMLDocument* doc );
+        virtual ~XMLElement();
+        XMLElement( const XMLElement& );	// not supported
+        void operator=( const XMLElement& );	// not supported
+
+        XMLAttribute* FindOrCreateAttribute( const char* name );
+        char* ParseAttributes( char* p, int* curLineNumPtr );
+        static void DeleteAttribute( XMLAttribute* attribute );
+        XMLAttribute* CreateAttribute();
+
+        enum { BUF_SIZE = 200 };
+        ElementClosingType _closingType;
+        // The attribute list is ordered; there is no 'lastAttribute'
+        // because the list needs to be scanned for dupes before adding
+        // a new attribute.
+        XMLAttribute* _rootAttribute;
+    };
+
+
+    enum Whitespace {
+        PRESERVE_WHITESPACE,
+        COLLAPSE_WHITESPACE
+    };
+
+
+/** A Document binds together all the functionality.
+	It can be saved, loaded, and printed to the screen.
+	All Nodes are connected and allocated to a Document.
+	If the Document is deleted, all its Nodes are also deleted.
+*/
+    class TINYXML2_LIB XMLDocument : public XMLNode
+    {
+        friend class XMLElement;
+        // Gives access to SetError and Push/PopDepth, but over-access for everything else.
+        // Wishing C++ had "internal" scope.
+        friend class XMLNode;
+        friend class XMLText;
+        friend class XMLComment;
+        friend class XMLDeclaration;
+        friend class XMLUnknown;
+    public:
+        /// constructor
+        XMLDocument( bool processEntities = true, Whitespace whitespaceMode = PRESERVE_WHITESPACE );
+        ~XMLDocument();
+
+        virtual XMLDocument* ToDocument()				{
+            TIXMLASSERT( this == _document );
+            return this;
+        }
+        virtual const XMLDocument* ToDocument() const	{
+            TIXMLASSERT( this == _document );
+            return this;
+        }
+
+        /**
+            Parse an XML file from a character string.
+            Returns XML_SUCCESS (0) on success, or
+            an errorID.
+
+            You may optionally pass in the 'nBytes', which is
+            the number of bytes which will be parsed. If not
+            specified, TinyXML-2 will assume 'xml' points to a
+            null terminated string.
+        */
+        XMLError Parse( const char* xml, size_t nBytes=static_cast<size_t>(-1) );
+
+        /**
+            Load an XML file from disk.
+            Returns XML_SUCCESS (0) on success, or
+            an errorID.
+        */
+        XMLError LoadFile( const char* filename );
+
+        /**
+            Load an XML file from disk. You are responsible
+            for providing and closing the FILE*.
+
+            NOTE: The file should be opened as binary ("rb")
+            not text in order for TinyXML-2 to correctly
+            do newline normalization.
+
+            Returns XML_SUCCESS (0) on success, or
+            an errorID.
+        */
+        XMLError LoadFile( FILE* );
+
+        /**
+            Save the XML file to disk.
+            Returns XML_SUCCESS (0) on success, or
+            an errorID.
+        */
