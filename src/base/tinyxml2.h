@@ -1763,3 +1763,137 @@ namespace tinyxml2
             Returns XML_SUCCESS (0) on success, or
             an errorID.
         */
+        XMLError SaveFile( const char* filename, bool compact = false );
+
+        /**
+            Save the XML file to disk. You are responsible
+            for providing and closing the FILE*.
+
+            Returns XML_SUCCESS (0) on success, or
+            an errorID.
+        */
+        XMLError SaveFile( FILE* fp, bool compact = false );
+
+        bool ProcessEntities() const		{
+            return _processEntities;
+        }
+        Whitespace WhitespaceMode() const	{
+            return _whitespaceMode;
+        }
+
+        /**
+            Returns true if this document has a leading Byte Order Mark of UTF8.
+        */
+        bool HasBOM() const {
+            return _writeBOM;
+        }
+        /** Sets whether to write the BOM when writing the file.
+        */
+        void SetBOM( bool useBOM ) {
+            _writeBOM = useBOM;
+        }
+
+        /** Return the root element of DOM. Equivalent to FirstChildElement().
+            To get the first node, use FirstChild().
+        */
+        XMLElement* RootElement()				{
+            return FirstChildElement();
+        }
+        const XMLElement* RootElement() const	{
+            return FirstChildElement();
+        }
+
+        /** Print the Document. If the Printer is not provided, it will
+            print to stdout. If you provide Printer, this can print to a file:
+            @verbatim
+            XMLPrinter printer( fp );
+            doc.Print( &printer );
+            @endverbatim
+
+            Or you can use a printer to print to memory:
+            @verbatim
+            XMLPrinter printer;
+            doc.Print( &printer );
+            // printer.CStr() has a const char* to the XML
+            @endverbatim
+        */
+        void Print( XMLPrinter* streamer=0 ) const;
+        virtual bool Accept( XMLVisitor* visitor ) const;
+
+        /**
+            Create a new Element associated with
+            this Document. The memory for the Element
+            is managed by the Document.
+        */
+        XMLElement* NewElement( const char* name );
+        /**
+            Create a new Comment associated with
+            this Document. The memory for the Comment
+            is managed by the Document.
+        */
+        XMLComment* NewComment( const char* comment );
+        /**
+            Create a new Text associated with
+            this Document. The memory for the Text
+            is managed by the Document.
+        */
+        XMLText* NewText( const char* text );
+        /**
+            Create a new Declaration associated with
+            this Document. The memory for the object
+            is managed by the Document.
+
+            If the 'text' param is null, the standard
+            declaration is used.:
+            @verbatim
+                <?xml version="1.0" encoding="UTF-8"?>
+            @endverbatim
+        */
+        XMLDeclaration* NewDeclaration( const char* text=0 );
+        /**
+            Create a new Unknown associated with
+            this Document. The memory for the object
+            is managed by the Document.
+        */
+        XMLUnknown* NewUnknown( const char* text );
+
+        /**
+            Delete a node associated with this document.
+            It will be unlinked from the DOM.
+        */
+        void DeleteNode( XMLNode* node );
+
+        /// Clears the error flags.
+        void ClearError();
+
+        /// Return true if there was an error parsing the document.
+        bool Error() const {
+            return _errorID != XML_SUCCESS;
+        }
+        /// Return the errorID.
+        XMLError  ErrorID() const {
+            return _errorID;
+        }
+        const char* ErrorName() const;
+        static const char* ErrorIDToName(XMLError errorID);
+
+        /** Returns a "long form" error description. A hopefully helpful
+            diagnostic with location, line number, and/or additional info.
+        */
+        const char* ErrorStr() const;
+
+        /// A (trivial) utility function that prints the ErrorStr() to stdout.
+        void PrintError() const;
+
+        /// Return the line where the error occurred, or zero if unknown.
+        int ErrorLineNum() const
+        {
+            return _errorLineNum;
+        }
+
+        /// Clear the document, resetting it to the initial state.
+        void Clear();
+
+        /**
+            Copies this document to a target document.
+            The target will be completely cleared before the copy.
