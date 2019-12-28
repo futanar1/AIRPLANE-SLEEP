@@ -1897,3 +1897,149 @@ namespace tinyxml2
         /**
             Copies this document to a target document.
             The target will be completely cleared before the copy.
+            If you want to copy a sub-tree, see XMLNode::DeepClone().
+
+            NOTE: that the 'target' must be non-null.
+        */
+        void DeepCopy(XMLDocument* target) const;
+
+        // internal
+        char* Identify( char* p, XMLNode** node );
+
+        // internal
+        void MarkInUse(const XMLNode* const);
+
+        virtual XMLNode* ShallowClone( XMLDocument* /*document*/ ) const	{
+            return 0;
+        }
+        virtual bool ShallowEqual( const XMLNode* /*compare*/ ) const	{
+            return false;
+        }
+
+    private:
+        XMLDocument( const XMLDocument& );	// not supported
+        void operator=( const XMLDocument& );	// not supported
+
+        bool			_writeBOM;
+        bool			_processEntities;
+        XMLError		_errorID;
+        Whitespace		_whitespaceMode;
+        mutable StrPair	_errorStr;
+        int             _errorLineNum;
+        char*			_charBuffer;
+        int				_parseCurLineNum;
+        int				_parsingDepth;
+        // Memory tracking does add some overhead.
+        // However, the code assumes that you don't
+        // have a bunch of unlinked nodes around.
+        // Therefore it takes less memory to track
+        // in the document vs. a linked list in the XMLNode,
+        // and the performance is the same.
+        DynArray<XMLNode*, 10> _unlinked;
+
+        MemPoolT< sizeof(XMLElement) >	 _elementPool;
+        MemPoolT< sizeof(XMLAttribute) > _attributePool;
+        MemPoolT< sizeof(XMLText) >		 _textPool;
+        MemPoolT< sizeof(XMLComment) >	 _commentPool;
+
+        static const char* _errorNames[XML_ERROR_COUNT];
+
+        void Parse();
+
+        void SetError( XMLError error, int lineNum, const char* format, ... );
+
+        // Something of an obvious security hole, once it was discovered.
+        // Either an ill-formed XML or an excessively deep one can overflow
+        // the stack. Track stack depth, and error out if needed.
+        class DepthTracker {
+        public:
+            explicit DepthTracker(XMLDocument * document) {
+                this->_document = document;
+                document->PushDepth();
+            }
+            ~DepthTracker() {
+                _document->PopDepth();
+            }
+        private:
+            XMLDocument * _document;
+        };
+        void PushDepth();
+        void PopDepth();
+
+        template<class NodeType, int PoolElementSize>
+        NodeType* CreateUnlinkedNode( MemPoolT<PoolElementSize>& pool );
+    };
+
+    template<class NodeType, int PoolElementSize>
+    inline NodeType* XMLDocument::CreateUnlinkedNode( MemPoolT<PoolElementSize>& pool )
+    {
+        TIXMLASSERT( sizeof( NodeType ) == PoolElementSize );
+        TIXMLASSERT( sizeof( NodeType ) == pool.ItemSize() );
+        NodeType* returnNode = new (pool.Alloc()) NodeType( this );
+        TIXMLASSERT( returnNode );
+        returnNode->_memPool = &pool;
+
+        _unlinked.Push(returnNode);
+        return returnNode;
+    }
+
+/**
+	A XMLHandle is a class that wraps a node pointer with null checks; this is
+	an incredibly useful thing. Note that XMLHandle is not part of the TinyXML-2
+	DOM structure. It is a separate utility class.
+
+	Take an example:
+	@verbatim
+	<Document>
+		<Element attributeA = "valueA">
+			<Child attributeB = "value1" />
+			<Child attributeB = "value2" />
+		</Element>
+	</Document>
+	@endverbatim
+
+	Assuming you want the value of "attributeB" in the 2nd "Child" element, it's very
+	easy to write a *lot* of code that looks like:
+
+	@verbatim
+	XMLElement* root = document.FirstChildElement( "Document" );
+	if ( root )
+	{
+		XMLElement* element = root->FirstChildElement( "Element" );
+		if ( element )
+		{
+			XMLElement* child = element->FirstChildElement( "Child" );
+			if ( child )
+			{
+				XMLElement* child2 = child->NextSiblingElement( "Child" );
+				if ( child2 )
+				{
+					// Finally do something useful.
+	@endverbatim
+
+	And that doesn't even cover "else" cases. XMLHandle addresses the verbosity
+	of such code. A XMLHandle checks for null pointers so it is perfectly safe
+	and correct to use:
+
+	@verbatim
+	XMLHandle docHandle( &document );
+	XMLElement* child2 = docHandle.FirstChildElement( "Document" ).FirstChildElement( "Element" ).FirstChildElement().NextSiblingElement();
+	if ( child2 )
+	{
+		// do something useful
+	@endverbatim
+
+	Which is MUCH more concise and useful.
+
+	It is also safe to copy handles - internally they are nothing more than node pointers.
+	@verbatim
+	XMLHandle handleCopy = handle;
+	@endverbatim
+
+	See also XMLConstHandle, which is the same as XMLHandle, but operates on const objects.
+*/
+    class TINYXML2_LIB XMLHandle
+    {
+    public:
+        /// Create a handle from any node (at any depth of the tree.) This can be a null pointer.
+        explicit XMLHandle( XMLNode* node ) : _node( node ) {
