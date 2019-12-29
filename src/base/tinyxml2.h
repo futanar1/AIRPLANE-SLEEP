@@ -2043,3 +2043,140 @@ namespace tinyxml2
     public:
         /// Create a handle from any node (at any depth of the tree.) This can be a null pointer.
         explicit XMLHandle( XMLNode* node ) : _node( node ) {
+        }
+        /// Create a handle from a node.
+        explicit XMLHandle( XMLNode& node ) : _node( &node ) {
+        }
+        /// Copy constructor
+        XMLHandle( const XMLHandle& ref ) : _node( ref._node ) {
+        }
+        /// Assignment
+        XMLHandle& operator=( const XMLHandle& ref )							{
+            _node = ref._node;
+            return *this;
+        }
+
+        /// Get the first child of this handle.
+        XMLHandle FirstChild() 													{
+            return XMLHandle( _node ? _node->FirstChild() : 0 );
+        }
+        /// Get the first child element of this handle.
+        XMLHandle FirstChildElement( const char* name = 0 )						{
+            return XMLHandle( _node ? _node->FirstChildElement( name ) : 0 );
+        }
+        /// Get the last child of this handle.
+        XMLHandle LastChild()													{
+            return XMLHandle( _node ? _node->LastChild() : 0 );
+        }
+        /// Get the last child element of this handle.
+        XMLHandle LastChildElement( const char* name = 0 )						{
+            return XMLHandle( _node ? _node->LastChildElement( name ) : 0 );
+        }
+        /// Get the previous sibling of this handle.
+        XMLHandle PreviousSibling()												{
+            return XMLHandle( _node ? _node->PreviousSibling() : 0 );
+        }
+        /// Get the previous sibling element of this handle.
+        XMLHandle PreviousSiblingElement( const char* name = 0 )				{
+            return XMLHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
+        }
+        /// Get the next sibling of this handle.
+        XMLHandle NextSibling()													{
+            return XMLHandle( _node ? _node->NextSibling() : 0 );
+        }
+        /// Get the next sibling element of this handle.
+        XMLHandle NextSiblingElement( const char* name = 0 )					{
+            return XMLHandle( _node ? _node->NextSiblingElement( name ) : 0 );
+        }
+
+        /// Safe cast to XMLNode. This can return null.
+        XMLNode* ToNode()							{
+            return _node;
+        }
+        /// Safe cast to XMLElement. This can return null.
+        XMLElement* ToElement() 					{
+            return ( _node ? _node->ToElement() : 0 );
+        }
+        /// Safe cast to XMLText. This can return null.
+        XMLText* ToText() 							{
+            return ( _node ? _node->ToText() : 0 );
+        }
+        /// Safe cast to XMLUnknown. This can return null.
+        XMLUnknown* ToUnknown() 					{
+            return ( _node ? _node->ToUnknown() : 0 );
+        }
+        /// Safe cast to XMLDeclaration. This can return null.
+        XMLDeclaration* ToDeclaration() 			{
+            return ( _node ? _node->ToDeclaration() : 0 );
+        }
+
+    private:
+        XMLNode* _node;
+    };
+
+
+/**
+	A variant of the XMLHandle class for working with const XMLNodes and Documents. It is the
+	same in all regards, except for the 'const' qualifiers. See XMLHandle for API.
+*/
+    class TINYXML2_LIB XMLConstHandle
+    {
+    public:
+        explicit XMLConstHandle( const XMLNode* node ) : _node( node ) {
+        }
+        explicit XMLConstHandle( const XMLNode& node ) : _node( &node ) {
+        }
+        XMLConstHandle( const XMLConstHandle& ref ) : _node( ref._node ) {
+        }
+
+        XMLConstHandle& operator=( const XMLConstHandle& ref )							{
+            _node = ref._node;
+            return *this;
+        }
+
+        const XMLConstHandle FirstChild() const											{
+            return XMLConstHandle( _node ? _node->FirstChild() : 0 );
+        }
+        const XMLConstHandle FirstChildElement( const char* name = 0 ) const				{
+            return XMLConstHandle( _node ? _node->FirstChildElement( name ) : 0 );
+        }
+        const XMLConstHandle LastChild()	const										{
+            return XMLConstHandle( _node ? _node->LastChild() : 0 );
+        }
+        const XMLConstHandle LastChildElement( const char* name = 0 ) const				{
+            return XMLConstHandle( _node ? _node->LastChildElement( name ) : 0 );
+        }
+        const XMLConstHandle PreviousSibling() const									{
+            return XMLConstHandle( _node ? _node->PreviousSibling() : 0 );
+        }
+        const XMLConstHandle PreviousSiblingElement( const char* name = 0 ) const		{
+            return XMLConstHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
+        }
+        const XMLConstHandle NextSibling() const										{
+            return XMLConstHandle( _node ? _node->NextSibling() : 0 );
+        }
+        const XMLConstHandle NextSiblingElement( const char* name = 0 ) const			{
+            return XMLConstHandle( _node ? _node->NextSiblingElement( name ) : 0 );
+        }
+
+
+        const XMLNode* ToNode() const				{
+            return _node;
+        }
+        const XMLElement* ToElement() const			{
+            return ( _node ? _node->ToElement() : 0 );
+        }
+        const XMLText* ToText() const				{
+            return ( _node ? _node->ToText() : 0 );
+        }
+        const XMLUnknown* ToUnknown() const			{
+            return ( _node ? _node->ToUnknown() : 0 );
+        }
+        const XMLDeclaration* ToDeclaration() const	{
+            return ( _node ? _node->ToDeclaration() : 0 );
+        }
+
+    private:
+        const XMLNode* _node;
+    };
+
