@@ -114,3 +114,101 @@ inline uint32_t DecodeUTF8ToCodePoint(const uint8_t* str, size_t bytes_available
     }
 
     uint32_t ucs4 = 0xFFFD;
+
+    if (str[0] < 0x80) {  // 1-byte UTF-8 character (ASCII)
+        ucs4 = str[0];
+        *bytes_processed = 1;
+    } else if (str[0] < 0xC2) {  // Invalid UTF-8 character
+        *bytes_processed = 1;
+        // Invalid UTF-8, fallthrough
+    } else if (str[0] < 0xE0) {  // 2-byte UTF-8 character
+        if (bytes_available >= 2 && IsUTF8Continuation(str[1])) {
+            ucs4 = (uint32_t)(str[0] & 0b11111) << 6 | (uint32_t)(str[1] & 0b111111);
+            *bytes_processed = 2;
+        } else {
+            *bytes_processed = 1;
+        }
+    } else if (str[0] < 0xF0) {  // 3-byte UTF-8 character
+        if (bytes_available >= 3 && IsUTF8Continuation(str[1]) && IsUTF8Continuation(str[2])) {
+            ucs4 = (uint32_t)(str[0] & 0b001111) << 12 |
+                   (uint32_t)(str[1] & 0b111111) <<  6 |
+                   (uint32_t)(str[2] & 0b111111) <<  0;
+            *bytes_processed = 3;
+        } else {
+            *bytes_processed = 1;
+        }
+    } else if (str[0] < 0xF8) {  // 4-byte UTF-8 character
+        if (bytes_available >= 4 &&
+                IsUTF8Continuation(str[1]) && IsUTF8Continuation(str[2]) && IsUTF8Continuation((str[3]))) {
+            ucs4 = (uint32_t)(str[0] & 0b000111) << 18 |
+                   (uint32_t)(str[1] & 0b111111) << 12 |
+                   (uint32_t)(str[2] & 0b111111) <<  6 |
+                   (uint32_t)(str[3] & 0b111111) <<  0;
+            *bytes_processed = 4;
+        } else {
+            *bytes_processed = 1;
+        }
+    } else {
+        *bytes_processed = 1;
+    }
+
+    return ucs4;
+}
+
+inline uint32_t DecodeUTF16BEToCodePoint(const uint16_t* str, size_t u16_available, size_t* u16_processed) {
+    if (!u16_available) {
+        *u16_processed = 0;
+        return 0;
+    }
+
+    uint32_t ucs4 = 0xFFFD;
+
+    uint16_t ch = ((str[0] & 0xff) << 8) | ((str[0] & 0xff00) >> 8);
+
+    if (ch < 0xD800 || ch > 0xDFFF) {
+        ucs4 = ch;
+        *u16_processed = 1;
+    } else if (ch >= 0xD800 && ch <= 0xDBFF) {
+        // leading surrogate (high surrogate)
+        if (u16_available < 2) {
+            // Lack of data
+            *u16_processed = 1;
+        } else {
+            uint16_t ch2 = ((str[1] & 0xff) << 8) | ((str[1] & 0xff00) >> 8);
+            if (ch2 >= 0xDC00 && ch2 <= 0xDFFF) {
+                // trailing surrogate (low surrogate)
+                ucs4 = 0x10000 + ((ch - 0xD800) << 10) + (ch2 - 0xDC00);
+                *u16_processed = 2;
+            } else {
+                // Invalid surrogate pair
+                *u16_processed = 1;
+            }
+        }
+    } else if (ch >= 0xDC00 && ch <= 0xDFFF) {
+        // Invalid surrogate pair
+        *u16_processed = 1;
+    }
+
+    return ucs4;
+}
+
+inline std::string ConvertUTF16BEToUTF8(const uint16_t* str, size_t u16_count) {
+    std::string u8str;
+
+    size_t u16_processed = 0;
+
+    while (u16_processed < u16_count) {
+        size_t processed = 0;
+        uint32_t codepoint = DecodeUTF16BEToCodePoint(&str[u16_processed],
+                                                      u16_count - u16_processed,
+                                                      &processed);
+        UTF8AppendCodePoint(u8str, codepoint);
+        u16_processed += processed;
+    }
+
+    return u8str;
+}
+
+}  // namespace aribcaption::utf
+
+#endif  // ARIBCAPTION_UTF_HELPER_HPP
