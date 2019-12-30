@@ -2325,3 +2325,45 @@ namespace tinyxml2
         virtual void Putc( char ch );
 
         inline void Write(const char* data) { Write(data, strlen(data)); }
+
+        void SealElementIfJustOpened();
+        bool _elementJustOpened;
+        DynArray< const char*, 10 > _stack;
+
+    private:
+        /**
+           Prepares to write a new node. This includes sealing an element that was
+           just opened, and writing any whitespace necessary if not in compact mode.
+         */
+        void PrepareForNewNode( bool compactMode );
+        void PrintString( const char*, bool restrictedEntitySet );	// prints out, after detecting entities.
+
+        bool _firstElement;
+        FILE* _fp;
+        int _depth;
+        int _textDepth;
+        bool _processEntities;
+        bool _compactMode;
+
+        enum {
+            ENTITY_RANGE = 64,
+            BUF_SIZE = 200
+        };
+        bool _entityFlag[ENTITY_RANGE];
+        bool _restrictedEntityFlag[ENTITY_RANGE];
+
+        DynArray< char, 20 > _buffer;
+
+        // Prohibit cloning, intentionally not implemented
+        XMLPrinter( const XMLPrinter& );
+        XMLPrinter& operator=( const XMLPrinter& );
+    };
+
+
+}	// tinyxml2
+
+#if defined(_MSC_VER)
+#   pragma warning(pop)
+#endif
+
+#endif // TINYXML2_INCLUDED
