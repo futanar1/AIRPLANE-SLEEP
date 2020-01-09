@@ -15,3 +15,12 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+
+#include "aribcaption/context.h"
+#include "aribcaption/context.hpp"
+
+using namespace aribcaption;
+
+extern "C" {
+
+aribcc_context_t* a
