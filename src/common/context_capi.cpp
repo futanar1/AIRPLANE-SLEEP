@@ -23,4 +23,9 @@ using namespace aribcaption;
 
 extern "C" {
 
-aribcc_context_t* a
+aribcc_context_t* aribcc_context_alloc() {
+    auto ctx = new(std::nothrow) Context;
+    return reinterpret_cast<aribcc_context_t*>(ctx);
+}
+
+void aribcc_context_set_logcat_callback
