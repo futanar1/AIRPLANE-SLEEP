@@ -28,4 +28,7 @@ aribcc_context_t* aribcc_context_alloc() {
     return reinterpret_cast<aribcc_context_t*>(ctx);
 }
 
-void aribcc_context_set_logcat_callback
+void aribcc_context_set_logcat_callback(aribcc_context_t* context, aribcc_logcat_callback_t callback, void* userdata) {
+    auto ctx = reinterpret_cast<Context*>(context);
+    if (callback) {
+ 
