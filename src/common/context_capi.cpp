@@ -32,4 +32,11 @@ void aribcc_context_set_logcat_callback(aribcc_context_t* context, aribcc_logcat
     auto ctx = reinterpret_cast<Context*>(context);
     if (callback) {
         ctx->SetLogcatCallback([callback, userdata] (LogLevel level, const char* message) {
-            callback(static_cast<aribcc
+            callback(static_cast<aribcc_loglevel_t>(level), message, userdata);
+        });
+    } else {
+        ctx->SetLogcatCallback(nullptr);
+    }
+}
+
+void aribcc_conte
