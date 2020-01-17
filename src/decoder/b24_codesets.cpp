@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2022 magicxqq <xqq@xqq.im>. All rights reserved.
  *
@@ -16,32 +17,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "aribcaption/context.h"
-#include "aribcaption/context.hpp"
+#include "decoder/b24_codesets.hpp"
 
-using namespace aribcaption;
+namespace aribcaption {
 
-extern "C" {
-
-aribcc_context_t* aribcc_context_alloc() {
-    auto ctx = new(std::nothrow) Context;
-    return reinterpret_cast<aribcc_context_t*>(ctx);
-}
-
-void aribcc_context_set_logcat_callback(aribcc_context_t* context, aribcc_logcat_callback_t callback, void* userdata) {
-    auto ctx = reinterpret_cast<Context*>(context);
-    if (callback) {
-        ctx->SetLogcatCallback([callback, userdata] (LogLevel level, const char* message) {
-            callback(static_cast<aribcc_loglevel_t>(level), message, userdata);
-        });
-    } else {
-        ctx->SetLogcatCallback(nullptr);
-    }
-}
-
-void aribcc_context_free(aribcc_context_t* context) {
-    auto ctx = reinterpret_cast<Context*>(context);
-    delete ctx;
-}
-
-}  // extern "C"
+extern const std::unordered_map<uint8_t, CodesetEntry> kGCodesetByF = {
+    {0x42, kKanjiEntry},
+    {0x4a, kAlphanumericEntry},
+    {0x4b, kLatinExtensionEntry},
