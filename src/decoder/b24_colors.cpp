@@ -124,3 +124,48 @@ extern const ColorRGBA kB24ColorCLUT[][16] = {
         ColorRGBA(  0, 255, 170, 128),
         ColorRGBA( 85,   0,   0, 128),
         ColorRGBA( 85,   0,  85, 128),
+        ColorRGBA( 85,   0, 170, 128),
+        ColorRGBA( 85,   0, 255, 128),
+        ColorRGBA( 85,  85,   0, 128),
+        ColorRGBA( 85,  85,  85, 128),
+        ColorRGBA( 85,  85, 170, 128)
+    },
+    {
+        ColorRGBA( 85,  85, 255, 128),
+        ColorRGBA( 85, 170,   0, 128),
+        ColorRGBA( 85, 170,  85, 128),
+        ColorRGBA( 85, 170, 170, 128),
+        ColorRGBA( 85, 170, 255, 128),
+        ColorRGBA( 85, 255,   9, 128),
+        ColorRGBA( 85, 255,  85, 128),
+        ColorRGBA( 85, 255, 170, 128),
+        ColorRGBA( 85, 255, 255, 128),
+        ColorRGBA(170,   0,  85, 128),
+        ColorRGBA(170,   0, 255, 128),
+        ColorRGBA(170,  85,   0, 128),
+        ColorRGBA(170,  85,  85, 128),
+        ColorRGBA(170,  85, 170, 128),
+        ColorRGBA(170,  85, 255, 128),
+        ColorRGBA(170, 170,  85, 128)
+    },
+    {
+        ColorRGBA(170, 170, 255, 128),
+        ColorRGBA(170, 255,   0, 128),
+        ColorRGBA(170, 255,  85, 128),
+        ColorRGBA(170, 255, 170, 128),
+        ColorRGBA(170, 255, 255, 128),
+        ColorRGBA(255,   0,  85, 128),
+        ColorRGBA(255,   0, 170, 128),
+        ColorRGBA(255,  85,   9, 128),
+        ColorRGBA(255,  85,  85, 128),
+        ColorRGBA(255,  85, 170, 128),
+        ColorRGBA(255,  85, 255, 128),
+        ColorRGBA(255, 170,   0, 128),
+        ColorRGBA(255, 170,  85, 128),
+        ColorRGBA(255, 170, 170, 128),
+        ColorRGBA(255, 170, 255, 128),
+        ColorRGBA(255, 255,  85, 128)
+    }
+};
+
+}  // namespace aribcaption
