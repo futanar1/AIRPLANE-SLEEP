@@ -16,4 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
  
-#ifndef
+#ifndef ARIBCAPTION_B24_CONTROLSETS_HPP
+#define ARIBCAPTION_B24_CONTROLSETS_HPP
+
+#include <cstdint>
+
+namespace aribcaption {
+
+enum C0 : uint8_t {
+    NUL = 0x
