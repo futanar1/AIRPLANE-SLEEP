@@ -24,4 +24,14 @@
 namespace aribcaption {
 
 enum C0 : uint8_t {
-    NUL = 0x
+    NUL = 0x00,
+    BEL = 0x07,
+    APB = 0x08,
+    APF = 0x09,
+    APD = 0x0A,
+    APU = 0x0B,
+    CS = 0x0C,
+    APR = 0x0D,
+    LS1 = 0x0E,
+    LS0 = 0x0F,
+    PAPF = 0x16,
