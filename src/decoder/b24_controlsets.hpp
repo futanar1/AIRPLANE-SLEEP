@@ -46,4 +46,13 @@ enum C0 : uint8_t {
 };
 
 enum C1 : uint8_t {
-    DEL = 
+    DEL = 0x7F,
+    BKF = 0x80,
+    RDF = 0x81,
+    GRF = 0x82,
+    YLF = 0x83,
+    BLF = 0x84,
+    MGF = 0x85,
+    CNF = 0x86,
+    WHF = 0x87,
+  
