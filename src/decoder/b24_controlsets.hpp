@@ -35,3 +35,15 @@ enum C0 : uint8_t {
     LS1 = 0x0E,
     LS0 = 0x0F,
     PAPF = 0x16,
+    CAN = 0x18,
+    SS2 = 0x19,
+    ESC = 0x1B,
+    APS = 0x1C,
+    SS3 = 0x1D,
+    RS = 0x1E,
+    US = 0x1F,
+    SP = 0x20
+};
+
+enum C1 : uint8_t {
+    DEL = 
