@@ -55,4 +55,14 @@ enum C1 : uint8_t {
     MGF = 0x85,
     CNF = 0x86,
     WHF = 0x87,
-  
+    SSZ = 0x88,
+    MSZ = 0x89,
+    NSZ = 0x8A,
+    SZX = 0x8B,
+    COL = 0x90,
+    FLC = 0x91,
+    CDC = 0x92,
+    POL = 0x93,
+    WMM = 0x94,
+    MACRO = 0x95,
+    HL
