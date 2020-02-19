@@ -65,4 +65,15 @@ enum C1 : uint8_t {
     POL = 0x93,
     WMM = 0x94,
     MACRO = 0x95,
-    HL
+    HLC = 0x97,
+    RPC = 0x98,
+    SPL = 0x99,
+    STL = 0x9A,
+    CSI = 0x9B,
+    TIME = 0x9D
+};
+
+enum ESC : uint8_t {
+    LS2 = 0x6E,
+    LS3 = 0x6F,
+    L
