@@ -76,4 +76,14 @@ enum C1 : uint8_t {
 enum ESC : uint8_t {
     LS2 = 0x6E,
     LS3 = 0x6F,
-    L
+    LS1R = 0x7E,
+    LS2R = 0x7D,
+    LS3R = 0x7C
+};
+
+enum CSI : uint8_t {
+    GSM = 0x42,
+    SWF = 0x53,
+    CCC = 0x54,
+    SDF = 0x56,
+    SSM 
