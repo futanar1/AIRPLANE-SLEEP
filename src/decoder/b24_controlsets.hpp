@@ -94,4 +94,13 @@ enum CSI : uint8_t {
     GAA = 0x5D,
     SRC = 0x5E,
     SDP = 0x5F,
-    AC
+    ACPS = 0x61,
+    TCC = 0x62,
+    ORN = 0x63,
+    MDF = 0x64,
+    CFS = 0x65,
+    XCS = 0x66,
+    SCR = 0x67,
+    PRA = 0x68,
+    ACS = 0x69,
+ 
