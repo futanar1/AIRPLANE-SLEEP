@@ -86,4 +86,12 @@ enum CSI : uint8_t {
     SWF = 0x53,
     CCC = 0x54,
     SDF = 0x56,
-    SSM 
+    SSM = 0x57,
+    SHS = 0x58,
+    SVS = 0x59,
+    PLD = 0x5B,
+    PLU = 0x5C,
+    GAA = 0x5D,
+    SRC = 0x5E,
+    SDP = 0x5F,
+    AC
