@@ -103,4 +103,12 @@ enum CSI : uint8_t {
     SCR = 0x67,
     PRA = 0x68,
     ACS = 0x69,
- 
+    UED = 0x6A,
+    RCS = 0x6E,
+    SCS = 0x6F
+};
+
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_B24_CONTROLSETS_HPP
