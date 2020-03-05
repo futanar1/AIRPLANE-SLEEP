@@ -16,4 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef ARIBCAPTION_B24_DRCS_CONV_
+#ifndef ARIBCAPTION_B24_DRCS_CONV_HPP
+#define ARIBCAPTION_B24_DRCS_CONV_HPP
+
+#include <cstdint>
+#include <string>
+#include <unordered_map>
+
+namespace aribcaption {
+
+// MD5 => UCS4, for co
