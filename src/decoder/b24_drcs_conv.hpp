@@ -25,4 +25,6 @@
 
 namespace aribcaption {
 
-// MD5 => UCS4, for co
+// MD5 => UCS4, for common DRCS patterns
+// Definition has been moved into b24_drcs_conv.cpp due to VS2017 compiler bug
+extern const std::unorder
