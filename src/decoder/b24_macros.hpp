@@ -44,4 +44,4 @@ inline constexpr uint8_t kDefaultMacros[][20] = {
 
 }  // namespace aribcaption
 
-#endif  // ARIBCAPTION_B
+#endif  // ARIBCAPTION_B24_MACROS_HPP
