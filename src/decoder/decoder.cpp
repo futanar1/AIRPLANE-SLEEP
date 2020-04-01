@@ -25,4 +25,8 @@ Decoder::Decoder(Context& context) : pimpl_(std::make_unique<internal::DecoderIm
 
 Decoder::~Decoder() = default;
 
-Decoder::Decoder(Decoder&&) noex
+Decoder::Decoder(Decoder&&) noexcept = default;
+
+Decoder& Decoder::operator=(Decoder&&) noexcept = default;
+
+bool Decoder::Initialize(EncodingScheme encoding_scheme
