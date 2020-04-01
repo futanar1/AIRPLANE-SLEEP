@@ -21,4 +21,8 @@
 
 namespace aribcaption {
 
-Decoder::Decoder(Context& context) 
+Decoder::Decoder(Context& context) : pimpl_(std::make_unique<internal::DecoderImpl>(context)) {}
+
+Decoder::~Decoder() = default;
+
+Decoder::Decoder(Decoder&&) noex
