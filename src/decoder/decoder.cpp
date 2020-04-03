@@ -29,4 +29,7 @@ Decoder::Decoder(Decoder&&) noexcept = default;
 
 Decoder& Decoder::operator=(Decoder&&) noexcept = default;
 
-bool Decoder::Initialize(EncodingScheme encoding_scheme
+bool Decoder::Initialize(EncodingScheme encoding_scheme, CaptionType type, Profile profile, LanguageId language_id) {
+    return pimpl_->Initialize(encoding_scheme, type, profile, language_id);
+}
+
