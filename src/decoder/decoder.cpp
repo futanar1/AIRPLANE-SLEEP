@@ -33,3 +33,8 @@ bool Decoder::Initialize(EncodingScheme encoding_scheme, CaptionType type, Profi
     return pimpl_->Initialize(encoding_scheme, type, profile, language_id);
 }
 
+void Decoder::SetEncodingScheme(EncodingScheme encoding_scheme) {
+    pimpl_->SetEncodingScheme(encoding_scheme);
+}
+
+void Decoder::
