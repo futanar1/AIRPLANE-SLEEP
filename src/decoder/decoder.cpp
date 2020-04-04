@@ -37,4 +37,12 @@ void Decoder::SetEncodingScheme(EncodingScheme encoding_scheme) {
     pimpl_->SetEncodingScheme(encoding_scheme);
 }
 
-void Decoder::
+void Decoder::SetCaptionType(CaptionType type) {
+    pimpl_->SetCaptionType(type);
+}
+
+void Decoder::SetProfile(Profile profile) {
+    pimpl_->SetProfile(profile);
+}
+
+void Decode
