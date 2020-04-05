@@ -49,4 +49,9 @@ void Decoder::SwitchLanguage(LanguageId language_id) {
     pimpl_->SwitchLanguage(language_id);
 }
 
-void Decoder::SetReplaceMSZFullWidthAlphanum
+void Decoder::SetReplaceMSZFullWidthAlphanumeric(bool replace) {
+    pimpl_->SetReplaceMSZFullWidthAlphanumeric(replace);
+}
+
+uint32_t Decoder::QueryISO6392LanguageCode(LanguageId language_id) const {
+    return pi
