@@ -54,4 +54,7 @@ void Decoder::SetReplaceMSZFullWidthAlphanumeric(bool replace) {
 }
 
 uint32_t Decoder::QueryISO6392LanguageCode(LanguageId language_id) const {
-    return pi
+    return pimpl_->QueryISO6392LanguageCode(language_id);
+}
+
+DecodeStatus Decoder::Decode(const uint8_t* pes_data, size_t length, int64_t pts, DecodeResult& out_resul
