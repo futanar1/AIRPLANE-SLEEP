@@ -45,4 +45,8 @@ void Decoder::SetProfile(Profile profile) {
     pimpl_->SetProfile(profile);
 }
 
-void Decode
+void Decoder::SwitchLanguage(LanguageId language_id) {
+    pimpl_->SwitchLanguage(language_id);
+}
+
+void Decoder::SetReplaceMSZFullWidthAlphanum
