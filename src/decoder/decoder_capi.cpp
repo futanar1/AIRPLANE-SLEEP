@@ -156,3 +156,11 @@ aribcc_decode_status_t aribcc_decoder_decode(aribcc_decoder_t* decoder,
     }
 
     return static_cast<aribcc_decode_status_t>(status);
+}
+
+void aribcc_decoder_flush(aribcc_decoder_t* decoder) {
+    auto impl = reinterpret_cast<DecoderImpl*>(decoder);
+    impl->Flush();
+}
+
+}  // extern "C"
