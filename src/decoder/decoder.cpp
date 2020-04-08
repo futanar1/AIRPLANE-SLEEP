@@ -57,4 +57,12 @@ uint32_t Decoder::QueryISO6392LanguageCode(LanguageId language_id) const {
     return pimpl_->QueryISO6392LanguageCode(language_id);
 }
 
-DecodeStatus Decoder::Decode(const uint8_t* pes_data, size_t length, int64_t pts, DecodeResult& out_resul
+DecodeStatus Decoder::Decode(const uint8_t* pes_data, size_t length, int64_t pts, DecodeResult& out_result) {
+    return pimpl_->Decode(pes_data, length, pts, out_result);
+}
+
+void Decoder::Flush() {
+    pimpl_->Flush();
+}
+
+}  // namespace aribcaption
