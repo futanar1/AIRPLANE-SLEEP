@@ -268,3 +268,156 @@ void DecoderImpl::ResetGraphicSets() {
     GL_ = &GX_[0];
     GR_ = &GX_[2];
 }
+
+void DecoderImpl::ResetWritingFormat() {
+    if (profile_ == Profile::kProfileA) {
+        switch (swf_) {
+            case 5:   // 1920 x 1080 horizontal
+                caption_plane_width_ = display_area_width_ = 1920;
+                caption_plane_height_ = display_area_height_ = 1080;
+                char_width_ = 36;
+                char_height_ = 36;
+                char_horizontal_spacing_ = 4;
+                char_vertical_spacing_ = 24;
+                break;
+            case 8:   // 960 x 540 vertical
+                caption_plane_width_ = display_area_width_ = 960;
+                caption_plane_height_ = display_area_height_ = 540;
+                char_width_ = 36;
+                char_height_ = 36;
+                char_horizontal_spacing_ = 12;
+                char_vertical_spacing_ = 24;
+                break;
+            case 9:   // 720 x 480 horizontal
+                caption_plane_width_ = display_area_width_ = 720;
+                caption_plane_height_ = display_area_height_ = 480;
+                char_width_ = 36;
+                char_height_ = 36;
+                char_horizontal_spacing_ = 4;
+                char_vertical_spacing_ = 16;
+                break;
+            case 10:  // 720 x 480 vertical
+                caption_plane_width_ = display_area_width_ = 720;
+                caption_plane_height_ = display_area_height_ = 480;
+                char_width_ = 36;
+                char_height_ = 36;
+                char_horizontal_spacing_ = 8;
+                char_vertical_spacing_ = 24;
+                break;
+            case 7:   // 960 x 540 horizontal
+            default:
+                caption_plane_width_ = display_area_width_ = 960;
+                caption_plane_height_ = display_area_height_ = 540;
+                char_width_ = 36;
+                char_height_ = 36;
+                char_horizontal_spacing_ = 4;
+                char_vertical_spacing_ = 24;
+                break;
+        }
+    } else if (profile_ == Profile::kProfileC) {
+        caption_plane_width_ = display_area_width_ = 320;
+        caption_plane_height_ = display_area_height_ = 180;
+        char_width_ = 18;
+        char_height_ = 18;
+        char_horizontal_spacing_ = 2;
+        char_vertical_spacing_ = 6;
+    }
+
+    if (active_encoding_ == EncodingScheme::kABNT_NBR_15606_1_Latin) {
+        char_horizontal_spacing_ = 2;
+        char_vertical_spacing_ = 16;
+    }
+}
+
+void DecoderImpl::ResetInternalState() {
+    ResetGraphicSets();
+    ResetWritingFormat();
+
+    display_area_start_x_ = 0;
+    display_area_start_y_ = 0;
+    active_pos_inited_ = false;
+    active_pos_x_ = 0;
+    active_pos_y_ = 0;
+
+    if (active_encoding_ == EncodingScheme::kABNT_NBR_15606_1_Latin) {
+        // Latin language: Use 1/2 x 1 middle size (MSZ) as default
+        char_horizontal_scale_ = 0.5f;
+        char_vertical_scale_ = 1.0f;
+    } else {
+        // Japanese: Use normal size (NSZ) as default
+        char_horizontal_scale_ = 1.0f;
+        char_vertical_scale_ = 1.0f;
+    }
+
+    has_underline_ = false;
+    has_bold_ = false;
+    has_italic_ = false;
+    has_stroke_ = false;
+    stroke_color_ = ColorRGBA();
+    enclosure_style_ = EnclosureStyle::kEnclosureStyleNone;
+
+    has_builtin_sound_ = false;
+    builtin_sound_id_ = 0;
+
+    palette_ = 0;
+    text_color_ = kB24ColorCLUT[palette_][7];
+    back_color_ = kB24ColorCLUT[palette_][8];
+}
+
+bool DecoderImpl::ParseCaptionManagementData(const uint8_t* data, size_t length) {
+    if (length < 10) {
+        log_->e("DecoderImpl: Data not enough for parsing CaptionManagementData");
+        return false;
+    }
+
+    uint8_t TMD = (data[0] & 0b11000000) >> 6;
+    size_t offset = 1;
+
+    if (TMD == 0b10) {
+        offset += 5; // Skip OTM
+    }
+
+    uint8_t num_languages = data[offset];
+    offset += 1;
+
+    if (num_languages == 0 || num_languages > 2) {
+        log_->e("DecoderImpl: Invalid num_languages: %u, maximum: 2", num_languages);
+        return false;
+    }
+    language_infos_.resize(num_languages);
+
+    for (uint8_t i = 0; i < num_languages; i++) {
+        if (offset + 6 > length) {
+            log_->e("DecoderImpl: Data not enough for parsing language specific info in CaptionManagementData");
+            return false;
+        }
+
+        LanguageInfo language_info;
+        uint32_t language_tag = ((data[offset] & 0b11100000) >> 5);
+        language_info.language_id = static_cast<LanguageId>(language_tag + 1);
+        uint8_t DMF = language_info.DMF = data[offset] & 0b00001111;
+        offset += 1;
+
+        if (DMF == 0b1100 || DMF == 0b1101 || DMF == 0b1110) {
+            offset += 1;
+        }
+
+        language_info.iso6392_language_code = ((uint32_t)data[offset + 0] << 16) |
+                                              ((uint32_t)data[offset + 1] <<  8) |
+                                              ((uint32_t)data[offset + 2] <<  0);
+        offset += 3;
+        language_info.format = (data[offset] & 0b11110000) >> 4;
+        language_info.TCS = (data[offset] & 0b00001100) >> 2;
+        offset += 1;
+
+        if (language_info.language_id == this->language_id_) {
+            current_iso6392_language_code_ = language_info.iso6392_language_code;
+            swf_ = language_info.format - 1;
+            ResetGraphicSets();
+            ResetWritingFormat();
+        }
+
+        language_infos_[language_tag] = language_info;
+    }
+
+    if (request_encoding_ == EncodingScheme::kAuto) {
