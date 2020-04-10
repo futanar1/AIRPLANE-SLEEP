@@ -561,3 +561,156 @@ bool DecoderImpl::ParseStatementBody(const uint8_t* data, size_t length) {
 
         if (!ret) {
             log_->e("DecoderImpl: Parse character 0x%02X failed near 0x%04zX", data[offset], offset);
+            return false;
+        }
+        offset += bytes_processed;
+    }
+
+    return true;
+}
+
+bool DecoderImpl::ParseDRCS(const uint8_t* data, size_t length, size_t byte_count) {
+    if (length == 0) {
+        log_->e("DecoderImpl: Data not enough for parsing DRCS");
+        return false;
+    }
+
+    size_t offset = 0;
+    uint8_t number_of_code = data[offset];
+    offset += 1;
+
+    for (uint8_t i = 0; i < number_of_code; i++) {
+        if (offset + 3 > length) {
+            log_->e("DecoderImpl: Data not enough for parsing DRCS");
+            return false;
+        }
+
+        uint16_t character_code = ((uint16_t)data[offset] << 8) | data[offset + 1];
+        uint8_t number_of_font = data[offset + 2];
+        offset += 3;
+
+        for (uint8_t j = 0; j < number_of_font; j++) {
+            if (offset + 4 > length) {
+                log_->e("DecoderImpl: Data not enough for parsing DRCS");
+                return false;
+            }
+
+            [[maybe_unused]] uint8_t font_id = (data[offset] & 0xF0) >> 4;
+            uint8_t mode = data[offset] & 0x0F;
+            offset += 1;
+
+            if (mode == 0b0000 || mode == 0b0001) {
+                uint8_t depth = data[offset] + 2;
+                uint8_t width = data[offset + 1];
+                uint8_t height = data[offset + 2];
+                offset += 3;
+
+                uint8_t depth_bits = ([](uint8_t n) -> uint8_t {
+                    uint8_t count = 0;
+                    while (n) {
+                        if ((n & 1) == 0) count++;
+                        n >>= 1;
+                    }
+                    return count;
+                })(depth);
+                size_t bitmap_size = width * height * depth_bits / 8;
+
+                if (offset + bitmap_size > length) {
+                    log_->e("DecoderImpl: Data not enough for parsing DRCS");
+                    return false;
+                }
+
+                DRCS drcs;
+                drcs.width = static_cast<int>(width);
+                drcs.height = static_cast<int>(height);
+                drcs.depth = static_cast<int>(depth);
+                drcs.depth_bits = static_cast<int>(depth_bits);
+                drcs.pixels.assign(data + offset, data + offset + bitmap_size);
+                offset += bitmap_size;
+
+                drcs.md5 = md5::GetDigest(drcs.pixels.data(), bitmap_size);
+
+                // Find alternative replacement
+                auto iter = kDRCSReplacementMap.find(drcs.md5);
+                if (iter != kDRCSReplacementMap.end()) {
+                    drcs.alternative_ucs4 = iter->second;
+                    utf::UTF8AppendCodePoint(drcs.alternative_text, iter->second);
+                } else {
+                    log_->w("DecoderImpl: Cannot convert unrecognized DRCS pattern with MD5 %s to Unicode", drcs.md5.c_str());
+                }
+
+                if (byte_count == 1) {
+                    uint8_t index = ((character_code & 0x0F00) >> 8) + 0x40;
+                    uint16_t ch = (character_code & 0x00FF) & 0x7F;
+                    CodesetEntry entry = kDRCSCodesetByF.at(index);
+                    size_t map_index = static_cast<uint8_t>(entry.graphics_set) -
+                                       static_cast<uint8_t>(GraphicSet::kDRCS_0);
+                    drcs_maps_[map_index].insert_or_assign(ch, std::move(drcs));
+                } else if (byte_count == 2) {
+                    uint16_t ch = character_code;
+                    ch = ch >= 0xEC00 && ch <= 0xF8FF ? ch : ch & 0x7F7F;
+                    drcs_maps_[0].insert_or_assign(ch, std::move(drcs));
+                }
+            } else {
+                if (offset + 4 > length) {
+                    log_->e("DecoderImpl: Data not enough for parsing DRCS");
+                    return false;
+                }
+
+                [[maybe_unused]] uint8_t region_x = data[offset];
+                [[maybe_unused]] uint8_t region_y = data[offset + 1];
+                size_t geometric_data_length = ((size_t)data[offset + 2] << 8) |
+                                               ((size_t)data[offset + 3] << 0);
+                offset += 4 + geometric_data_length;
+            }
+        }
+    }
+
+    return true;
+}
+
+
+bool DecoderImpl::HandleC0(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed) {
+    size_t bytes = 0;
+
+    switch (data[0]) {
+        case C0::NUL:  // Null
+        case C0::BEL:  // Bell
+            bytes = 1;
+            break;
+        case C0::APB:  // Active position backward
+            MoveRelativeActivePos(-1, 0);
+            bytes = 1;
+            break;
+        case C0::APF:  // Active position forward
+            MoveRelativeActivePos(1, 0);
+            bytes = 1;
+            break;
+        case C0::APD:  // Active position down
+            MoveRelativeActivePos(0, 1);
+            bytes = 1;
+            break;
+        case C0::APU:  // Active position up
+            MoveRelativeActivePos(0, -1);
+            bytes = 1;
+            break;
+        case C0::CS: { // Clear screen
+            ResetInternalState();
+            caption_->flags = static_cast<CaptionFlags>(caption_->flags | CaptionFlags::kCaptionFlagsClearScreen);
+            bytes = 1;
+            break;
+        }
+        case C0::APR:  // Active position return
+            utf::UTF8AppendCodePoint(caption_->text, 0x000A);  // \n
+            MoveActivePosToNewline();
+            bytes = 1;
+            break;
+        case C0::LS1:  // Locking shift 1
+            GL_ = &GX_[1];
+            bytes = 1;
+            break;
+        case C0::LS0:  // Locking shift 0
+            GL_ = &GX_[0];
+            bytes = 1;
+            break;
+        case C0::PAPF: { // Parameterized active position forward
