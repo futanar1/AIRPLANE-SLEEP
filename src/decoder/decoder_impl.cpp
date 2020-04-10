@@ -421,3 +421,143 @@ bool DecoderImpl::ParseCaptionManagementData(const uint8_t* data, size_t length)
     }
 
     if (request_encoding_ == EncodingScheme::kAuto) {
+        // Determine encoding scheme by languages exist in caption management data
+        EncodingScheme detected_encoding = DetectEncodingScheme();
+        if (active_encoding_ != detected_encoding) {
+            active_encoding_ = detected_encoding;
+            ResetInternalState();
+        }
+    }
+
+    if (offset + 3 > length) {
+        log_->e("DecoderImpl: Data not enough for parsing CaptionManagementData");
+        return false;
+    }
+
+    size_t data_unit_loop_length = ((size_t)data[offset + 0] << 16) |
+                                   ((size_t)data[offset + 1] <<  8) |
+                                   ((size_t)data[offset + 2] <<  0);
+    offset += 3;
+
+    if (data_unit_loop_length == 0) {
+        return true;
+    } else if (offset + data_unit_loop_length > length) {
+        log_->e("DecoderImpl: Data not enough for parsing CaptionManagementData");
+        return false;
+    }
+
+    bool ret = ParseDataUnit(data + offset, data_unit_loop_length);
+    return ret;
+}
+
+bool DecoderImpl::ParseCaptionStatementData(const uint8_t* data, size_t length) {
+    if (length < 4) {
+        log_->e("DecoderImpl: Data not enough for parsing CaptionStatementData");
+        return false;
+    }
+
+    uint8_t TMD = (data[0] & 0b11000000) >> 6;
+    size_t offset = 1;
+
+    if (TMD == 0b01 || TMD == 0b10) {
+        offset += 5;
+    }
+
+    if (offset + 4 > length) {
+        log_->e("DecoderImpl: Data not enough for parsing CaptionStatementData");
+        return false;
+    }
+
+    size_t data_unit_loop_length = ((size_t)data[offset + 0] << 16) |
+                                   ((size_t)data[offset + 1] <<  8) |
+                                   ((size_t)data[offset + 2] <<  0);
+    offset += 3;
+
+    if (data_unit_loop_length == 0) {
+        return true;
+    } else if (offset + data_unit_loop_length > length) {
+        log_->e("DecoderImpl: Data not enough for parsing CaptionStatementData");
+        return false;
+    }
+
+    bool ret = ParseDataUnit(data + offset, data_unit_loop_length);
+    return ret;
+}
+
+bool DecoderImpl::ParseDataUnit(const uint8_t* data, size_t length) {
+    size_t offset = 0;
+
+    while (offset < length) {
+        if (offset + 5 > length) {
+            log_->e("DecoderImpl: Data not enough for parsing DataUnit");
+            return false;
+        }
+
+        uint8_t unit_separator = data[offset];
+        uint8_t data_unit_parameter = data[offset + 1];
+        size_t data_unit_size = ((size_t)data[offset + 2] << 16) |
+                                ((size_t)data[offset + 3] <<  8) |
+                                ((size_t)data[offset + 4] <<  0);
+
+        if (unit_separator != 0x1F) {
+            log_->e("DecoderImpl: Invalid unit_separator: 0x%02X", unit_separator);
+            return false;
+        }
+
+        if (data_unit_size == 0) {
+            return true;
+        } else if (offset + 5 + data_unit_size > length) {
+            log_->e("DecoderImpl: Data not enough for parsing DataUnit");
+            return false;
+        }
+
+        if (data_unit_parameter == 0x20) {
+            ParseStatementBody(data + offset + 5, data_unit_size);
+        } else if (data_unit_parameter == 0x30) {
+            ParseDRCS(data + offset + 5, data_unit_size, 1);
+        } else if (data_unit_parameter == 0x31) {
+            ParseDRCS(data + offset + 5, data_unit_size, 2);
+        }
+
+        offset += 5 + data_unit_size;
+    }
+
+    return true;
+}
+
+bool DecoderImpl::ParseStatementBody(const uint8_t* data, size_t length) {
+    size_t offset = 0;
+    while (offset < length) {
+        uint8_t ch = data[offset];
+        bool ret = false;
+        size_t bytes_processed = 0;
+
+        if (active_encoding_ == EncodingScheme::kARIB_STD_B24_UTF8) {
+            if (ch <= 0x1F) {
+                ret = HandleC0(data + offset, length - offset, &bytes_processed);
+            } else if (ch == 0x7F) {
+                ret = HandleC1(data + offset, length - offset, &bytes_processed);
+            } else if (ch == 0xC2) {
+                if (offset + 1 < length && data[offset + 1] >= 0x80 && data[offset + 1] <= 0x9F) {
+                    ret = HandleC1(data + offset + 1, length - offset - 1, &bytes_processed);
+                    bytes_processed += 1;
+                } else {
+                    ret = HandleUTF8(data + offset, length - offset, &bytes_processed);
+                }
+            } else {
+                ret = HandleUTF8(data + offset, length - offset, &bytes_processed);
+            }
+        } else {
+            if (ch <= 0x20) {
+                ret = HandleC0(data + offset, length - offset, &bytes_processed);
+            } else if (ch < 0x7F) {
+                ret = HandleGLGR(data + offset, length - offset, &bytes_processed, GL_);
+            } else if (ch <= 0xA0) {
+                ret = HandleC1(data + offset, length - offset, &bytes_processed);
+            } else if (ch < 0xFF) {
+                ret = HandleGLGR(data + offset, length - offset, &bytes_processed, GR_);
+            }
+        }
+
+        if (!ret) {
+            log_->e("DecoderImpl: Parse character 0x%02X failed near 0x%04zX", data[offset], offset);
