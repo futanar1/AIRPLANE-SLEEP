@@ -714,3 +714,139 @@ bool DecoderImpl::HandleC0(const uint8_t* data, size_t remain_bytes, size_t* byt
             bytes = 1;
             break;
         case C0::PAPF: { // Parameterized active position forward
+            if (remain_bytes < 2)
+                return false;
+            uint8_t step = data[1] & 0b00111111;
+            MoveRelativeActivePos(static_cast<int>(step), 0);
+            bytes = 2;
+            break;
+        }
+        case C0::CAN:  // Cancel
+            bytes = 1;
+            break;
+        case C0::SS2: { // Single shift 2
+            if (remain_bytes < 2)
+                return false;
+            size_t glgr_bytes = 0;
+            if (!HandleGLGR(data + 1, remain_bytes - 1, &glgr_bytes, &GX_[2]))
+                return false;
+            bytes = 1 + glgr_bytes;
+            break;
+        }
+        case C0::ESC: { // Escape
+            if (remain_bytes < 2)
+                return false;
+            size_t esc_bytes = 0;
+            if (!HandleESC(data + 1, remain_bytes - 1, &esc_bytes))
+                return false;
+            bytes = 1 + esc_bytes;
+            break;
+        }
+        case C0::APS: { // Active position set
+            if (remain_bytes < 3)
+                return false;
+            uint8_t y = data[1] & 0b00111111;
+            uint8_t x = data[2] & 0b00111111;
+            SetAbsoluteActivePos(static_cast<int>(x), static_cast<int>(y));
+            bytes = 3;
+            break;
+        }
+        case C0::SS3: { // Single shift 3
+            if (remain_bytes < 2)
+                return false;
+            size_t glgr_bytes = 0;
+            if (!HandleGLGR(data + 1, remain_bytes - 1, &glgr_bytes, &GX_[3]))
+                return false;
+            bytes = 1 + glgr_bytes;
+            break;
+        }
+        case C0::RS:   // Record separator
+        case C0::US:   // Unit separator
+            bytes = 1;
+            break;
+        case C0::SP:   // Space character
+            if (active_encoding_ == EncodingScheme::kABNT_NBR_15606_1_Latin ||
+                    active_encoding_ == EncodingScheme::kARIB_STD_B24_UTF8) {
+                PushCharacter(0x0020);  // Space (Basic Latin)
+            } else {
+                PushCharacter(0x3000);  // Ideographic Space (CJK)
+            }
+            MoveRelativeActivePos(1, 0);
+            bytes = 1;
+            break;
+        default:
+            bytes = 1;
+            break;
+    }
+
+    *bytes_processed = bytes;
+    return true;
+}
+
+bool DecoderImpl::HandleESC(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed) {
+    size_t bytes = 0;
+
+    switch (data[0]) {
+        case ESC::LS2:
+            GL_ = &GX_[2];
+            bytes = 1;
+            break;
+        case ESC::LS3:
+            GL_ = &GX_[3];
+            bytes = 1;
+            break;
+        case ESC::LS1R:
+            GR_ = &GX_[1];
+            bytes = 1;
+            break;
+        case ESC::LS2R:
+            GR_ = &GX_[2];
+            bytes = 1;
+            break;
+        case ESC::LS3R:
+            GR_ = &GX_[3];
+            bytes = 1;
+            break;
+        default:
+            if (data[0] == 0x24) {  // 2-byte G set or DRCS
+                if (remain_bytes < 2)
+                    return false;
+                if (data[1] >= 0x28 && data[1] <= 0x2B) {
+                    if (remain_bytes < 3)
+                        return false;
+                    uint8_t GX_index = data[1] - 0x28;
+                    if (data[2] == 0x20) {  // 2-byte DRCS
+                        if (remain_bytes < 4)
+                            return false;
+                        GX_[GX_index] = kDRCSCodesetByF.at(data[3]);
+                        bytes = 4;
+                    } else {  // 2-byte G set
+                        GX_[GX_index] = kGCodesetByF.at(data[2]);
+                        bytes = 3;
+                    }
+                } else {  // 2-byte G set
+                    GX_[0] = kGCodesetByF.at(data[1]);
+                    bytes = 2;
+                }
+            } else if (data[0] >= 0x28 && data[0] <= 0x2B) {  // 1-byte G set or DRCS
+                if (remain_bytes < 2)
+                    return false;
+                uint8_t GX_index = data[0] - 0x28;
+                if (data[1] == 0x20) {  // 1-byte DRCS
+                    if (remain_bytes < 3)
+                        return false;
+                    GX_[GX_index] = kDRCSCodesetByF.at(data[2]);
+                    bytes = 3;
+                } else {  // 1-byte G set
+                    GX_[GX_index] = kGCodesetByF.at(data[1]);
+                    bytes = 2;
+                }
+            }
+            break;
+    }
+
+    *bytes_processed = bytes;
+    return true;
+}
+
+bool DecoderImpl::HandleC1(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed) {
