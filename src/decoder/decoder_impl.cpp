@@ -850,3 +850,152 @@ bool DecoderImpl::HandleESC(const uint8_t* data, size_t remain_bytes, size_t* by
 }
 
 bool DecoderImpl::HandleC1(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed) {
+    size_t bytes = 0;
+
+    switch (data[0]) {
+        case C1::DEL:  // Delete character
+            bytes = 1;
+            break;
+        case C1::BKF:  // Black Foreground
+            text_color_ = kB24ColorCLUT[palette_][0];
+            bytes = 1;
+            break;
+        case C1::RDF:  // Red Foreground
+            text_color_ = kB24ColorCLUT[palette_][1];
+            bytes = 1;
+            break;
+        case C1::GRF:  // Green Foreground
+            text_color_ = kB24ColorCLUT[palette_][2];
+            bytes = 1;
+            break;
+        case C1::YLF:  // Yellow Foreground
+            text_color_ = kB24ColorCLUT[palette_][3];
+            bytes = 1;
+            break;
+        case C1::BLF:  // Blue Foreground
+            text_color_ = kB24ColorCLUT[palette_][4];
+            bytes = 1;
+            break;
+        case C1::MGF:  // Magenta Foreground
+            text_color_ = kB24ColorCLUT[palette_][5];
+            bytes = 1;
+            break;
+        case C1::CNF:  // Cyan Foreground
+            text_color_ = kB24ColorCLUT[palette_][6];
+            bytes = 1;
+            break;
+        case C1::WHF:  // White Foreground
+            text_color_ = kB24ColorCLUT[palette_][7];
+            bytes = 1;
+            break;
+        case C1::COL:  // Colour Controls
+            if (remain_bytes < 2)
+                return false;
+            if (data[1] == 0x20) {
+                if (remain_bytes < 3)
+                    return false;
+                palette_ = data[2] & 0x0F;
+                bytes = 3;
+            } else if (data[1] >= 0x48 && data[1] <= 0x7F) {
+                switch (data[1] & 0xF0) {
+                    case 0x40:
+                        text_color_ = kB24ColorCLUT[palette_][data[1] & 0x0F];
+                        break;
+                    case 0x50:
+                        back_color_ = kB24ColorCLUT[palette_][data[1] & 0x0F];
+                        break;
+                    default:
+                        break;
+                }
+                bytes = 2;
+            } else {
+                return false;
+            }
+            break;
+        case C1::POL:  // Pattern Polarity Controls
+            bytes = 2;
+            break;
+        case C1::SSZ:  // Small Size
+            char_horizontal_scale_ = 0.5f;
+            char_vertical_scale_ = 0.5f;
+            bytes = 1;
+            break;
+        case C1::MSZ:  // Middle Size
+            char_horizontal_scale_ = 0.5f;
+            char_vertical_scale_ = 1.0f;
+            bytes = 1;
+            break;
+        case C1::NSZ:  // Normal Size
+            char_horizontal_scale_ = 1.0f;
+            char_vertical_scale_ = 1.0f;
+            bytes = 1;
+            break;
+        case C1::SZX:  // Character Size Controls
+            if (remain_bytes < 2)
+                return false;
+            switch (data[1]) {
+                case 0x41:  // double height
+                    char_vertical_scale_ = 2.0f;
+                    break;
+                case 0x44:  // double width
+                    char_horizontal_scale_ = 2.0f;
+                    break;
+                case 0x45:  // double height and width
+                    char_horizontal_scale_ = 2.0f;
+                    char_vertical_scale_ = 2.0f;
+                    break;
+                default:  // Other values is unused according to ARIB TR-B14
+                    break;
+            }
+            bytes = 2;
+            break;
+        case C1::FLC:  // Flashing control
+            bytes = 2;
+            break;
+        case C1::CDC:  // Conceal Display Controls
+            if (remain_bytes < 2)
+                return false;
+            if (data[1] == 0x20) {
+                if (remain_bytes < 3)
+                    return false;
+                bytes = 3;
+            } else {
+                bytes = 2;
+            }
+            break;
+        case C1::WMM:  // Writing Mode Modification
+            bytes = 2;
+            break;
+        case C1::TIME:  // Time Controls
+            if (remain_bytes < 3)
+                return false;
+            if (data[1] == 0x20) {
+                uint8_t p2 = data[2] & 0b00111111;
+                caption_->wait_duration += static_cast<int64_t>(p2) * 100;
+                caption_->flags = static_cast<CaptionFlags>(caption_->flags | CaptionFlags::kCaptionFlagsWaitDuration);
+                bytes = 3;
+            } else if (data[1] == 0x28) {
+                // Not used according to ARIB TR-B14
+                bytes = 3;
+            } else {
+                // Not used according to ARIB TR-B14
+                return false;
+            }
+            break;
+        case C1::MACRO:  // Macro Command
+            // Not used according to ARIB TR-B14
+            return false;
+        case C1::RPC:  // Repeat Character
+            // TODO
+            if (remain_bytes < 2)
+                return false;
+            bytes = 2;
+            break;
+        case C1::STL:  // Start Lining
+            has_underline_ = true;
+            bytes = 1;
+            break;
+        case C1::SPL:  // Stop Lining
+            has_underline_ = false;
+            bytes = 1;
+            break;
