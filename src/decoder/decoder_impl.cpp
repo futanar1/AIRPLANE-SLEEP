@@ -1280,3 +1280,154 @@ bool DecoderImpl::HandleUTF8(const uint8_t* data, size_t remain_bytes, size_t* b
         // DRCS is mapped into the PUA starts with U+EC00 (STD-B24)
         auto iter = drcs_maps_[0].find(static_cast<uint16_t>(ucs4));
         if (iter == drcs_maps_[0].end()) {
+            // Unfindable DRCS character, insert Geta Mark instead
+            PushCharacter(0x3013);
+        } else {
+            PushDRCSCharacter(ucs4, iter->second);
+        }
+    } else {
+        PushCharacter(ucs4);
+    }
+
+    MoveRelativeActivePos(1, 0);
+
+    return true;
+}
+
+void DecoderImpl::PushCharacter(uint32_t ucs4, uint32_t pua) {
+    CaptionChar caption_char;
+    caption_char.type = CaptionCharType::kText;
+    caption_char.codepoint = ucs4;
+    caption_char.pua_codepoint = pua;
+
+    size_t u8count = utf::UTF8AppendCodePoint(caption_char.u8str, ucs4);
+    caption_char.u8str[u8count] = '\0';
+
+    if (!IsRubyMode()) {
+        utf::UTF8AppendCodePoint(caption_->text, ucs4);
+    }
+
+    ApplyCaptionCharCommonProperties(caption_char);
+    PushCaptionChar(caption_char);
+}
+
+void DecoderImpl::PushDRCSCharacter(uint32_t code, DRCS& drcs) {
+    CaptionChar caption_char;
+
+    if (drcs.alternative_text.empty()) {
+        caption_char.type = CaptionCharType::kDRCS;
+        utf::UTF8AppendCodePoint(caption_->text, 0x3013);  // Fill a Geta Mark here
+    } else {
+        caption_char.type = CaptionCharType::kDRCSReplaced;
+        strcpy(caption_char.u8str, drcs.alternative_text.c_str());
+        caption_char.codepoint = drcs.alternative_ucs4;
+        if (!IsRubyMode())
+            caption_->text.append(drcs.alternative_text);
+    }
+
+    auto iter = caption_->drcs_map.find(code);
+    if (iter == caption_->drcs_map.end()) {
+        caption_->drcs_map.insert({code, drcs});
+    }
+
+    caption_char.drcs_code = code;
+
+    ApplyCaptionCharCommonProperties(caption_char);
+    PushCaptionChar(caption_char);
+}
+
+void DecoderImpl::PushCaptionChar(const CaptionChar& caption_char) {
+    if (NeedNewCaptionRegion()) {
+        MakeNewCaptionRegion();
+    }
+    CaptionRegion& region = caption_->regions.back();
+    region.width += caption_char.section_width();
+    region.chars.push_back(caption_char);
+}
+
+void DecoderImpl::ApplyCaptionCharCommonProperties(CaptionChar& caption_char) {
+    caption_char.x = active_pos_x_;
+    caption_char.y = active_pos_y_ - section_height();
+    caption_char.char_width = char_width_;
+    caption_char.char_height = char_height_;
+    caption_char.char_horizontal_spacing = char_horizontal_spacing_;
+    caption_char.char_vertical_spacing = char_vertical_spacing_;
+    caption_char.char_horizontal_scale = char_horizontal_scale_;
+    caption_char.char_vertical_scale = char_vertical_scale_;
+    caption_char.text_color = text_color_;
+    caption_char.back_color = back_color_;
+
+    if (has_underline_)
+        caption_char.style = static_cast<CharStyle>(caption_char.style | CharStyle::kCharStyleUnderline);
+    if (has_bold_)
+        caption_char.style = static_cast<CharStyle>(caption_char.style | CharStyle::kCharStyleBold);
+    if (has_italic_)
+        caption_char.style = static_cast<CharStyle>(caption_char.style | CharStyle::kCharStyleItalic);
+    if (has_stroke_) {
+        caption_char.style = static_cast<CharStyle>(caption_char.style | CharStyle::kCharStyleStroke);
+        caption_char.stroke_color = stroke_color_;
+    }
+
+    caption_char.enclosure_style = enclosure_style_;
+}
+
+bool DecoderImpl::NeedNewCaptionRegion() {
+    if (caption_->regions.empty()) {
+        // Need new caption region
+        return true;
+    }
+
+    CaptionRegion& prev_region = caption_->regions.back();
+    if (prev_region.chars.empty()) {
+        // Region is empty, reuse
+        return false;
+    }
+
+    CaptionChar& prev_char = prev_region.chars.back();
+
+    if (active_pos_x_ != prev_char.x + prev_char.section_width()) {
+        // Expected pos_x is mismatched, new region will be needed
+        return true;
+    } else if (active_pos_y_ - section_height() != prev_char.y){
+        // Caption Line (pos_y) is different, new region will be needed
+        return true;
+    } else if (section_height() != prev_char.section_height()) {
+        // Section height is different, new region will be needed
+        return true;
+    }
+
+    return false;
+}
+
+void DecoderImpl::MakeNewCaptionRegion() {
+    if (caption_->regions.empty() || !caption_->regions.back().chars.empty()) {
+        caption_->regions.emplace_back();
+    }
+
+    CaptionRegion& region = caption_->regions.back();
+
+    region.x = active_pos_x_;
+    region.y = active_pos_y_ - section_height();
+    region.height = section_height();
+
+    if (IsRubyMode()) {
+        region.is_ruby = true;
+    }
+}
+
+bool DecoderImpl::IsRubyMode() const {
+    if (active_encoding_ != EncodingScheme::kARIB_STD_B24_JIS) {
+        return false;
+    }
+    if ((char_horizontal_scale_ == 0.5f && char_vertical_scale_ == 0.5f) ||
+            (profile_ == Profile::kProfileA && char_width_ == 18 && char_height_ == 18)) {
+        return true;
+    }
+    return false;
+}
+
+int DecoderImpl::section_width() const {
+    return (int)std::floor((float)(char_width_ + char_horizontal_spacing_) * char_horizontal_scale_);
+}
+
+int DecoderImpl::section_height() const {
