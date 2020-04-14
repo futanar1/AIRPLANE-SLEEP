@@ -1149,3 +1149,134 @@ bool DecoderImpl::HandleCSI(const uint8_t* data, size_t remain_bytes, size_t* by
 
 bool DecoderImpl::HandleGLGR(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed, CodesetEntry* entry) {
     uint8_t ch = data[0] & 0x7F;
+    if (ch < 0x21 || ch >= 0x7F) {
+        return false;
+    }
+
+    uint8_t ch2 = 0;
+    if (entry->bytes == 2) {
+        if (remain_bytes < 2) {
+            return false;
+        }
+        ch2 = data[1] & 0x7F;
+        if (ch2 < 0x21 || ch2 >= 0x7F) {
+            return false;
+        }
+    }
+
+    if (entry->graphics_set == GraphicSet::kHiragana ||
+               entry->graphics_set == GraphicSet::kProportionalHiragana) {
+        uint32_t index = (uint32_t)ch - 0x21;
+        uint32_t ucs4 = kHiraganaTable[index];
+        PushCharacter(ucs4);
+        MoveRelativeActivePos(1, 0);
+    } else if (entry->graphics_set == GraphicSet::kKatakana ||
+               entry->graphics_set == GraphicSet::kProportionalKatakana) {
+        uint32_t index = (uint32_t)ch - 0x21;
+        uint32_t ucs4 = kKatakanaTable[index];
+        PushCharacter(ucs4);
+        MoveRelativeActivePos(1, 0);
+    } else if (entry->graphics_set == GraphicSet::kJIS_X0201_Katakana) {
+        uint32_t index = (uint32_t)ch - 0x21;
+        uint32_t ucs4 = kJISX0201KatakanaTable[index];
+        PushCharacter(ucs4);
+        MoveRelativeActivePos(1, 0);
+    } else if (entry->graphics_set == GraphicSet::kKanji ||
+               entry->graphics_set == GraphicSet::kJIS_X0213_2004_Kanji_1 ||
+               entry->graphics_set == GraphicSet::kJIS_X0213_2004_Kanji_2 ||
+               entry->graphics_set == GraphicSet::kAdditionalSymbols) {
+        constexpr uint32_t gaiji_begin_ku = 84;
+        uint32_t ku = (uint32_t)ch - 0x21;
+        uint32_t ten = (uint32_t)ch2 - 0x21;
+
+        uint32_t ucs4 = 0;
+        uint32_t pua = 0;
+
+        if (ku < gaiji_begin_ku) {
+            uint32_t index = ku * 94 + ten;
+            ucs4 = kKanjiTable[index];
+            // If [ucs4 is Fullwidth alphanumeric] && [request replace] && [under MSZ mode]
+            if ((ucs4 >= 0xFF01 && ucs4 <= 0xFF5E) && replace_msz_fullwidth_ascii_ &&
+                char_horizontal_scale_ * 2 == char_vertical_scale_) {
+                // Replace Fullwidth alphanumerics with Halfwidth alphanumerics
+                ucs4 = (ucs4 & 0xFF) + 0x20;
+            }
+        } else {  // ku >= 84
+            // Additional Kanji + Additional Symbols
+            uint32_t index = (ku - gaiji_begin_ku) * 94 + ten;
+            ucs4 = kAdditionalSymbolsTable_Unicode[index];
+            pua = kAdditionalSymbolsTable_PUA[index];
+            if (pua == ucs4 || pua < 0xE000 || pua > 0xF8FF) {
+                // Same as ucs4, or invalid PUA
+                pua = 0;  // mark as non-existent
+            }
+        }
+
+        PushCharacter(ucs4, pua);
+        MoveRelativeActivePos(1, 0);
+    } else if (entry->graphics_set == GraphicSet::kAlphanumeric ||
+               entry->graphics_set == GraphicSet::kProportionalAlphanumeric) {
+        uint32_t index = (uint32_t)ch - 0x21;
+        uint32_t ucs4 = 0;
+        if (active_encoding_ == EncodingScheme::kABNT_NBR_15606_1_Latin) {
+            ucs4 = kAlphanumericTable_Latin[index];
+        } else if (replace_msz_fullwidth_ascii_ && char_horizontal_scale_ * 2 == char_vertical_scale_) {
+            ucs4 = kAlphanumericTable_Halfwidth[index];
+        } else {
+            ucs4 = kAlphanumericTable_Fullwidth[index];
+        }
+        PushCharacter(ucs4);
+        MoveRelativeActivePos(1, 0);
+    } else if (entry->graphics_set == GraphicSet::kLatinExtension) {
+        uint32_t index = (uint32_t)ch - 0x21;
+        uint32_t ucs4 = kLatinExtensionTable[index];
+        PushCharacter(ucs4);
+        MoveRelativeActivePos(1, 0);
+    } else if (entry->graphics_set == GraphicSet::kLatinSpecial) {
+        uint32_t index = (uint32_t)ch - 0x21;
+        uint32_t ucs4 = kLatinSpecialTable[index];
+        PushCharacter(ucs4);
+        MoveRelativeActivePos(1, 0);
+    } else if (entry->graphics_set == GraphicSet::kMacro) {
+        uint8_t key = ch;
+        if (key >= 0x60 && key <= 0x6F) {
+            if (!ParseStatementBody(kDefaultMacros[key & 0x0F], sizeof(kDefaultMacros[0]))) {
+                return false;
+            }
+        }
+    } else if (entry->graphics_set >= GraphicSet::kDRCS_0 &&
+               entry->graphics_set <= GraphicSet::kDRCS_15) {
+        uint32_t map_index = static_cast<uint32_t>(entry->graphics_set) - static_cast<uint32_t>(GraphicSet::kDRCS_0);
+        auto& drcs_map = drcs_maps_[map_index];
+        uint16_t key = ch;
+        if (entry->bytes == 2) {
+            key = (key << 8) | ch2;
+        }
+
+        auto iter = drcs_map.find(key);
+        if (iter == drcs_map.end()) {
+            // Unfindable DRCS character, insert Geta Mark instead
+            PushCharacter(0x3013);
+        } else {
+            DRCS& drcs = iter->second;
+            uint32_t code = (map_index << 16) | key;
+            PushDRCSCharacter(code, drcs);
+        }
+
+        MoveRelativeActivePos(1, 0);
+    } // else: not supported, ignore
+
+    *bytes_processed = entry->bytes;
+    return true;
+}
+
+bool DecoderImpl::HandleUTF8(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed) {
+    if (!remain_bytes) {
+        return false;
+    }
+
+    uint32_t ucs4 = utf::DecodeUTF8ToCodePoint(data, remain_bytes, bytes_processed);
+    if (ucs4 >= 0xEC00 && ucs4 <= 0xF8FF) {
+        // DRCS is mapped into the PUA starts with U+EC00 (STD-B24)
+        auto iter = drcs_maps_[0].find(static_cast<uint16_t>(ucs4));
+        if (iter == drcs_maps_[0].end()) {
