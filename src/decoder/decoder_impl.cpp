@@ -999,3 +999,153 @@ bool DecoderImpl::HandleC1(const uint8_t* data, size_t remain_bytes, size_t* byt
             has_underline_ = false;
             bytes = 1;
             break;
+        case C1::HLC:  // Highlighting Character Block
+            if (remain_bytes < 2)
+                return false;
+            enclosure_style_ = static_cast<EnclosureStyle>(data[1] & 0x0F);
+            bytes = 2;
+            break;
+        case C1::CSI: {  // Control Sequence Introducer
+            size_t csi_bytes = 0;
+            if (!HandleCSI(data + 1, remain_bytes - 1, &csi_bytes))
+                return false;
+            bytes = 1 + csi_bytes;
+            break;
+        }
+        default:
+            bytes = 1;
+            break;
+    }
+
+    *bytes_processed = bytes;
+    return true;
+}
+
+bool DecoderImpl::HandleCSI(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed) {
+    size_t offset = 0;
+
+    uint16_t param1 = 0;
+    uint16_t param2 = 0;
+    size_t param_count = 0;
+
+    while (offset < remain_bytes) {
+        if (data[offset] >= 0x30 && data[offset] <= 0x39) {
+            if (param_count <= 1) {
+                param2 = param2 * 10 + (data[offset] & 0x0F);
+            }
+        } else if (data[offset] == 0x20) {  // I2 / In or I
+            if (param_count == 0) {
+                param1 = param2;
+            }
+            param_count++;
+            break;
+        } else if (data[offset] == 0x3B) {  // I1
+            if (param_count == 0) {
+                param1 = param2;
+                param2 = 0;
+            }
+            param_count++;
+        }
+        offset++;
+    }
+
+    // move to F
+    if (++offset >= remain_bytes) {
+        log_->e("DecoderImpl: Data not enough for handling CSI control character");
+        return false;
+    }
+
+    switch (data[offset]) {
+        case CSI::GSM:  // Character deformation
+            break;
+        case CSI::SWF:  // Set Writing Format
+            if (param_count == 1) {
+                swf_ = static_cast<uint8_t>(param1);
+            }
+            ResetWritingFormat();
+            break;
+        case CSI::CCC:  // Composite Character Composition
+            break;
+        case CSI::SDF:  // Set Display Format
+            display_area_width_ = static_cast<int>(param1);
+            display_area_height_ = static_cast<int>(param2);
+            break;
+        case CSI::SSM:  // Character composition dot designation
+            char_width_ = static_cast<int>(param1);
+            char_height_ = static_cast<int>(param2);
+            break;
+        case CSI::SHS:  // Set Horizontal Spacing
+            char_horizontal_spacing_ = static_cast<int>(param1);
+            break;
+        case CSI::SVS:  // Set Vertical Spacing
+            char_vertical_spacing_ = static_cast<int>(param1);
+            break;
+        case CSI::PLD:  // Partially Line Down
+        case CSI::PLU:  // Partially Line Up
+        case CSI::GAA:  // Colouring block
+        case CSI::SRC:  // Raster Colour Designation
+            break;
+        case CSI::SDP: { // Set Display Position
+            display_area_start_x_ = static_cast<int>(param1);
+            if (param_count >= 2) {
+                display_area_start_y_ = static_cast<int>(param2);
+            }
+            if (!active_pos_inited_) {
+                // Reset active position to top left corner of display area
+                // APS(0, 0)
+                SetAbsoluteActivePos(0, 0);
+            }
+            break;
+        }
+        case CSI::ACPS: // Active Coordinate Position Set
+            SetAbsoluteActiveCoordinateDot(static_cast<int>(param1), static_cast<int>(param2));
+            break;
+        case CSI::TCC:  // Switch control
+            break;
+        case CSI::ORN:  // Ornament Control
+            if (param1 == 0) {
+                has_stroke_ = false;
+            } else if (param1 == 1 && param_count >= 2) {
+                uint16_t p2 = param2 / 100;
+                uint16_t p3 = param2 % 100;
+                if (p2 >= 8 || p3 >= 16)
+                    return false;
+                has_stroke_ = true;
+                stroke_color_ = kB24ColorCLUT[p2][p3];
+            }
+            break;
+        case CSI::MDF:  // Font
+            if (param1 == 0) {
+                has_bold_ = false;
+                has_italic_ = false;
+            } else if (param1 == 1) {
+                has_bold_ = true;
+            } else if (param1 == 2) {
+                has_italic_ = true;
+            } else if (param1 == 3) {
+                has_bold_ = true;
+                has_italic_ = true;
+            }
+            break;
+        case CSI::CFS:  // Character Font Set
+        case CSI::XCS:  // External Character Set
+        case CSI::SCR:
+            break;
+        case CSI::PRA:  // Built-in sound replay
+            has_builtin_sound_ = true;
+            builtin_sound_id_ = static_cast<uint8_t>(param1);
+            break;
+        case CSI::ACS:  // Alternative Character Set
+        case CSI::UED:  // Invisible dataEmbedded control
+        case CSI::RCS:  // Raster Colour command
+        case CSI::SCS:  // Skip Character Set
+        default:
+            break;
+    }
+
+    *bytes_processed = offset + 1;
+    return true;
+}
+
+bool DecoderImpl::HandleGLGR(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed, CodesetEntry* entry) {
+    uint8_t ch = data[0] & 0x7F;
