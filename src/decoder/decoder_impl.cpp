@@ -1431,3 +1431,72 @@ int DecoderImpl::section_width() const {
 }
 
 int DecoderImpl::section_height() const {
+    return (int)std::floor((float)(char_height_ + char_vertical_spacing_) * char_vertical_scale_);
+}
+
+void DecoderImpl::SetAbsoluteActivePos(int x, int y) {
+    active_pos_inited_ = true;
+    active_pos_x_ = display_area_start_x_ + x * section_width();
+    active_pos_y_ = display_area_start_y_ + (y + 1) * section_height();
+}
+
+void DecoderImpl::SetAbsoluteActiveCoordinateDot(int x, int y) {
+    active_pos_inited_ = true;
+    active_pos_x_ = x;
+    active_pos_y_ = y;
+}
+
+void DecoderImpl::MoveRelativeActivePos(int x, int y) {
+    if (active_pos_x_ < 0 || active_pos_y_ < 0) {
+        SetAbsoluteActivePos(0, 0);
+    }
+
+    active_pos_inited_ = true;
+
+    while (x < 0) {
+        active_pos_x_ -= section_width();
+        x++;
+        if (active_pos_x_ < display_area_start_x_) {
+            active_pos_x_ = display_area_start_x_ + display_area_width_ - section_width();
+            y--;
+        }
+    }
+
+    while (x > 0) {
+        active_pos_x_ += section_width();
+        x--;
+        if (active_pos_x_ >= display_area_start_x_ + display_area_width_) {
+            active_pos_x_ = display_area_start_x_;
+            y++;
+        }
+    }
+
+    while (y < 0) {
+        active_pos_y_ -= section_height();
+        y++;
+        if (active_pos_y_ < display_area_start_y_) {
+            active_pos_y_ = display_area_start_y_ + display_area_height_;
+        }
+    }
+
+    while (y > 0) {
+        active_pos_y_ += section_height();
+        y--;
+        if (active_pos_y_ > display_area_start_y_ + display_area_height_) {
+            active_pos_y_ = display_area_start_y_ + section_height();
+        }
+    }
+}
+
+void DecoderImpl::MoveActivePosToNewline() {
+    if (active_pos_x_ < 0 || active_pos_y_ < 0) {
+        SetAbsoluteActivePos(0, 0);
+    }
+
+    active_pos_inited_ = true;
+    active_pos_x_ = display_area_start_x_;
+    active_pos_y_ += section_height();
+}
+
+
+}  // namespace aribcaption::internal
