@@ -19,4 +19,10 @@
 #ifndef ARIBCAPTION_DECODER_IMPL_HPP
 #define ARIBCAPTION_DECODER_IMPL_HPP
 
-#inclu
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <initializer_list>
+#include <memory>
+#include <unordered_map>
+#include "aribcaption/caption.
