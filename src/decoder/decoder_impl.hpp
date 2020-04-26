@@ -31,4 +31,11 @@
 #include "base/logger.hpp"
 #include "decoder/b24_codesets.hpp"
 
-namespace
+namespace aribcaption::internal {
+
+class DecoderImpl {
+public:
+    explicit DecoderImpl(Context& context);
+    ~DecoderImpl();
+public:
+    bool Initialize(EncodingSc
