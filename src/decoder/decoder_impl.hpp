@@ -38,4 +38,6 @@ public:
     explicit DecoderImpl(Context& context);
     ~DecoderImpl();
 public:
-    bool Initialize(EncodingSc
+    bool Initialize(EncodingScheme encoding_scheme = EncodingScheme::kAuto,
+                    CaptionType type = CaptionType::kDefault,
+                    Profile
