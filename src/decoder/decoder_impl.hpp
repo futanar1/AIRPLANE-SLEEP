@@ -40,4 +40,6 @@ public:
 public:
     bool Initialize(EncodingScheme encoding_scheme = EncodingScheme::kAuto,
                     CaptionType type = CaptionType::kDefault,
-                    Profile
+                    Profile profile = Profile::kDefault,
+                    LanguageId language_id = LanguageId::kDefault);
+    void SetEncodingScheme(EncodingScheme encoding_s
