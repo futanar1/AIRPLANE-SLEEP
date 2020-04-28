@@ -42,4 +42,7 @@ public:
                     CaptionType type = CaptionType::kDefault,
                     Profile profile = Profile::kDefault,
                     LanguageId language_id = LanguageId::kDefault);
-    void SetEncodingScheme(EncodingScheme encoding_s
+    void SetEncodingScheme(EncodingScheme encoding_scheme);
+    void SetCaptionType(CaptionType type) { type_ = type; }
+    void SetProfile(Profile profile);
+    void SwitchLanguage(LanguageId language_id
