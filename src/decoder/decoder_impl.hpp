@@ -45,4 +45,7 @@ public:
     void SetEncodingScheme(EncodingScheme encoding_scheme);
     void SetCaptionType(CaptionType type) { type_ = type; }
     void SetProfile(Profile profile);
-    void SwitchLanguage(LanguageId language_id
+    void SwitchLanguage(LanguageId language_id);
+    void SetReplaceMSZFullWidthAlphanumeric(bool replace);
+    [[nodiscard]]
+    uint32_t QueryISO6392LanguageCode(LanguageId lan
