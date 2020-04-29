@@ -50,4 +50,9 @@ public:
     [[nodiscard]]
     uint32_t QueryISO6392LanguageCode(LanguageId language_id) const;
     DecodeStatus Decode(const uint8_t* pes_data, size_t length, int64_t pts, DecodeResult& out_result);
-    void Flu
+    void Flush();
+private:
+    auto DetectEncodingScheme() -> EncodingScheme;
+    void ResetGraphicSets();
+    void ResetWritingFormat();
+    void ResetInternalS
