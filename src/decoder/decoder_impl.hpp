@@ -55,4 +55,6 @@ private:
     auto DetectEncodingScheme() -> EncodingScheme;
     void ResetGraphicSets();
     void ResetWritingFormat();
-    void ResetInternalS
+    void ResetInternalState();
+    bool ParseCaptionManagementData(const uint8_t* data, size_t length);
+    bool ParseCaptionStatementData(const uint8_t* data, size_t lengt
