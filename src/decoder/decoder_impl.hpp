@@ -57,4 +57,6 @@ private:
     void ResetWritingFormat();
     void ResetInternalState();
     bool ParseCaptionManagementData(const uint8_t* data, size_t length);
-    bool ParseCaptionStatementData(const uint8_t* data, size_t lengt
+    bool ParseCaptionStatementData(const uint8_t* data, size_t length);
+    bool ParseDataUnit(const uint8_t* data, size_t length);
+    bool ParseStatementBody(const uint8_t* data, size_t length);
