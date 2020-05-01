@@ -62,4 +62,5 @@ private:
     bool ParseStatementBody(const uint8_t* data, size_t length);
     bool ParseDRCS(const uint8_t* data, size_t length, size_t byte_count);
     bool HandleC0(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed);
-    bool Ha
+    bool HandleESC(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed);
+    bool HandleC1(const uint8_t* data, size_t rem
