@@ -60,3 +60,6 @@ private:
     bool ParseCaptionStatementData(const uint8_t* data, size_t length);
     bool ParseDataUnit(const uint8_t* data, size_t length);
     bool ParseStatementBody(const uint8_t* data, size_t length);
+    bool ParseDRCS(const uint8_t* data, size_t length, size_t byte_count);
+    bool HandleC0(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed);
+    bool Ha
