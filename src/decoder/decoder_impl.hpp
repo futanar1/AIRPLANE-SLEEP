@@ -65,4 +65,5 @@ private:
     bool HandleESC(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed);
     bool HandleC1(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed);
     bool HandleCSI(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed);
-    bool Hand
+    bool HandleGLGR(const uint8_t* data, size_t remain_bytes, size_t* bytes_processed, CodesetEntry* entry);
+    bool HandleUTF8(const uint8
