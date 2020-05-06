@@ -70,4 +70,9 @@ private:
     void PushCharacter(uint32_t ucs4, uint32_t pua = 0);
     void PushDRCSCharacter(uint32_t code, DRCS& drcs);
     void PushCaptionChar(const CaptionChar& caption_char);
-    void ApplyCaptionCharCommonProperties(CaptionChar& c
+    void ApplyCaptionCharCommonProperties(CaptionChar& caption_char);
+    bool NeedNewCaptionRegion();
+    void MakeNewCaptionRegion();
+    [[nodiscard]]
+    bool IsRubyMode() const;
+    [[
