@@ -75,4 +75,9 @@ private:
     void MakeNewCaptionRegion();
     [[nodiscard]]
     bool IsRubyMode() const;
-    [[
+    [[nodiscard]]
+    int section_width() const;
+    [[nodiscard]]
+    int section_height() const;
+    void SetAbsoluteActivePos(int x, int y);
+    void 
