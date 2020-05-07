@@ -87,4 +87,8 @@ public:
     DecoderImpl(const DecoderImpl&) = delete;
     DecoderImpl(DecoderImpl&&) = delete;
     DecoderImpl& operator=(const DecoderImpl&) = delete;
-    DecoderImp
+    DecoderImpl& operator=(DecoderImpl&&) = delete;
+private:
+    struct LanguageInfo {
+        LanguageId language_id = LanguageId::kFirst;
+        uin
