@@ -84,4 +84,7 @@ private:
     void MoveRelativeActivePos(int x, int y);
     void MoveActivePosToNewline();
 public:
- 
+    DecoderImpl(const DecoderImpl&) = delete;
+    DecoderImpl(DecoderImpl&&) = delete;
+    DecoderImpl& operator=(const DecoderImpl&) = delete;
+    DecoderImp
