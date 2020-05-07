@@ -80,4 +80,8 @@ private:
     [[nodiscard]]
     int section_height() const;
     void SetAbsoluteActivePos(int x, int y);
-    void 
+    void SetAbsoluteActiveCoordinateDot(int x, int y);
+    void MoveRelativeActivePos(int x, int y);
+    void MoveActivePosToNewline();
+public:
+ 
