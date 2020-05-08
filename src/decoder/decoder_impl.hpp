@@ -91,4 +91,10 @@ public:
 private:
     struct LanguageInfo {
         LanguageId language_id = LanguageId::kFirst;
-        uin
+        uint8_t DMF = 0;
+        uint8_t format = 0;
+        uint8_t TCS = 0;
+        uint32_t iso6392_language_code = 0;
+    };
+private:
+    std::s
