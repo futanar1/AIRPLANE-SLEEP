@@ -97,4 +97,7 @@ private:
         uint32_t iso6392_language_code = 0;
     };
 private:
-    std::s
+    std::shared_ptr<Logger> log_;
+
+    EncodingScheme request_encoding_ = EncodingScheme::kAuto;
+    EncodingScheme active_encoding_ = EncodingSchem
