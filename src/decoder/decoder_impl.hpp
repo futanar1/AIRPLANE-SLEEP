@@ -100,4 +100,8 @@ private:
     std::shared_ptr<Logger> log_;
 
     EncodingScheme request_encoding_ = EncodingScheme::kAuto;
-    EncodingScheme active_encoding_ = EncodingSchem
+    EncodingScheme active_encoding_ = EncodingScheme::kARIB_STD_B24_JIS;
+
+    CaptionType type_ = CaptionType::kDefault;
+    Profile profile_ = Profile::kDefault;
+    LanguageId language_id_ = Langua
