@@ -104,4 +104,9 @@ private:
 
     CaptionType type_ = CaptionType::kDefault;
     Profile profile_ = Profile::kDefault;
-    LanguageId language_id_ = Langua
+    LanguageId language_id_ = LanguageId::kDefault;
+
+    bool replace_msz_fullwidth_ascii_ = false;
+
+    std::vector<LanguageInfo> language_infos_;
+    uint32_t current_i
