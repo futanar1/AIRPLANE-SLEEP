@@ -109,4 +109,10 @@ private:
     bool replace_msz_fullwidth_ascii_ = false;
 
     std::vector<LanguageInfo> language_infos_;
-    uint32_t current_i
+    uint32_t current_iso6392_language_code_ = 0;
+    int prev_dgi_group_ = -1;
+
+    std::unique_ptr<Caption> caption_;
+
+    CodesetEntry* GL_ = nullptr;
+    
