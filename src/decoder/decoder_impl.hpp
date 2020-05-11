@@ -115,4 +115,7 @@ private:
     std::unique_ptr<Caption> caption_;
 
     CodesetEntry* GL_ = nullptr;
-    
+    CodesetEntry* GR_ = nullptr;
+    std::array<CodesetEntry, 4> GX_ = {
+        kKanjiEntry,         // G0
+        kAlphanumericEn
