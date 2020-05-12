@@ -118,4 +118,8 @@ private:
     CodesetEntry* GR_ = nullptr;
     std::array<CodesetEntry, 4> GX_ = {
         kKanjiEntry,         // G0
-        kAlphanumericEn
+        kAlphanumericEntry,  // G1
+        kHiraganaEntry,      // G2
+        kMacroEntry          // G3
+    };
+    std::vector<std::unordered_map<uint16_t, DRCS>
