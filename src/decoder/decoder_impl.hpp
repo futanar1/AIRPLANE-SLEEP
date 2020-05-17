@@ -128,4 +128,7 @@ private:
 
     uint8_t swf_ = 7;
 
-    int caption_plane_width_ = 960;  // indica
+    int caption_plane_width_ = 960;  // indicated by SWF
+    int caption_plane_height_ = 540;
+    int display_area_width_ = 960;   // indicated by SDF
+    int display_area_height_ = 540;
