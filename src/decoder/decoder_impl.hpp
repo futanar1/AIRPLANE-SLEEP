@@ -134,4 +134,6 @@ private:
     int display_area_height_ = 540;
     int display_area_start_x_ = 0;   // indicated by SDP
     int display_area_start_y_ = 0;
-    bool active_pos_inited_ = false; // Active position is
+    bool active_pos_inited_ = false; // Active position is inited
+    int active_pos_x_ = 0;           // Active position base point x
+    int active_pos_y_ = 0;           // Active position base poi
