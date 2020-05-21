@@ -136,4 +136,7 @@ private:
     int display_area_start_y_ = 0;
     bool active_pos_inited_ = false; // Active position is inited
     int active_pos_x_ = 0;           // Active position base point x
-    int active_pos_y_ = 0;           // Active position base poi
+    int active_pos_y_ = 0;           // Active position base point y (section's bottom left corner + 1 dot)
+
+    int char_width_ = 36;            // indicated by SSM
+    int char_height_ = 36;           // indica
