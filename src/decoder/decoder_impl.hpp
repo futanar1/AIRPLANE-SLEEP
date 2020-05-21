@@ -139,4 +139,7 @@ private:
     int active_pos_y_ = 0;           // Active position base point y (section's bottom left corner + 1 dot)
 
     int char_width_ = 36;            // indicated by SSM
-    int char_height_ = 36;           // indica
+    int char_height_ = 36;           // indicated by SSM
+    int char_horizontal_spacing_ = 4;  // indicated by SHS
+    int char_vertical_spacing_ = 24;   // indicated by SVS
+    float char_
