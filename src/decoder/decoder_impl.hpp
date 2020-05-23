@@ -142,4 +142,8 @@ private:
     int char_height_ = 36;           // indicated by SSM
     int char_horizontal_spacing_ = 4;  // indicated by SHS
     int char_vertical_spacing_ = 24;   // indicated by SVS
-    float char_
+    float char_horizontal_scale_ = 1.0f;
+    float char_vertical_scale_ = 1.0f;
+
+    bool has_underline_ = false;  // STL / SPL
+    bool has_bold_ = false; 
