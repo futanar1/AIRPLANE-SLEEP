@@ -146,4 +146,8 @@ private:
     float char_vertical_scale_ = 1.0f;
 
     bool has_underline_ = false;  // STL / SPL
-    bool has_bold_ = false; 
+    bool has_bold_ = false;       // MDF
+    bool has_italic_ = false;     // MDF
+    bool has_stroke_ = false;     // ORN
+    ColorRGBA stroke_color_;      // ORN
+    En
