@@ -150,4 +150,7 @@ private:
     bool has_italic_ = false;     // MDF
     bool has_stroke_ = false;     // ORN
     ColorRGBA stroke_color_;      // ORN
-    En
+    EnclosureStyle enclosure_style_ = EnclosureStyle::kEnclosureStyleDefault;  // HLC
+
+    bool has_builtin_sound_ = false;
+    uint8_t builtin_so
