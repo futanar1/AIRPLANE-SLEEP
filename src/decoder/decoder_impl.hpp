@@ -162,4 +162,4 @@ private:
 
 }  // namespace aribcaption::internal
 
-#en
+#endif  // ARIBCAPTION_DECODER_IMPL_HPP
