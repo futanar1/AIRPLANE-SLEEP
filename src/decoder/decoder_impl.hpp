@@ -153,4 +153,13 @@ private:
     EnclosureStyle enclosure_style_ = EnclosureStyle::kEnclosureStyleDefault;  // HLC
 
     bool has_builtin_sound_ = false;
-    uint8_t builtin_so
+    uint8_t builtin_sound_id_ = 0;
+
+    uint8_t palette_ = 0;
+    ColorRGBA text_color_;
+    ColorRGBA back_color_;
+};
+
+}  // namespace aribcaption::internal
+
+#en
