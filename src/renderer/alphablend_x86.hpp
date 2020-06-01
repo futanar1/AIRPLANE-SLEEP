@@ -371,3 +371,7 @@ ALWAYS_INLINE void BlendLine_PremultipliedSrc_x86(ColorRGBA* __restrict dest,
     BlendLine_PremultipliedSrc_Generic(dest, src, width);
 #endif
 }
+
+}  // namespace aribcaption::alphablend::internal
+
+#endif  // ARIBCAPTION_ALPHABLEND_X86_HPP
