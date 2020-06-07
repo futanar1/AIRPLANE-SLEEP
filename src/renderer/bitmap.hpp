@@ -20,3 +20,8 @@
 #define ARIBCAPTION_BITMAP_HPP
 
 #include <cstdint>
+#include <vector>
+#include <type_traits>
+#include "aribcaption/aligned_alloc.hpp"
+#include "aribcaption/color.hpp"
+#include "aribcaption/im
