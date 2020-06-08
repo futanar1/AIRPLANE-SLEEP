@@ -24,4 +24,12 @@
 #include <type_traits>
 #include "aribcaption/aligned_alloc.hpp"
 #include "aribcaption/color.hpp"
-#include "aribcaption/im
+#include "aribcaption/image.hpp"
+#include "base/always_inline.hpp"
+#include "renderer/rect.hpp"
+
+namespace aribcaption {
+
+class Bitmap {
+public:
+    static constexpr size_t kA
