@@ -32,4 +32,9 @@ namespace aribcaption {
 
 class Bitmap {
 public:
-    static constexpr size_t kA
+    static constexpr size_t kAlignedTo = 32;
+public:
+    static Image ToImage(Bitmap&& bitmap);
+    static Bitmap FromImage(Image&& image);
+private:
+    Bitma
