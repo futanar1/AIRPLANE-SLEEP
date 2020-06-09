@@ -37,4 +37,8 @@ public:
     static Image ToImage(Bitmap&& bitmap);
     static Bitmap FromImage(Image&& image);
 private:
-    Bitma
+    Bitmap() = default;
+public:
+    Bitmap(int width, int height, PixelFormat pixel_format);
+    ~Bitmap() = default;
+    Bitmap(const Bitmap& bmp) 
