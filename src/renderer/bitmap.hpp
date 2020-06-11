@@ -45,3 +45,9 @@ public:
     Bitmap(Bitmap&& bmp) noexcept = default;
     Bitmap& operator=(const Bitmap&) = default;
     Bitmap& operator=(Bitmap&&) noexcept = default;
+public:
+    [[nodiscard]]
+    ALWAYS_INLINE uint8_t* data() { return pixels.data(); }
+
+    [[nodiscard]]
+    ALWAYS_INLINE const uint8_t*
