@@ -50,4 +50,8 @@ public:
     ALWAYS_INLINE uint8_t* data() { return pixels.data(); }
 
     [[nodiscard]]
-    ALWAYS_INLINE const uint8_t*
+    ALWAYS_INLINE const uint8_t* data() const { return pixels.data(); }
+
+    [[nodiscard]]
+    ALWAYS_INLINE ColorRGBA* GetPixels() {
+        return reinterpret_cast<C
