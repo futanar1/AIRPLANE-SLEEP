@@ -59,4 +59,9 @@ public:
 
     [[nodiscard]]
     ALWAYS_INLINE const ColorRGBA* GetPixels() const {
-        return reinterpret_cast<con
+        return reinterpret_cast<const ColorRGBA*>(pixels.data());
+    };
+
+    [[nodiscard]]
+    ALWAYS_INLINE ColorRGBA* GetPixelAt(int x, int y) {
+        uint8_t* ptr = pixels.data() + y * (size_t)strid
