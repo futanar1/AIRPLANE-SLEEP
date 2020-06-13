@@ -54,4 +54,9 @@ public:
 
     [[nodiscard]]
     ALWAYS_INLINE ColorRGBA* GetPixels() {
-        return reinterpret_cast<C
+        return reinterpret_cast<ColorRGBA*>(pixels.data());
+    };
+
+    [[nodiscard]]
+    ALWAYS_INLINE const ColorRGBA* GetPixels() const {
+        return reinterpret_cast<con
