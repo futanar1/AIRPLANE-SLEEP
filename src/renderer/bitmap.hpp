@@ -69,4 +69,6 @@ public:
     };
 
     [[nodiscard]]
-    ALWAYS_INLINE const ColorRGBA* GetPixe
+    ALWAYS_INLINE const ColorRGBA* GetPixelAt(int x, int y) const {
+        const uint8_t* ptr = pixels.data() + y * (size_t)stride_ + x * sizeof(ColorRGBA);
+       
