@@ -71,4 +71,9 @@ public:
     [[nodiscard]]
     ALWAYS_INLINE const ColorRGBA* GetPixelAt(int x, int y) const {
         const uint8_t* ptr = pixels.data() + y * (size_t)stride_ + x * sizeof(ColorRGBA);
-       
+        return reinterpret_cast<const ColorRGBA*>(ptr);
+    };
+
+    [[nodiscard]]
+    ALWAYS_INLINE Rect GetRect() const {
+        return {0, 0, width_, heig
