@@ -83,4 +83,10 @@ public:
     ALWAYS_INLINE size_t size() const { return pixels.size(); }
 
     [[nodiscard]]
-    ALWAYS_INLINE int width() co
+    ALWAYS_INLINE int width() const { return width_; }
+
+    [[nodiscard]]
+    ALWAYS_INLINE int height() const { return height_; }
+
+    [[nodiscard]]
+    ALWAYS_INLINE int st
