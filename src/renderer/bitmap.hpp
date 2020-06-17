@@ -76,4 +76,11 @@ public:
 
     [[nodiscard]]
     ALWAYS_INLINE Rect GetRect() const {
-        return {0, 0, width_, heig
+        return {0, 0, width_, height_};
+    }
+
+    [[nodiscard]]
+    ALWAYS_INLINE size_t size() const { return pixels.size(); }
+
+    [[nodiscard]]
+    ALWAYS_INLINE int width() co
