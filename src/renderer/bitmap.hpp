@@ -89,4 +89,9 @@ public:
     ALWAYS_INLINE int height() const { return height_; }
 
     [[nodiscard]]
-    ALWAYS_INLINE int st
+    ALWAYS_INLINE int stride() const { return stride_; }
+
+    [[nodiscard]]
+    ALWAYS_INLINE PixelFormat pixel_format() const { return pixel_format_; }
+private:
+    in
