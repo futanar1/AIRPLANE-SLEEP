@@ -94,4 +94,9 @@ public:
     [[nodiscard]]
     ALWAYS_INLINE PixelFormat pixel_format() const { return pixel_format_; }
 private:
-    in
+    int width_ = 0;
+    int height_ = 0;
+    int stride_ = 0;
+    PixelFormat pixel_format_ = PixelFormat::kDefault;
+
+    std::vector<
