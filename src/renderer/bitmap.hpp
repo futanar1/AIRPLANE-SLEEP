@@ -99,4 +99,9 @@ private:
     int stride_ = 0;
     PixelFormat pixel_format_ = PixelFormat::kDefault;
 
-    std::vector<
+    std::vector<uint8_t, AlignedAllocator<uint8_t, kAlignedTo>> pixels;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_BITMAP_HPP
