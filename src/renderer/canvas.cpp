@@ -23,4 +23,10 @@
 
 namespace aribcaption {
 
-Canvas::Canvas(Bitmap& target_bitmap) : bitmap_(targe
+Canvas::Canvas(Bitmap& target_bitmap) : bitmap_(target_bitmap) {}
+
+Canvas::~Canvas() = default;
+
+void Canvas::ClearColor(ColorRGBA color) {
+    for (int y = 0; y < bitmap_.height(); y++) {
+        ColorRGBA* li
