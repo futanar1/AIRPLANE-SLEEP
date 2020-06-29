@@ -17,4 +17,10 @@
  */
 
 #include <cassert>
-#include "renderer/
+#include "renderer/alphablend.hpp"
+#include "renderer/bitmap.hpp"
+#include "renderer/canvas.hpp"
+
+namespace aribcaption {
+
+Canvas::Canvas(Bitmap& target_bitmap) : bitmap_(targe
