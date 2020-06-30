@@ -29,4 +29,9 @@ Canvas::~Canvas() = default;
 
 void Canvas::ClearColor(ColorRGBA color) {
     for (int y = 0; y < bitmap_.height(); y++) {
-        ColorRGBA* li
+        ColorRGBA* line_begin = bitmap_.GetPixelAt(0, y);
+        alphablend::FillLine(line_begin, color, bitmap_.width());
+    }
+}
+
+void Canvas::ClearR
