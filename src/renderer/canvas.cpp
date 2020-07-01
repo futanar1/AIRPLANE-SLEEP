@@ -34,4 +34,7 @@ void Canvas::ClearColor(ColorRGBA color) {
     }
 }
 
-void Canvas::ClearR
+void Canvas::ClearRect(ColorRGBA color, const Rect& rect) {
+    Rect clipped = Rect::ClipRect(bitmap_.GetRect(), rect);
+
+    if (clipped.width() <= 0 || clipped.heig
