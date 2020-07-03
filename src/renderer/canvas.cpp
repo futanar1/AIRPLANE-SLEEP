@@ -43,4 +43,6 @@ void Canvas::ClearRect(ColorRGBA color, const Rect& rect) {
 
     auto line_width = static_cast<size_t>(clipped.width());
 
-    for (int y = clipped.top; y < clippe
+    for (int y = clipped.top; y < clipped.bottom; y++) {
+        ColorRGBA* line_begin = bitmap_.GetPixelAt(clipped.left, y);
+        alphablend::FillLine(line_begin, color, line_wi
