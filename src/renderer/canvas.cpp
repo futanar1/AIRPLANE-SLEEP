@@ -50,4 +50,10 @@ void Canvas::ClearRect(ColorRGBA color, const Rect& rect) {
 }
 
 void Canvas::DrawRect(ColorRGBA fg_color, const Rect& rect) {
-    Rect clipped = Rect::ClipRect(bitmap_.GetRect(), rec
+    Rect clipped = Rect::ClipRect(bitmap_.GetRect(), rect);
+
+    if (clipped.width() <= 0 || clipped.height() <= 0) {
+        return;
+    }
+
+    auto line_width = static_cast<size_t>(clipped.widt
