@@ -60,4 +60,9 @@ void Canvas::DrawRect(ColorRGBA fg_color, const Rect& rect) {
 
     for (int y = clipped.top; y < clipped.bottom; y++) {
         ColorRGBA* line_begin = bitmap_.GetPixelAt(clipped.left, y);
-        alpha
+        alphablend::BlendColorToLine(line_begin, fg_color, line_width);
+    }
+}
+
+void Canvas::DrawBitmap(const Bitmap& bmp, const Rect& rect) {
+    as
