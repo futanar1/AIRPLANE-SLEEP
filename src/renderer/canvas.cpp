@@ -56,4 +56,8 @@ void Canvas::DrawRect(ColorRGBA fg_color, const Rect& rect) {
         return;
     }
 
-    auto line_width = static_cast<size_t>(clipped.widt
+    auto line_width = static_cast<size_t>(clipped.width());
+
+    for (int y = clipped.top; y < clipped.bottom; y++) {
+        ColorRGBA* line_begin = bitmap_.GetPixelAt(clipped.left, y);
+        alpha
