@@ -65,4 +65,8 @@ void Canvas::DrawRect(ColorRGBA fg_color, const Rect& rect) {
 }
 
 void Canvas::DrawBitmap(const Bitmap& bmp, const Rect& rect) {
-    as
+    assert(bmp.width() == rect.width() && bmp.height() == rect.height());
+
+    Rect clipped = Rect::ClipRect(bitmap_.GetRect(), rect);
+
+    if (cli
