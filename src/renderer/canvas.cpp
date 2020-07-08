@@ -74,4 +74,8 @@ void Canvas::DrawBitmap(const Bitmap& bmp, const Rect& rect) {
     }
 
     int clip_x_offset = clipped.left - rect.left;
-    int clip_y_offset = clipped.top - rect.
+    int clip_y_offset = clipped.top - rect.top;
+    auto line_width = static_cast<size_t>(clipped.width());
+
+    for (int y = clipped.top; y < clipped.bottom; y++) {
+        Col
