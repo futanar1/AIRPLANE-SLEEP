@@ -69,4 +69,9 @@ void Canvas::DrawBitmap(const Bitmap& bmp, const Rect& rect) {
 
     Rect clipped = Rect::ClipRect(bitmap_.GetRect(), rect);
 
-    if (cli
+    if (clipped.width() <= 0 || clipped.height() <= 0) {
+        return;
+    }
+
+    int clip_x_offset = clipped.left - rect.left;
+    int clip_y_offset = clipped.top - rect.
