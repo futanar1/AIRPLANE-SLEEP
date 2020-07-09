@@ -78,4 +78,5 @@ void Canvas::DrawBitmap(const Bitmap& bmp, const Rect& rect) {
     auto line_width = static_cast<size_t>(clipped.width());
 
     for (int y = clipped.top; y < clipped.bottom; y++) {
-        Col
+        ColorRGBA* dest_begin = bitmap_.GetPixelAt(clipped.left, y);
+        const ColorRGBA* src_begin = bmp.GetPixelAt(clip_x_offset, clip_y_offset +
