@@ -79,4 +79,9 @@ void Canvas::DrawBitmap(const Bitmap& bmp, const Rect& rect) {
 
     for (int y = clipped.top; y < clipped.bottom; y++) {
         ColorRGBA* dest_begin = bitmap_.GetPixelAt(clipped.left, y);
-        const ColorRGBA* src_begin = bmp.GetPixelAt(clip_x_offset, clip_y_offset +
+        const ColorRGBA* src_begin = bmp.GetPixelAt(clip_x_offset, clip_y_offset + y - clipped.top);
+        alphablend::BlendLine(dest_begin, src_begin, line_width);
+    }
+}
+
+void Canvas::DrawBitmap(const Bitmap& bmp, int t
