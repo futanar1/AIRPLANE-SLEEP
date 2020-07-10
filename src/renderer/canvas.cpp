@@ -84,4 +84,7 @@ void Canvas::DrawBitmap(const Bitmap& bmp, const Rect& rect) {
     }
 }
 
-void Canvas::DrawBitmap(const Bitmap& bmp, int t
+void Canvas::DrawBitmap(const Bitmap& bmp, int target_x, int target_y) {
+    Rect rect{target_x, target_y, target_x + bmp.width(), target_y + bmp.height()};
+
+    DrawBitmap(bmp, re
