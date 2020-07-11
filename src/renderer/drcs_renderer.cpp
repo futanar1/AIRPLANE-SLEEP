@@ -56,3 +56,30 @@ Bitmap DRCSRenderer::DRCSToColoredBitmap(const DRCS& drcs, int target_width, int
 
     float x_fraction = static_cast<float>(drcs.width) / static_cast<float>(target_width);
     float y_fraction = static_cast<float>(drcs.height) / static_cast<float>(target_height);
+
+    for (int y = 0; y < target_height; y++) {
+        ColorRGBA* dest = bitmap.GetPixelAt(0, y);
+        int drcs_y = static_cast<int>(y_fraction * static_cast<float>(y));
+        for (int x = 0; x < target_width; x++) {
+            int drcs_x = static_cast<int>(x_fraction * static_cast<float>(x));
+
+            intptr_t index = (drcs_y * drcs.width + drcs_x) * drcs.depth_bits / 8;
+            intptr_t bit_offset = (drcs_y * drcs.width + drcs_x) * drcs.depth_bits % 8;
+            uint8_t byte = drcs.pixels[index];
+
+            uint8_t value = (byte >> (8 - (bit_offset + drcs.depth_bits))) & (drcs.depth - 1);
+            uint8_t grey = alphablend::Clamp255((uint32_t)255 * value / (drcs.depth - 1));
+
+            if (grey) {
+                uint8_t alpha = (static_cast<uint32_t>(grey) * color.a) >> 8;
+                dest[x] = ColorRGBA(color, alpha);
+            } else {
+                dest[x] = ColorRGBA(0);
+            }
+        }
+    }
+
+    return bitmap;
+}
+
+}  // namespace aribcaption
