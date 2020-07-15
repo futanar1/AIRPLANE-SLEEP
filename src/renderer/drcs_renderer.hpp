@@ -20,4 +20,15 @@
 #define ARIBCAPTION_DRCS_RENDERER_HPP
 
 #include "aribcaption/caption.hpp"
-#include "aribcaption
+#include "aribcaption/color.hpp"
+
+namespace aribcaption {
+
+class Bitmap;
+
+class DRCSRenderer {
+public:
+    DRCSRenderer() = default;
+    ~DRCSRenderer() = default;
+public:
+ 
