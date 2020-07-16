@@ -31,4 +31,5 @@ public:
     DRCSRenderer() = default;
     ~DRCSRenderer() = default;
 public:
- 
+    bool DrawDRCS(const DRCS& drcs, CharStyle style, ColorRGBA color, ColorRGBA stroke_color,
+                  int stroke_width, int char_width, int cha
