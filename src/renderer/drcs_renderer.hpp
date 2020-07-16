@@ -32,4 +32,7 @@ public:
     ~DRCSRenderer() = default;
 public:
     bool DrawDRCS(const DRCS& drcs, CharStyle style, ColorRGBA color, ColorRGBA stroke_color,
-                  int stroke_width, int char_width, int cha
+                  int stroke_width, int char_width, int char_height,
+                  Bitmap& target_bmp, int x, int y);
+private:
+    static Bitmap DRCSToColoredBitmap(const DRCS& drcs, int target_width, int target_hei
