@@ -35,4 +35,7 @@ public:
                   int stroke_width, int char_width, int char_height,
                   Bitmap& target_bmp, int x, int y);
 private:
-    static Bitmap DRCSToColoredBitmap(const DRCS& drcs, int target_width, int target_hei
+    static Bitmap DRCSToColoredBitmap(const DRCS& drcs, int target_width, int target_height, ColorRGBA color);
+public:
+    DRCSRenderer(const DRCSRenderer&) = delete;
+    DRCSRenderer& operator=(const DRCSRenderer&) = 
