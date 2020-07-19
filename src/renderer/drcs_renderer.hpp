@@ -38,4 +38,9 @@ private:
     static Bitmap DRCSToColoredBitmap(const DRCS& drcs, int target_width, int target_height, ColorRGBA color);
 public:
     DRCSRenderer(const DRCSRenderer&) = delete;
-    DRCSRenderer& operator=(const DRCSRenderer&) = 
+    DRCSRenderer& operator=(const DRCSRenderer&) = delete;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_DRCS_RENDERER_HPP
