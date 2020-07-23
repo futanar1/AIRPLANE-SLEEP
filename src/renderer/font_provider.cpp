@@ -14,4 +14,11 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- *
+ */
+
+#include <memory>
+#include "aribcc_config.h"
+#include "renderer/font_provider.hpp"
+
+#if defined(ARIBCC_USE_CORETEXT)
+    #include
