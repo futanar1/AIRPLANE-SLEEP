@@ -21,4 +21,11 @@
 #include "renderer/font_provider.hpp"
 
 #if defined(ARIBCC_USE_CORETEXT)
-    #include
+    #include "renderer/font_provider_coretext.hpp"
+#endif
+
+#if defined(ARIBCC_USE_DIRECTWRITE)
+    #include "renderer/font_provider_directwrite.hpp"
+#endif
+
+#if defi
