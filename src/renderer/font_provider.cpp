@@ -28,4 +28,9 @@
     #include "renderer/font_provider_directwrite.hpp"
 #endif
 
-#if defi
+#if defined(ARIBCC_USE_FONTCONFIG)
+    #include "renderer/font_provider_fontconfig.hpp"
+#endif
+
+#if defined(ARIBCC_IS_ANDROID)
+    #include "renderer/font_pr
