@@ -42,4 +42,6 @@
 
 namespace aribcaption {
 
-s
+std::unique_ptr<FontProvider> FontProvider::Create(FontProviderType type, Context& context) {
+    switch (type) {
+#if defined(ARIBCC_USE_
