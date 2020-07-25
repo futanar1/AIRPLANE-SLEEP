@@ -33,4 +33,13 @@
 #endif
 
 #if defined(ARIBCC_IS_ANDROID)
-    #include "renderer/font_pr
+    #include "renderer/font_provider_android.hpp"
+#endif
+
+#if defined(ARIBCC_USE_GDI_FONT)
+    #include "renderer/font_provider_gdi.hpp"
+#endif
+
+namespace aribcaption {
+
+s
