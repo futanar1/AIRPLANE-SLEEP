@@ -49,4 +49,7 @@ std::unique_ptr<FontProvider> FontProvider::Create(FontProviderType type, Contex
             return std::make_unique<FontProviderCoreText>(context);
 #endif
 
-#if defined(ARIBCC_USE_DIRECTWRIT
+#if defined(ARIBCC_USE_DIRECTWRITE)
+        case FontProviderType::kDirectWrite:
+            return std::make_unique<FontProviderDirectWrite>(context);
+#endif
