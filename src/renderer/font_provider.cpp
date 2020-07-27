@@ -44,4 +44,9 @@ namespace aribcaption {
 
 std::unique_ptr<FontProvider> FontProvider::Create(FontProviderType type, Context& context) {
     switch (type) {
-#if defined(ARIBCC_USE_
+#if defined(ARIBCC_USE_CORETEXT)
+        case FontProviderType::kCoreText:
+            return std::make_unique<FontProviderCoreText>(context);
+#endif
+
+#if defined(ARIBCC_USE_DIRECTWRIT
