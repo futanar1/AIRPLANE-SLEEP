@@ -61,4 +61,10 @@ std::unique_ptr<FontProvider> FontProvider::Create(FontProviderType type, Contex
 
 #if defined(ARIBCC_IS_ANDROID)
         case FontProviderType::kAndroid:
-            return std::make_unique<FontProviderAndroid>(context
+            return std::make_unique<FontProviderAndroid>(context);
+#endif
+
+#if defined(ARIBCC_USE_GDI_FONT)
+        case FontProviderType::kGDI:
+            return std::make_unique<FontProviderGDI>(context);
+#end
