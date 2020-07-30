@@ -67,4 +67,9 @@ std::unique_ptr<FontProvider> FontProvider::Create(FontProviderType type, Contex
 #if defined(ARIBCC_USE_GDI_FONT)
         case FontProviderType::kGDI:
             return std::make_unique<FontProviderGDI>(context);
-#end
+#endif
+
+        case FontProviderType::kAuto:
+        default:
+#if defined(_WIN32) && defined(ARIBCC_USE_DIRECTWRITE)
+            ret
