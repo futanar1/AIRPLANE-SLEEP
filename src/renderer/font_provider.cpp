@@ -76,4 +76,7 @@ std::unique_ptr<FontProvider> FontProvider::Create(FontProviderType type, Contex
 #elif defined(_WIN32) && defined(ARIBCC_USE_GDI_FONT)
             return std::make_unique<FontProviderGDI>(context);
 #elif defined(__APPLE__) && defined(ARIBCC_USE_CORETEXT)
-            return std::make_unique<
+            return std::make_unique<FontProviderCoreText>(context);
+#elif defined(ARIBCC_IS_ANDROID)
+            return std::make_unique<FontProviderAndroid>(context);
+#elif defin
