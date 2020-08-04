@@ -82,4 +82,9 @@ std::unique_ptr<FontProvider> FontProvider::Create(FontProviderType type, Contex
 #elif defined(ARIBCC_USE_FONTCONFIG)
             return std::make_unique<FontProviderFontconfig>(context);
 #else
-            static_assert(false, "No ava
+            static_assert(false, "No available auto-select FontProvider!");
+#endif
+    }
+}
+
+}  // namespace aribcaption
