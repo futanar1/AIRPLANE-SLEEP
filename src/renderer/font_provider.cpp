@@ -79,4 +79,7 @@ std::unique_ptr<FontProvider> FontProvider::Create(FontProviderType type, Contex
             return std::make_unique<FontProviderCoreText>(context);
 #elif defined(ARIBCC_IS_ANDROID)
             return std::make_unique<FontProviderAndroid>(context);
-#elif defin
+#elif defined(ARIBCC_USE_FONTCONFIG)
+            return std::make_unique<FontProviderFontconfig>(context);
+#else
+            static_assert(false, "No ava
