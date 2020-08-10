@@ -24,4 +24,12 @@
 #include <vector>
 #include <memory>
 #include <optional>
-#include "aribcaption/context.hpp
+#include "aribcaption/context.hpp"
+#include "aribcaption/renderer.hpp"
+#include "base/result.hpp"
+
+namespace aribcaption {
+
+struct FontfaceInfoPrivate {
+public:
+    FontfaceInf
