@@ -17,4 +17,11 @@
  */
 
 #ifndef ARIBCAPTION_FONT_PROVIDER_HPP
-#define ARIBCAPTION_FONT
+#define ARIBCAPTION_FONT_PROVIDER_HPP
+
+#include <cstdint>
+#include <string>
+#include <vector>
+#include <memory>
+#include <optional>
+#include "aribcaption/context.hpp
