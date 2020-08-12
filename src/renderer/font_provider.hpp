@@ -42,4 +42,10 @@ struct FontfaceInfo {
     std::string filename;
     int face_index = 0;
     std::vector<uint8_t> font_data;
-    FontProviderType provider_type = FontProviderTy
+    FontProviderType provider_type = FontProviderType::kAuto;
+    std::unique_ptr<FontfaceInfoPrivate> provider_priv;
+};
+
+enum class FontProviderError {
+    kFontNotFound,
+    kCodePointNotFoun
