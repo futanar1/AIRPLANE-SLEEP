@@ -32,4 +32,11 @@ namespace aribcaption {
 
 struct FontfaceInfoPrivate {
 public:
-    FontfaceInf
+    FontfaceInfoPrivate() = default;
+    virtual ~FontfaceInfoPrivate() = default;
+};
+
+struct FontfaceInfo {
+    std::string family_name;
+    std::string postscript_name;
+    std:
