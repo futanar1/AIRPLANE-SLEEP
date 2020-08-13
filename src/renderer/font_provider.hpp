@@ -48,4 +48,10 @@ struct FontfaceInfo {
 
 enum class FontProviderError {
     kFontNotFound,
-    kCodePointNotFoun
+    kCodePointNotFound,
+    kOtherError,
+};
+
+class FontProvider {
+public:
+    static std::unique_ptr<FontProvider> Create(FontProviderType type, Context& conte
