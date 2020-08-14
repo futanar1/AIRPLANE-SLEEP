@@ -54,4 +54,9 @@ enum class FontProviderError {
 
 class FontProvider {
 public:
-    static std::unique_ptr<FontProvider> Create(FontProviderType type, Context& conte
+    static std::unique_ptr<FontProvider> Create(FontProviderType type, Context& context);
+public:
+    FontProvider() = default;
+    virtual ~FontProvider() = default;
+public:
+    virtual FontProviderType G
