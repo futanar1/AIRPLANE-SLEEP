@@ -63,4 +63,8 @@ public:
     virtual bool Initialize() = 0;
     virtual void SetLanguage(uint32_t iso6392_language_code) = 0;
     virtual Result<FontfaceInfo, FontProviderError> GetFontFace(const std::string& font_name,
-                                                                std::optio
+                                                                std::optional<uint32_t> ucs4) = 0;
+public:
+    // Disallow copy and assign
+    FontProvider(const FontProvider&) = delete;
+    FontProvider& operator
