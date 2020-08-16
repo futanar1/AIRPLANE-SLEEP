@@ -67,4 +67,9 @@ public:
 public:
     // Disallow copy and assign
     FontProvider(const FontProvider&) = delete;
-    FontProvider& operator
+    FontProvider& operator=(const FontProvider&) = delete;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_FONT_PROVIDER_HPP
