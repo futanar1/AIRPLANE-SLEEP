@@ -189,3 +189,169 @@ bool FontProviderAndroid::CheckFileAndAppendFontFamily(const char* family_name, 
         family.is_fallback = true;
         family.fallback_for = "sans-serif";
     }
+
+    FontFile& font = family.fonts.emplace_back();
+    font.filename = filename;
+    font.weight = 400;
+    return true;
+}
+
+bool FontProviderAndroid::PrepareFontsForGingerbread() {
+    bool ret = CheckFileAndAppendFontFamily("sans-serif", "DroidSans.ttf", false);
+    if (!ret) {
+        return false;
+    }
+
+    CheckFileAndAppendFontFamily("serif", "DroidSerif-Regular.ttf", false);
+    CheckFileAndAppendFontFamily("monospace", "DroidSansMono.ttf", false);
+
+    CheckFileAndAppendFontFamily(nullptr, "MTLmr3m.ttf", true);
+    CheckFileAndAppendFontFamily(nullptr, "DroidSansJapanese.ttf", true);
+    CheckFileAndAppendFontFamily(nullptr, "DroidSansFallback.ttf", true);
+    return true;
+}
+
+static bool AnnotateJAForSpecificFontFile(std::vector<FontFamily>& font_families, const char* font_filename) {
+    bool detected_filename = false;
+
+    for (auto& family : font_families) {
+        for (auto& font : family.fonts) {
+            if (font.filename == font_filename) {
+                detected_filename = true;
+                family.languages.emplace_back("ja");
+            }
+        }
+    }
+
+    return detected_filename;
+}
+
+bool FontProviderAndroid::AnnotateLanguageForOldFamilySets() {
+    bool detected_ja_font = false;
+
+    for (auto& family : font_families_) {
+        for (auto& lang : family.languages) {
+            if (lang == "ja") detected_ja_font = true;
+        }
+    }
+
+    if (detected_ja_font) {
+        return true;
+    }
+    // else: annotate lang="ja" for MTLmr3m.ttf, DroidSansJapanese.ttf or DroidSansFallback.ttf
+
+    bool ret = AnnotateJAForSpecificFontFile(font_families_, "MTLmr3m.ttf");
+    if (ret) {
+        return true;
+    }
+
+    ret = AnnotateJAForSpecificFontFile(font_families_, "DroidSansJapanese.ttf");
+    if (ret) {
+        return true;
+    }
+
+    ret = AnnotateJAForSpecificFontFile(font_families_, "DroidSansFallback.ttf");
+    if (ret) {
+        return true;
+    }
+
+    return false;
+}
+
+bool FontProviderAndroid::ParseFontsXML(const char *xml_path) {
+    XMLDocument doc(true, Whitespace::COLLAPSE_WHITESPACE);
+    XMLError err = doc.LoadFile(xml_path);
+    if (err != XMLError::XML_SUCCESS) {
+        log_->v("FontProviderAndroid: Open %s failed", xml_path);
+        return false;
+    }
+
+    XMLElement* root = doc.RootElement();
+    if (strcmp(root->Name(), "familyset") != 0) {
+        log_->e("FontProviderAndroid: Root element must be familyset, found %s", root->Name());
+        return false;
+    }
+
+    const XMLAttribute* version_attr = root->FindAttribute("version");
+    if (version_attr && version_attr->UnsignedValue() >= 21) {
+        return HandleFamilySetLMP(root);
+    } else {
+        return HandleFamilySetOLD(root);
+    }
+}
+
+static void SplitByComma(const char* input, std::vector<std::string>& out) {
+    std::string str;
+
+    for (const char* s = input; *s != 0; s++) {
+        if (*s == ',') {
+            out.push_back(std::move(str));
+            str = std::string();
+        } else if (*s == ' ' || *s == '\t') {
+            continue;
+        } else {
+            str.push_back(*s);
+        }
+    }
+
+    if (!str.empty()) {
+        out.push_back(std::move(str));
+    }
+}
+
+// Android 5.0+ fonts.xml
+bool FontProviderAndroid::HandleFamilySetLMP(XMLElement* root) {
+    XMLElement* element = root->FirstChildElement();
+
+    FontFamily current_family;
+
+    while (element) {
+        if (strcmp(element->Name(), "family") == 0) {
+            LMPHandleFamily(element);
+        } else if (strcmp(element->Name(), "alias") == 0) {
+            LMPHandleAlias(element);
+        }
+        element = element->NextSiblingElement();
+    }
+
+    return true;
+}
+
+bool FontProviderAndroid::LMPHandleFamily(XMLElement* element) {
+    FontFamily& current_family = font_families_.emplace_back();
+
+    if (const char* name = element->Attribute("name")) {
+        current_family.names.emplace_back(name);
+    }
+
+    if (const char* lang = element->Attribute("lang")) {
+        SplitByComma(lang, current_family.languages);
+        current_family.is_fallback = true;
+        current_family.fallback_for = "sans-serif";
+    }
+
+    if (const char* variant = element->Attribute("variant")) {
+        if (strcmp(variant, "compact") == 0) {
+            current_family.variant = FontVariant::kCompact;
+        } else if (strcmp(variant, "elegant") == 0) {
+            current_family.variant = FontVariant::kElegant;
+        }
+    }
+
+    element = element->FirstChildElement();
+
+    while (element) {
+        if (strcmp(element->Name(), "font") == 0) {
+            LMPHandleFont(element, current_family);
+        }
+        element = element->NextSiblingElement();
+    }
+
+    return true;
+}
+
+bool FontProviderAndroid::LMPHandleFont(XMLElement* element, internal::FontFamily& family) {
+    FontFile font;
+    font.filename = element->GetText();
+    font.weight = element->IntAttribute("weight", 400);
+    font.collection_index = element->IntAttribute("index", 0);
