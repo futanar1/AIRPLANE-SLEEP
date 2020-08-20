@@ -355,3 +355,145 @@ bool FontProviderAndroid::LMPHandleFont(XMLElement* element, internal::FontFamil
     font.filename = element->GetText();
     font.weight = element->IntAttribute("weight", 400);
     font.collection_index = element->IntAttribute("index", 0);
+
+    if (const char* style = element->Attribute("style")) {
+        if (strcmp(style, "italic") == 0) {
+            font.is_italic = true;
+        }
+    }
+
+    if (const char* postscript_name = element->Attribute("postScriptName")) {
+        font.postscript_name = postscript_name;
+    }
+
+    if (const char* fallback_for = element->Attribute("fallbackFor")) {
+        FontFamily* fallback_family =
+                FindFallbackFamilyByLanguageAndFallbackFor(family.languages[0].c_str(),
+                                                           fallback_for);
+        if (!fallback_family) {
+            FontFamily& new_fallback_family = font_families_.emplace_back();
+            new_fallback_family.languages = family.languages;
+            new_fallback_family.variant = family.variant;
+            new_fallback_family.is_fallback = true;
+            new_fallback_family.fallback_for = fallback_for;
+            new_fallback_family.fonts.push_back(std::move(font));
+        } else {
+            fallback_family->fonts.push_back(std::move(font));
+        }
+    } else {
+        family.fonts.push_back(std::move(font));
+    }
+
+    return true;
+}
+
+bool FontProviderAndroid::LMPHandleAlias(tinyxml2::XMLElement* element) {
+    if (!element->FindAttribute("name") | !element->FindAttribute("to")) {
+        log_->e("FontProviderAndroid: Missing name/to for alias in fonts.xml");
+        return false;
+    }
+
+    if (const XMLAttribute* weight_attr = element->FindAttribute("weight")) {
+        FontFamily& new_family = font_families_.emplace_back();
+        FontFamily* target_family = FindFamilyByName(element->Attribute("to"));
+        if (!target_family) {
+            log_->e("FontProviderAndroid: Alias target not found: %s", element->Attribute("to"));
+            return false;
+        }
+
+        new_family.names = {element->Attribute("name")};
+        new_family.languages = target_family->languages;
+        new_family.variant = target_family->variant;
+        new_family.is_fallback = target_family->is_fallback;
+        new_family.fallback_for = target_family->fallback_for;
+
+        int request_weight = weight_attr->IntValue();
+
+        for (auto& font : target_family->fonts) {
+            if (font.weight == request_weight) {
+                new_family.fonts.push_back(font);
+            }
+        }
+    } else {
+        FontFamily* target_family = FindFamilyByName(element->Attribute("to"));
+        if (!target_family) {
+            log_->e("FontProviderAndroid: Alias target not found: %s", element->Attribute("to"));
+            return false;
+        }
+        target_family->names.emplace_back(element->Attribute("name"));
+    }
+
+    return true;
+}
+
+// Before Android 5.0, system_fonts.xml / fallback_fonts.xml
+bool FontProviderAndroid::HandleFamilySetOLD(XMLElement* root) {
+    XMLElement* element = root->FirstChildElement();
+    while (element) {
+        if (strcmp(element->Name(), "family") == 0) {
+            FontFamily family;
+            if (JBHandleFamily(element, family)) {
+                // Parse success
+                font_families_.push_back(std::move(family));
+            }
+        }
+        element = element->NextSiblingElement();
+    }
+    return true;
+}
+
+bool FontProviderAndroid::JBHandleFamily(XMLElement* element, FontFamily& family) {
+    bool has_nameset = false;
+    element = element->FirstChildElement();
+
+    while (element) {
+        if (strcmp(element->Name(), "nameset") == 0) {
+            has_nameset = true;
+            if (!JBHandleNameset(element, family))
+                return false;
+        } else if (strcmp(element->Name(), "fileset") == 0) {
+            if (!JBHandleFileset(element, family))
+                return false;
+        }
+        element = element->NextSiblingElement();
+    }
+
+    if (!has_nameset) {
+        family.is_fallback = true;
+        family.fallback_for = "sans-serif";
+    }
+
+    return true;
+}
+
+bool FontProviderAndroid::JBHandleNameset(XMLElement* element, FontFamily& family) {
+    element = element->FirstChildElement();
+    while (element) {
+        if (strcmp(element->Name(), "name") == 0) {
+            family.names.emplace_back(element->GetText());
+        }
+        element = element->NextSiblingElement();
+    }
+    return true;
+}
+
+bool FontProviderAndroid::JBHandleFileset(XMLElement* element, FontFamily& family) {
+    element = element->FirstChildElement();
+    while (element) {
+        if (strcmp(element->Name(), "file") == 0) {
+            if (!JBHandleFile(element, family))
+                return false;
+        }
+        element = element->NextSiblingElement();
+    }
+    return true;
+}
+
+bool FontProviderAndroid::JBHandleFile(XMLElement* element, FontFamily& family) {
+    FontFile& font = family.fonts.emplace_back();
+    font.filename = element->GetText();
+
+    std::string filename_lcase(font.filename.length(), 0);
+    std::transform(font.filename.begin(),
+                   font.filename.end(),
+                   filename_lcase.begin(),
