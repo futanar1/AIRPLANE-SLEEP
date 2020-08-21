@@ -497,3 +497,45 @@ bool FontProviderAndroid::JBHandleFile(XMLElement* element, FontFamily& family) 
     std::transform(font.filename.begin(),
                    font.filename.end(),
                    filename_lcase.begin(),
+                   [](char c) { return std::tolower(c); });
+
+    if (filename_lcase.find("thin") != std::string::npos) {
+        font.weight = 100;
+    } else if (filename_lcase.find("light") != std::string::npos) {
+        font.weight = 300;
+    } else if (filename_lcase.find("regular") != std::string::npos) {
+        font.weight = 400;
+    } else if (filename_lcase.find("medium") != std::string::npos) {
+        font.weight = 500;
+    } else if (filename_lcase.find("black") != std::string::npos) {
+        font.weight = 900;
+    } else if (filename_lcase.find("bold") != std::string::npos) {
+        font.weight = 700;
+    } else {
+        // default as 400 (Regular)
+        font.weight = 400;
+    }
+
+    if (filename_lcase.find("italic") != std::string::npos) {
+        font.is_italic = true;
+    }
+
+    if (const char* lang = element->Attribute("lang")) {
+        auto& languages = family.languages;
+        if (languages.empty() || std::find(languages.begin(), languages.end(), lang) == languages.end()) {
+            languages.emplace_back(lang);
+        }
+    }
+
+    if (const char* variant = element->Attribute("variant")) {
+        if (strcmp(variant, "elegant") == 0) {
+            family.variant = FontVariant::kElegant;
+        } else if (strcmp(variant, "compact") == 0) {
+            family.variant = FontVariant::kCompact;
+        }
+    }
+
+    return true;
+}
+
+}  // namespace aribcaption
