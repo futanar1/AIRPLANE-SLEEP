@@ -160,3 +160,21 @@ auto FontProviderCoreText::GetFontFace(const std::string& font_name,
     // Retrieve font PostScript name from descriptor
     ScopedCFRef<CFStringRef> cf_postscript_name(
         static_cast<CFStringRef>(CTFontDescriptorCopyAttribute(ct_font_descriptor.get(), kCTFontNameAttribute)));
+    if (!cf_postscript_name)
+        return Err(FontProviderError::kOtherError);
+
+    FontfaceInfo info;
+    info.family_name = cfstr::CFStringToStdString(cf_family_name.get());
+    info.postscript_name = cfstr::CFStringToStdString(cf_postscript_name.get());
+    info.filename = cfstr::CFStringToStdString(cf_path.get());;
+    info.face_index = -1;
+    info.provider_type = FontProviderType::kCoreText;
+
+    auto priv = std::make_unique<FontfaceInfoPrivateCoreText>();
+    priv->ct_font = std::move(ct_font);
+    info.provider_priv = std::move(priv);
+
+    return Ok(std::move(info));
+}
+
+}  // namespace aribcaption
