@@ -26,4 +26,11 @@
     #include <ApplicationServices/ApplicationServices.h>
 #endif
 #include <memory>
-#include "aribcaption/context.hp
+#include "aribcaption/context.hpp"
+#include "base/logger.hpp"
+#include "base/scoped_cfref.hpp"
+#include "renderer/font_provider.hpp"
+
+namespace aribcaption {
+
+struct Fon
