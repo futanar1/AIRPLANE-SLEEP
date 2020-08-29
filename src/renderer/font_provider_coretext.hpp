@@ -33,4 +33,7 @@
 
 namespace aribcaption {
 
-struct Fon
+struct FontfaceInfoPrivateCoreText : public FontfaceInfoPrivate {
+public:
+    FontfaceInfoPrivateCoreText() = default;
+    ~FontfaceInfoPrivateCoreTex
