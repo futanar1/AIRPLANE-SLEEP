@@ -44,4 +44,7 @@ public:
 
 class FontProviderCoreText : public FontProvider {
 public:
-   
+    explicit FontProviderCoreText(Context& context);
+    ~FontProviderCoreText() override = default;
+public:
+    FontProviderTy
