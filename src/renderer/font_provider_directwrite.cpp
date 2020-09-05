@@ -232,3 +232,33 @@ auto FontProviderDirectWrite::GetFontFace(const std::string& font_name,
     std::wstring file_path;
     uint32_t file_path_len = 0;
     hr = dwrite_local_font_fileloader->GetFilePathLengthFromKey(reference_key, key_size, &file_path_len);
+    if (FAILED(hr)) {
+        log_->w("FontProviderDirectWrite: IDWriteLocalFontFileLoader GetFilePathLengthFromKey() failed");
+        return Err(FontProviderError::kOtherError);
+    }
+
+    file_path.resize(file_path_len);
+    hr = dwrite_local_font_fileloader->GetFilePathFromKey(reference_key, key_size, file_path.data(), file_path_len + 1);
+    if (FAILED(hr)) {
+        log_->w("FontProviderDirectWrite: IDWriteLocalFontFileLoader GetFilePathFromKey() failed");
+        return Err(FontProviderError::kOtherError);
+    }
+
+
+    FontfaceInfo fontface_info;
+    fontface_info.filename = wchar::WideStringToUTF8(file_path);
+    fontface_info.family_name = DWriteLocalizedStringsToUTF8(localized_family_names.Get());
+    fontface_info.postscript_name = DWriteLocalizedStringsToUTF8(localized_postscript_names.Get(), 0);
+    fontface_info.face_index = static_cast<int>(dwrite_fontface->GetIndex());
+    fontface_info.provider_type = FontProviderType::kDirectWrite;
+
+    auto fontface_info_private = std::make_unique<FontfaceInfoPrivateDirectWrite>();
+    fontface_info_private->font = std::move(dwrite_font);
+    fontface_info_private->fontface = std::move(dwrite_fontface);
+
+    fontface_info.provider_priv = std::move(fontface_info_private);
+
+    return Ok(std::move(fontface_info));
+}
+
+}  // namespace aribcaption
