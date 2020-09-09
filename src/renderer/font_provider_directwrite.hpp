@@ -17,4 +17,11 @@
  */
 
 #ifndef ARIBCAPTION_FONT_PROVIDER_DIRECTWRITE_HPP
-#define ARIBCAPTION_FONT_PROVIDER_DI
+#define ARIBCAPTION_FONT_PROVIDER_DIRECTWRITE_HPP
+
+#include <wrl/client.h>
+#include <dwrite.h>
+#include <memory>
+#include "aribcaption/context.hpp"
+#include "base/logger.hpp"
+#include "renderer/font_
