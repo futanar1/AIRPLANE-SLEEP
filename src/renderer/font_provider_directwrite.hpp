@@ -24,4 +24,11 @@
 #include <memory>
 #include "aribcaption/context.hpp"
 #include "base/logger.hpp"
-#include "renderer/font_
+#include "renderer/font_provider.hpp"
+
+using Microsoft::WRL::ComPtr;
+
+namespace aribcaption {
+
+struct FontfaceInfoPrivateDirectWrite : public FontfaceInfoPrivate {
+pub
