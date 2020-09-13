@@ -31,4 +31,9 @@ using Microsoft::WRL::ComPtr;
 namespace aribcaption {
 
 struct FontfaceInfoPrivateDirectWrite : public FontfaceInfoPrivate {
-pub
+public:
+    FontfaceInfoPrivateDirectWrite() = default;
+    ~FontfaceInfoPrivateDirectWrite() override = default;
+public:
+    ComPtr<IDWriteFont> font;
+    C
