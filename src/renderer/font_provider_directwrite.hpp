@@ -42,4 +42,8 @@ public:
 class FontProviderDirectWrite : public FontProvider {
 public:
     explicit FontProviderDirectWrite(Context& context);
-  
+    ~FontProviderDirectWrite() override = default;
+public:
+    FontProviderType GetType() override;
+    bool Initialize() override;
+    void SetL
