@@ -36,4 +36,10 @@ public:
     ~FontfaceInfoPrivateDirectWrite() override = default;
 public:
     ComPtr<IDWriteFont> font;
-    C
+    ComPtr<IDWriteFontFace> fontface;
+};
+
+class FontProviderDirectWrite : public FontProvider {
+public:
+    explicit FontProviderDirectWrite(Context& context);
+  
