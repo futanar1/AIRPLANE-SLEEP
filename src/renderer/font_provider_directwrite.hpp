@@ -46,4 +46,5 @@ public:
 public:
     FontProviderType GetType() override;
     bool Initialize() override;
-    void SetL
+    void SetLanguage(uint32_t iso6392_language_code) override;
+    Result<FontfaceInfo, FontProviderError> GetFontFace(const std::string& font_name,
