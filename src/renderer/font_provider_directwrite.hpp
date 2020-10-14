@@ -62,4 +62,4 @@ private:
 
 }  // namespace aribcaption
 
-#endif  // ARIBCAPTION_FONT_PROVIDER_DIRECTWRIT
+#endif  // ARIBCAPTION_FONT_PROVIDER_DIRECTWRITE_HPP
