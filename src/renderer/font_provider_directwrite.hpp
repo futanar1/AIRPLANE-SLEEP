@@ -56,4 +56,10 @@ private:
 
     uint32_t iso6392_language_code_ = 0;
 
-    ComPtr<IDWriteFactory> dwrite_fa
+    ComPtr<IDWriteFactory> dwrite_factory_;
+    ComPtr<IDWriteGdiInterop> dwrite_gdi_interop_;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_FONT_PROVIDER_DIRECTWRIT
