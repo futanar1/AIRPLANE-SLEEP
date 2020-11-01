@@ -16,4 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#in
+#include <cassert>
+#include "base/language_code.hpp"
+#include "base/scoped_holder.hpp"
+#include "renderer/font_provider_fontconfig.hpp"
+
+namespace ar
