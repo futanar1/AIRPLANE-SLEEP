@@ -21,4 +21,9 @@
 #include "base/scoped_holder.hpp"
 #include "renderer/font_provider_fontconfig.hpp"
 
-namespace ar
+namespace aribcaption {
+
+FontProviderFontconfig::FontProviderFontconfig(Context& context) :
+      log_(GetContextLogger(context)) {}
+
+FontProviderFontc
