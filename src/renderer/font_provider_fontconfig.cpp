@@ -26,4 +26,10 @@ namespace aribcaption {
 FontProviderFontconfig::FontProviderFontconfig(Context& context) :
       log_(GetContextLogger(context)) {}
 
-FontProviderFontc
+FontProviderFontconfig::~FontProviderFontconfig() = default;
+
+FontProviderType FontProviderFontconfig::GetType() {
+    return FontProviderType::kFontconfig;
+}
+
+bool Font
