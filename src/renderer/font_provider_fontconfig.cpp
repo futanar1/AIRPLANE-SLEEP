@@ -32,4 +32,7 @@ FontProviderType FontProviderFontconfig::GetType() {
     return FontProviderType::kFontconfig;
 }
 
-bool Font
+bool FontProviderFontconfig::Initialize() {
+    FcConfig* config = nullptr;
+    if (!(config = FcInitLoadConfigAndFonts())) {
+        log_->e("Fontconfig: Fc
