@@ -38,4 +38,9 @@ bool FontProviderFontconfig::Initialize() {
         log_->e("Fontconfig: FcInitLoadConfigAndFonts() failed");
         return false;
     }
-    config_ = ScopedHolder<FcConfig*>(config, FcConfigDes
+    config_ = ScopedHolder<FcConfig*>(config, FcConfigDestroy);
+    return true;
+}
+
+void FontProviderFontconfig::SetLanguage(uint32_t iso6392_language_code) {
+    iso6392_language_code_ = iso6392_lang
