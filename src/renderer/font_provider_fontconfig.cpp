@@ -35,4 +35,7 @@ FontProviderType FontProviderFontconfig::GetType() {
 bool FontProviderFontconfig::Initialize() {
     FcConfig* config = nullptr;
     if (!(config = FcInitLoadConfigAndFonts())) {
-        log_->e("Fontconfig: Fc
+        log_->e("Fontconfig: FcInitLoadConfigAndFonts() failed");
+        return false;
+    }
+    config_ = ScopedHolder<FcConfig*>(config, FcConfigDes
