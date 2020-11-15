@@ -51,4 +51,8 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
     assert(config_);
 
     ScopedHolder<FcPattern*> pattern(
-        FcNameParse(rein
+        FcNameParse(reinterpret_cast<const FcChar8*>(font_name.c_str())),
+        FcPatternDestroy
+    );
+    if (!pattern) {
+        log_->e("Fontconfig: Cannot parse fo
