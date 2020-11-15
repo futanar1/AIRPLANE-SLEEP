@@ -47,4 +47,8 @@ void FontProviderFontconfig::SetLanguage(uint32_t iso6392_language_code) {
 }
 
 auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
-                                         std::optional<ui
+                                         std::optional<uint32_t> ucs4) -> Result<FontfaceInfo, FontProviderError> {
+    assert(config_);
+
+    ScopedHolder<FcPattern*> pattern(
+        FcNameParse(rein
