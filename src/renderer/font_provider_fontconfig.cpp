@@ -43,4 +43,8 @@ bool FontProviderFontconfig::Initialize() {
 }
 
 void FontProviderFontconfig::SetLanguage(uint32_t iso6392_language_code) {
-    iso6392_language_code_ = iso6392_lang
+    iso6392_language_code_ = iso6392_language_code;
+}
+
+auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
+                                         std::optional<ui
