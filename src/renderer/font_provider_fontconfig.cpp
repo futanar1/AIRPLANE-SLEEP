@@ -55,4 +55,8 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
         FcPatternDestroy
     );
     if (!pattern) {
-        log_->e("Fontconfig: Cannot parse fo
+        log_->e("Fontconfig: Cannot parse font pattern string");
+        return Err(FontProviderError::kFontNotFound);
+    }
+
+    FcPatternAddString(pattern, FC_FAMILY,
