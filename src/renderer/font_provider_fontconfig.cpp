@@ -62,4 +62,6 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
     FcPatternAddString(pattern, FC_FAMILY, reinterpret_cast<const FcChar8*>(font_name.c_str()));
     FcPatternAddBool(pattern, FC_OUTLINE, FcTrue);
 
-    if (FcTrue != FcCo
+    if (FcTrue != FcConfigSubstitute(config_, pattern, FcMatchPattern)) {
+        log_->e("Fontconfig: Substitution cannot be performed");
+        return
