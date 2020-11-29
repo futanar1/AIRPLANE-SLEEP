@@ -64,4 +64,9 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
 
     if (FcTrue != FcConfigSubstitute(config_, pattern, FcMatchPattern)) {
         log_->e("Fontconfig: Substitution cannot be performed");
-        return
+        return Err(FontProviderError::kOtherError);
+    }
+    FcDefaultSubstitute(pattern);
+
+    FcPatternDel(pattern, FC_LANG);
+    if (iso6392_la
