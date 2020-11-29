@@ -59,4 +59,7 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
         return Err(FontProviderError::kFontNotFound);
     }
 
-    FcPatternAddString(pattern, FC_FAMILY,
+    FcPatternAddString(pattern, FC_FAMILY, reinterpret_cast<const FcChar8*>(font_name.c_str()));
+    FcPatternAddBool(pattern, FC_OUTLINE, FcTrue);
+
+    if (FcTrue != FcCo
