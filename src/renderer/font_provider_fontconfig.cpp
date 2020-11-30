@@ -69,4 +69,7 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
     FcDefaultSubstitute(pattern);
 
     FcPatternDel(pattern, FC_LANG);
-    if (iso6392_la
+    if (iso6392_language_code_) {
+        ScopedHolder<FcLangSet*> fc_langset(FcLangSetCreate(), FcLangSetDestroy);
+        FcLangSetAdd(fc_langset,
+        
