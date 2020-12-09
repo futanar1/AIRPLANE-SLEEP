@@ -78,4 +78,5 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
 
     FcResult result = FcResultMatch;
     FcPattern* matched = FcFontMatch(config_, pattern, &result);
-    if 
+    if (!matched || result != FcResultMatch) {
+        log_->w("Fontconfig: Cannot find a suitable font for %s", font_name.c_str());
