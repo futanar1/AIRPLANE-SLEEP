@@ -80,3 +80,7 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
     FcPattern* matched = FcFontMatch(config_, pattern, &result);
     if (!matched || result != FcResultMatch) {
         log_->w("Fontconfig: Cannot find a suitable font for %s", font_name.c_str());
+        return Err(FontProviderError::kFontNotFound);
+    }
+
+    ScopedHolder<FcPattern*> best(matched, FcPatternDestroy
