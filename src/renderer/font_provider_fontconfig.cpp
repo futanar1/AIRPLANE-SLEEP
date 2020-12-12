@@ -92,4 +92,5 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
     }
 
     int fc_index = 0;
-    if (FcResultMatch !
+    if (FcResultMatch != FcPatternGetInteger(best, FC_INDEX, 0, &fc_index)) {
+        log_->e("Fontconfig: Retrieve font FC_INDEX failed for %s", font_name.c_str
