@@ -87,4 +87,9 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
 
     FcChar8* filename = nullptr;
     if (FcResultMatch != FcPatternGetString(best, FC_FILE, 0, &filename)) {
-        log_->e("Fontconfig: Retrieve font filename fa
+        log_->e("Fontconfig: Retrieve font filename failed for %s", font_name.c_str());
+        return Err(FontProviderError::kOtherError);
+    }
+
+    int fc_index = 0;
+    if (FcResultMatch !
