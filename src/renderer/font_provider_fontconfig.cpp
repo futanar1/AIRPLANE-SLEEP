@@ -93,4 +93,11 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
 
     int fc_index = 0;
     if (FcResultMatch != FcPatternGetInteger(best, FC_INDEX, 0, &fc_index)) {
-        log_->e("Fontconfig: Retrieve font FC_INDEX failed for %s", font_name.c_str
+        log_->e("Fontconfig: Retrieve font FC_INDEX failed for %s", font_name.c_str());
+        return Err(FontProviderError::kOtherError);
+    }
+
+    if (ucs4.has_value() && ucs4 != 0) {
+        FcCharSet* charset = nullptr;
+
+        if (FcResu
