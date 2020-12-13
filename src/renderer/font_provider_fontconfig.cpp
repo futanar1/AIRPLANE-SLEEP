@@ -106,4 +106,5 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
         }
 
         if (FcTrue != FcCharSetHasChar(charset, ucs4.value())) {
-            lo
+            log_->w("Fontconfig: Font %s doesn't contain U+%04X", font_name.c_str(), ucs4.value());
+            return Err(FontProviderError::kCodeP
