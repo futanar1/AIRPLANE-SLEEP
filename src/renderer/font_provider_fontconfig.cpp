@@ -100,4 +100,6 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
     if (ucs4.has_value() && ucs4 != 0) {
         FcCharSet* charset = nullptr;
 
-        if (FcResu
+        if (FcResultMatch != FcPatternGetCharSet(best, FC_CHARSET, 0, &charset)) {
+            log_->e("Fontconfig: Retrieve font charset failed for %s", font_name.c_str());
+ 
