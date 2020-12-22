@@ -114,4 +114,8 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
     FcChar8* fc_family_name = nullptr;
     if (FcResultMatch != FcPatternGetString(best, FC_FAMILY, 0, &fc_family_name)) {
         log_->e("Fontconfig: Retrieve font FC_FAMILY failed for %s", font_name.c_str());
-        return Err(FontProviderE
+        return Err(FontProviderError::kOtherError);
+    }
+
+    FcChar8* fc_postscript_name = nullptr;
+    if (FcResultMatch != FcPatternGetString(best, FC_POSTSCRIPT_NAME, 0, &fc_po
