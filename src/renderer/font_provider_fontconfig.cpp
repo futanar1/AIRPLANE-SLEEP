@@ -118,4 +118,6 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
     }
 
     FcChar8* fc_postscript_name = nullptr;
-    if (FcResultMatch != FcPatternGetString(best, FC_POSTSCRIPT_NAME, 0, &fc_po
+    if (FcResultMatch != FcPatternGetString(best, FC_POSTSCRIPT_NAME, 0, &fc_postscript_name)) {
+        log_->e("Fontconfig: Retrieve font FC_POSTSCRIPT_NAME failed for %s", font_name.c_str());
+        return Err(FontProviderError::
