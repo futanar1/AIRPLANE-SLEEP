@@ -125,4 +125,7 @@ auto FontProviderFontconfig::GetFontFace(const std::string& font_name,
 
     FontfaceInfo info;
     info.family_name = reinterpret_cast<char*>(fc_family_name);
-    info.postscript_name = reinterp
+    info.postscript_name = reinterpret_cast<char*>(fc_postscript_name);
+    info.filename = reinterpret_cast<char*>(filename);
+    info.face_index = fc_index;
+    info.provider
