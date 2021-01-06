@@ -16,4 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef ARIBCAPTION_FONT_PROVIDER_FONTCONFIG_H
+#ifndef ARIBCAPTION_FONT_PROVIDER_FONTCONFIG_HPP
+#define ARIBCAPTION_FONT_PROVIDER_FONTCONFIG_HPP
+
+#include <fontconfig/fontconfig.h>
+#include <cstdint>
+#include <optional>
+#include <stri
