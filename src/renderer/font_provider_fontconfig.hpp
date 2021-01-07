@@ -22,4 +22,9 @@
 #include <fontconfig/fontconfig.h>
 #include <cstdint>
 #include <optional>
-#include <stri
+#include <string>
+#include <vector>
+#include "aribcaption/context.hpp"
+#include "base/logger.hpp"
+#include "base/scoped_holder.hpp"
+#include "renderer/font_p
