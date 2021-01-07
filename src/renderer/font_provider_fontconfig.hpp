@@ -27,4 +27,10 @@
 #include "aribcaption/context.hpp"
 #include "base/logger.hpp"
 #include "base/scoped_holder.hpp"
-#include "renderer/font_p
+#include "renderer/font_provider.hpp"
+
+namespace aribcaption {
+
+class FontProviderFontconfig : public FontProvider {
+public:
+    explicit FontProviderFontconfig(Context
