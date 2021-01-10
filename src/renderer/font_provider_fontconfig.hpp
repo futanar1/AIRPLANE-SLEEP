@@ -48,4 +48,7 @@ private:
     uint32_t iso6392_language_code_ = 0;
 };
 
-} 
+}  // namespace aribcaption
+
+
+#endif  // ARIBCAPTION_FONT_PROVIDER_FONTCONFIG_HPP
