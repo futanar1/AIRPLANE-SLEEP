@@ -27,3 +27,25 @@
 #include "renderer/font_provider.hpp"
 
 namespace aribcaption {
+
+class FontProviderGDI : public FontProvider {
+public:
+    explicit FontProviderGDI(Context& context);
+    ~FontProviderGDI() override = default;
+public:
+    FontProviderType GetType() override;
+    bool Initialize() override;
+    void SetLanguage(uint32_t iso6392_language_code) override;
+    Result<FontfaceInfo, FontProviderError> GetFontFace(const std::string& font_name,
+                                                        std::optional<uint32_t> ucs4) override;
+private:
+    std::shared_ptr<Logger> log_;
+
+    uint32_t iso6392_language_code_ = 0;
+
+    ScopedHolder<HDC> hdc_;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_FONT_PROVIDER_GDI_HPP
