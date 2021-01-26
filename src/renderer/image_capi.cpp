@@ -19,4 +19,11 @@
 #include "aribcaption/aligned_alloc.hpp"
 #include "aribcaption/image.h"
 
-using namespace aribcapti
+using namespace aribcaption;
+
+extern "C" {
+
+void aribcc_image_cleanup(aribcc_image_t* image) {
+    if (image->bitmap) {
+        AlignedFree(image->bitmap);
+        image->
