@@ -26,4 +26,9 @@ extern "C" {
 void aribcc_image_cleanup(aribcc_image_t* image) {
     if (image->bitmap) {
         AlignedFree(image->bitmap);
-        image->
+        image->bitmap = nullptr;
+        image->bitmap_size = 0;
+    }
+}
+
+}  // extern "C"
