@@ -20,4 +20,15 @@
 #define ARIBCAPTION_RECT_HPP
 
 #include <cstring>
-#include <algori
+#include <algorithm>
+
+// Workaround Windows.h (minwindef.h) max/min macro definitions
+#ifdef max
+    #undef max
+#endif
+
+#ifdef min
+    #undef min
+#endif
+
+namespace aribcaption {
