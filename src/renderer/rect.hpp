@@ -32,3 +32,8 @@
 #endif
 
 namespace aribcaption {
+
+struct Rect {
+    int left = 0;    // x coordinate of the left side
+    int top = 0;     // y coordinate of the top side
+    int right = 0;   // x
