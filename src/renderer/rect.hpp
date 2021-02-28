@@ -36,4 +36,8 @@ namespace aribcaption {
 struct Rect {
     int left = 0;    // x coordinate of the left side
     int top = 0;     // y coordinate of the top side
-    int right = 0;   // x
+    int right = 0;   // x coordinate of the right side plus one
+    int bottom = 0;  // y coordinate of the bottom side plus one
+public:
+    constexpr Rect() = default;
+    constexpr Rect(int le
