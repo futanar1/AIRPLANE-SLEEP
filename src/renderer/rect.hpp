@@ -42,4 +42,10 @@ public:
     constexpr Rect() = default;
     constexpr Rect(int left, int top, int right, int bottom) : left(left), top(top), right(right), bottom(bottom) {}
     constexpr Rect(const Rect& rect) = default;
-   
+    constexpr Rect& operator=(const Rect& rect) = default;
+
+    [[nodiscard]]
+    constexpr int x() const { return left; }
+
+    [[nodiscard]]
+    constexpr int y() 
