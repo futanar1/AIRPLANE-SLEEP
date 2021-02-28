@@ -40,4 +40,6 @@ struct Rect {
     int bottom = 0;  // y coordinate of the bottom side plus one
 public:
     constexpr Rect() = default;
-    constexpr Rect(int le
+    constexpr Rect(int left, int top, int right, int bottom) : left(left), top(top), right(right), bottom(bottom) {}
+    constexpr Rect(const Rect& rect) = default;
+   
