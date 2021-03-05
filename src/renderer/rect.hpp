@@ -54,4 +54,8 @@ public:
     constexpr int width() const { return right - left; }
 
     [[nodiscard]]
-    constexpr int height() const { ret
+    constexpr int height() const { return bottom - top; }
+
+    [[nodiscard]]
+    constexpr bool Contains(int x, int y) const {
+        return x >= left && x < right && y >= top &&
