@@ -48,4 +48,10 @@ public:
     constexpr int x() const { return left; }
 
     [[nodiscard]]
-    constexpr int y() 
+    constexpr int y() const { return top; }
+
+    [[nodiscard]]
+    constexpr int width() const { return right - left; }
+
+    [[nodiscard]]
+    constexpr int height() const { ret
