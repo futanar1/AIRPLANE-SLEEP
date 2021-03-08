@@ -64,4 +64,9 @@ public:
     constexpr void Include(int x, int y) {
         left = std::min(left, x);
         top = std::min(top, y);
-        right = std::m
+        right = std::max(right, x + 1);
+        bottom = std::max(bottom, y + 1);
+    }
+
+    friend bool operator==(const Rect& a, const Rect& b) {
+        return !memcmp(&a, 
