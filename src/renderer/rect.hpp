@@ -58,4 +58,10 @@ public:
 
     [[nodiscard]]
     constexpr bool Contains(int x, int y) const {
-        return x >= left && x < right && y >= top &&
+        return x >= left && x < right && y >= top && y < bottom;
+    }
+
+    constexpr void Include(int x, int y) {
+        left = std::min(left, x);
+        top = std::min(top, y);
+        right = std::m
