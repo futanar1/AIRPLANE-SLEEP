@@ -69,4 +69,11 @@ public:
     }
 
     friend bool operator==(const Rect& a, const Rect& b) {
-        return !memcmp(&a, 
+        return !memcmp(&a, &b, sizeof(a));
+    }
+
+    friend bool operator!=(const Rect& a, const Rect& b) {
+        return !(a == b);
+    }
+public:
+    static inli
