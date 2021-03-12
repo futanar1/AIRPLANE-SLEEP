@@ -80,4 +80,8 @@ public:
         Rect clipped;
 
         clipped.left = std::max(a.left, b.left);
-        clipped.top = std::m
+        clipped.top = std::max(a.top, b.top);
+        clipped.right = std::min(a.right, b.right);
+        clipped.bottom = std::min(a.bottom, b.bottom);
+
+        ret
