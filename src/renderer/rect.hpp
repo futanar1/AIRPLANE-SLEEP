@@ -76,4 +76,8 @@ public:
         return !(a == b);
     }
 public:
-    static inli
+    static inline constexpr Rect ClipRect(const Rect& a, const Rect& b) {
+        Rect clipped;
+
+        clipped.left = std::max(a.left, b.left);
+        clipped.top = std::m
