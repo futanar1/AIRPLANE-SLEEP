@@ -84,4 +84,10 @@ public:
         clipped.right = std::min(a.right, b.right);
         clipped.bottom = std::min(a.bottom, b.bottom);
 
-        ret
+        return clipped;
+    }
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_RECT_HPP
