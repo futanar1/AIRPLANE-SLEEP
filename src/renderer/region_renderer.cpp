@@ -205,3 +205,95 @@ auto RegionRenderer::RenderCaptionRegion(const CaptionRegion& region,
                 // Additional symbol (gaiji)'s Unicode codepoint not found in font
                 // Try fallback rendering with pua_codepoint
                 status = text_renderer_->DrawChar(text_render_ctx, char_x, char_y,
+                                                  ch.pua_codepoint, style, ch.text_color, stroke_color,
+                                                  stroke_width, char_width, char_height,
+                                                  underline_info, TextRenderFallbackPolicy::kAutoFallback);
+                if (status == TextRenderStatus::kCodePointNotFound) {
+                    // If failed, try fallback rendering with Unicode codepoint again
+                    status = text_renderer_->DrawChar(text_render_ctx, char_x, char_y,
+                                                      ch.codepoint, style, ch.text_color, stroke_color,
+                                                      stroke_width, char_width, char_height,
+                                                      underline_info, TextRenderFallbackPolicy::kAutoFallback);
+                }
+            }
+
+            if (status != TextRenderStatus::kOK){
+                log_->e("RegionRenderer: TextRenderer::DrawChar() returned error: %d", static_cast<int>(status));
+                if (status == TextRenderStatus::kFontNotFound) {
+                    has_font_not_found_error = true;
+                } else if (status == TextRenderStatus::kCodePointNotFound) {
+                    has_codepoint_not_found_error = true;
+                } else if (status == TextRenderStatus::kOtherError) {
+                    has_other_error = true;
+                }
+            }
+        } else if (replace_drcs_ && type == CaptionCharType::kDRCSReplaced) {
+            // Draw replaced DRCS (alternative ucs4)
+            TextRenderStatus status = text_renderer_->DrawChar(text_render_ctx, char_x, char_y,
+                                                               ch.codepoint, style, ch.text_color, stroke_color,
+                                                               stroke_width, char_width, char_height,
+                                                               underline_info, TextRenderFallbackPolicy::kAutoFallback);
+            if (status == TextRenderStatus::kOK) {
+                succeed++;
+            } else {
+                if (status == TextRenderStatus::kCodePointNotFound) {
+                    log_->w("RegionRenderer: Cannot find alternative codepoint U+%04X, fallback to DRCS rendering",
+                            ch.codepoint);
+                    has_codepoint_not_found_error = true;
+                } else {
+                    log_->e("RegionRenderer: TextRenderer::DrawChar() returned error: %d", static_cast<int>(status));
+                    if (status == TextRenderStatus::kFontNotFound) {
+                        has_font_not_found_error = true;
+                    } else if (status == TextRenderStatus::kOtherError) {
+                        has_other_error = true;
+                    }
+                }
+                // Fallback to DRCS rendering
+                type = CaptionCharType::kDRCS;
+            }
+        } else if (!replace_drcs_) {
+            // if DRCS replacement is disabled, force fallback to DRCS rendering
+            type = CaptionCharType::kDRCS;
+        }
+
+        // Draw DRCS
+        if (type == CaptionCharType::kDRCS) {
+            auto iter = drcs_map.find(ch.drcs_code);
+            if (iter != drcs_map.end()) {
+                const DRCS& drcs = iter->second;
+                bool ret = drcs_renderer_.DrawDRCS(drcs, style, ch.text_color, stroke_color,
+                                                   static_cast<int>(stroke_width),
+                                                   char_width, char_height, bitmap, char_x, char_y);
+                if (ret) {
+                    succeed++;
+                } else {
+                    log_->e("RegionRenderer: drcs_renderer_.DrawDRCS() returned error");
+                }
+            } else {
+                // DRCS not found in drcs_map
+                log_->e("RegionRenderer: Missing DRCS for drcs_code %u", ch.drcs_code);
+            }
+        }
+    }
+
+    text_renderer_->EndDraw(text_render_ctx);
+
+    // If there's no successfully rendered char, return RegionRenderError
+    if (char_count > 0 && succeed == 0) {
+        if (has_font_not_found_error) {
+            return Err(RegionRenderError::kFontNotFound);
+        } else if (has_codepoint_not_found_error) {
+            return Err(RegionRenderError::kCodePointNotFound);
+        } else {
+            return Err(RegionRenderError::kOtherError);
+        }
+    }
+
+    Image image = Bitmap::ToImage(std::move(bitmap));
+    image.dst_x = caption_area_start_x_ + ScaleX(region.x);
+    image.dst_y = caption_area_start_y_ + ScaleY(region.y);
+
+    return Ok(std::move(image));
+}
+
+}  // namespace aribcaption
