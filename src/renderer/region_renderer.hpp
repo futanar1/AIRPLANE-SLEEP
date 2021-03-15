@@ -55,3 +55,66 @@ public:
     bool SetFontFamily(const std::vector<std::string>& font_family);
     void SetOriginalPlaneSize(int plane_width, int plane_height);
     void SetTargetCaptionAreaRect(const Rect& rect);
+    void SetStrokeWidth(float dots);
+    void SetReplaceDRCS(bool replace);
+    void SetForceStrokeText(bool force_stroke);
+    void SetForceNoBackground(bool force_no_background);
+    auto RenderCaptionRegion(const CaptionRegion& region,
+                             const std::unordered_map<uint32_t, DRCS>& drcs_map) -> Result<Image, RegionRenderError>;
+private:
+    template <typename T>
+    [[nodiscard]]
+    int ScaleX(T x) const {
+        return static_cast<int>(std::floor(static_cast<float>(x) * x_magnification_));
+    }
+
+    template <typename T>
+    [[nodiscard]]
+    int ScaleY(T y) const {
+        return static_cast<int>(std::floor(static_cast<float>(y) * y_magnification_));
+    }
+
+    template <typename T>
+    [[nodiscard]]
+    int ScaleWidth(T width, T x = 0) const {
+        return ScaleX(x + width) - ScaleX(x);
+    }
+
+    template <typename T>
+    [[nodiscard]]
+    int ScaleHeight(T height, T y = 0) const {
+        return ScaleY(y + height) - ScaleY(y);
+    }
+public:
+    RegionRenderer(const RegionRenderer&) = delete;
+    RegionRenderer& operator=(const RegionRenderer&) = delete;
+private:
+    Context& context_;
+    std::shared_ptr<Logger> log_;
+
+    std::unique_ptr<FontProvider> font_provider_;
+    std::unique_ptr<TextRenderer> text_renderer_;
+    DRCSRenderer drcs_renderer_;
+
+    bool plane_inited_ = false;
+    int plane_width_ = 0;
+    int plane_height_ = 0;
+
+    bool caption_area_inited_ = false;
+    int caption_area_start_x_ = 0;
+    int caption_area_start_y_ = 0;
+    int caption_area_width_ = 0;
+    int caption_area_height_ = 0;
+
+    float stroke_width_ = 1.5f;
+    bool replace_drcs_ = true;
+    bool force_stroke_text_ = false;
+    bool force_no_background_ = false;
+
+    float x_magnification_ = 0.0f;
+    float y_magnification_ = 0.0f;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_REGION_RENDERER_HPP
