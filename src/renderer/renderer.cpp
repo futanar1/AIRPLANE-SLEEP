@@ -67,3 +67,37 @@ bool Renderer::SetDefaultFontFamily(const std::vector<std::string>& font_family,
 bool Renderer::SetLanguageSpecificFontFamily(uint32_t language_code, const std::vector<std::string>& font_family) {
     return pimpl_->SetLanguageSpecificFontFamily(language_code, font_family);
 }
+
+bool Renderer::SetFrameSize(int frame_width, int frame_height) {
+    return pimpl_->SetFrameSize(frame_width, frame_height);
+}
+
+bool Renderer::SetMargins(int top, int bottom, int left, int right) {
+    return pimpl_->SetMargins(top, bottom, left, right);
+}
+
+void Renderer::SetStoragePolicy(CaptionStoragePolicy policy, std::optional<size_t> upper_limit) {
+    pimpl_->SetStoragePolicy(policy, upper_limit);
+}
+
+bool Renderer::AppendCaption(const Caption& caption) {
+    return pimpl_->AppendCaption(caption);
+}
+
+bool Renderer::AppendCaption(Caption&& caption) {
+    return pimpl_->AppendCaption(std::move(caption));
+}
+
+RenderStatus Renderer::TryRender(int64_t pts) {
+    return pimpl_->TryRender(pts);
+}
+
+RenderStatus Renderer::Render(int64_t pts, RenderResult& out_result) {
+    return pimpl_->Render(pts, out_result);
+}
+
+void Renderer::Flush() {
+    pimpl_->Flush();
+}
+
+}  // namespace aribcaption
