@@ -16,4 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include 
+#include <cmath>
+#include <algorithm>
+#include <iterator>
+#include "aribcaption/context.hpp"
+#include "renderer/bitmap.hpp"
+#include "renderer/canvas.hp
