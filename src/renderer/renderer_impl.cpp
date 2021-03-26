@@ -21,4 +21,10 @@
 #include <iterator>
 #include "aribcaption/context.hpp"
 #include "renderer/bitmap.hpp"
-#include "renderer/canvas.hp
+#include "renderer/canvas.hpp"
+#include "renderer/renderer_impl.hpp"
+
+namespace aribcaption::internal {
+
+RendererImpl::RendererImpl(Context& context)
+    : cont
