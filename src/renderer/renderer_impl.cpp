@@ -27,4 +27,8 @@
 namespace aribcaption::internal {
 
 RendererImpl::RendererImpl(Context& context)
-    : cont
+    : context_(context), log_(GetContextLogger(context)), region_renderer_(context) {}
+
+RendererImpl::~RendererImpl() = default;
+
+bool Rende
