@@ -31,4 +31,6 @@ RendererImpl::RendererImpl(Context& context)
 
 RendererImpl::~RendererImpl() = default;
 
-bool Rende
+bool RendererImpl::Initialize(CaptionType caption_type,
+                              FontProviderType font_provider_type,
+               
