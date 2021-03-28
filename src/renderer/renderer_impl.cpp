@@ -33,4 +33,6 @@ RendererImpl::~RendererImpl() = default;
 
 bool RendererImpl::Initialize(CaptionType caption_type,
                               FontProviderType font_provider_type,
-               
+                              TextRendererType text_renderer_type) {
+    expected_caption_type_ = caption_type;
+    LoadDefaultFontFamilie
