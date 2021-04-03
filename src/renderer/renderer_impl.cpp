@@ -35,4 +35,9 @@ bool RendererImpl::Initialize(CaptionType caption_type,
                               FontProviderType font_provider_type,
                               TextRendererType text_renderer_type) {
     expected_caption_type_ = caption_type;
-    LoadDefaultFontFamilie
+    LoadDefaultFontFamilies();
+    return region_renderer_.Initialize(font_provider_type, text_renderer_type);
+}
+
+void RendererImpl::LoadDefaultFontFamilies() {
+    // Font
