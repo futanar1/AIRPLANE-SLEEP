@@ -40,4 +40,8 @@ bool RendererImpl::Initialize(CaptionType caption_type,
 }
 
 void RendererImpl::LoadDefaultFontFamilies() {
-    // Font
+    // Font face for default language (0)
+    language_font_family_[0] = { "sans-serif" };
+
+    // Default fonts for Japanese (jpn)
+    std::vector<std::
