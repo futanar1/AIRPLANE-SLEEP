@@ -44,4 +44,8 @@ void RendererImpl::LoadDefaultFontFamilies() {
     language_font_family_[0] = { "sans-serif" };
 
     // Default fonts for Japanese (jpn)
-    std::vector<std::
+    std::vector<std::string> jpn_default_font_family;
+#if defined(_WIN32)
+    jpn_default_font_family = {
+        "Windows TV MaruGothic",
+        "MS Gothic",
