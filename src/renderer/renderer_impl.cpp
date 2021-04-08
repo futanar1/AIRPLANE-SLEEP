@@ -54,4 +54,10 @@ void RendererImpl::LoadDefaultFontFamilies() {
 #elif defined(__APPLE__)
     jpn_default_font_family = {
         "Hiragino Maru Gothic ProN",
-        "Hirag
+        "Hiragino Sans",
+        "sans-serif",
+    };
+#elif defined(__ANDROID__)
+    jpn_default_font_family = {
+        "sans-serif"
+  
