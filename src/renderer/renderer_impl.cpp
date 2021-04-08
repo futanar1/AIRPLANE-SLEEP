@@ -49,3 +49,9 @@ void RendererImpl::LoadDefaultFontFamilies() {
     jpn_default_font_family = {
         "Windows TV MaruGothic",
         "MS Gothic",
+        "sans-serif",
+    };
+#elif defined(__APPLE__)
+    jpn_default_font_family = {
+        "Hiragino Maru Gothic ProN",
+        "Hirag
