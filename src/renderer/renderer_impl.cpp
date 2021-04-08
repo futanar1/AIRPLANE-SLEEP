@@ -65,4 +65,10 @@ void RendererImpl::LoadDefaultFontFamilies() {
     jpn_default_font_family = {
         "Noto Sans CJK JP",
         "Noto Sans CJK",
-        "Source H
+        "Source Han Sans JP",
+        "sans-serif",
+    };
+#endif
+    language_font_family_[ThreeCC("jpn")] = std::move(jpn_default_font_family);
+
+    // Default fonts for 
