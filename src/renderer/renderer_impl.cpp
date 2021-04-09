@@ -82,4 +82,9 @@ void RendererImpl::SetStrokeWidth(float dots) {
     InvalidatePrevRenderedImages();
 }
 
-void RendererImpl::SetRep
+void RendererImpl::SetReplaceDRCS(bool replace) {
+    region_renderer_.SetReplaceDRCS(replace);
+    InvalidatePrevRenderedImages();
+}
+
+void RendererImpl::SetForceStrokeText(bo
