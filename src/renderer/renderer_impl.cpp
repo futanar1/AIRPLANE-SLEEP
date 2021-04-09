@@ -74,4 +74,12 @@ void RendererImpl::LoadDefaultFontFamilies() {
     // Default fonts for latin languages (Portuguese / Spanish)
     std::vector<std::string> latin_default_font_family = { "sans-serif" };
     language_font_family_[ThreeCC("por")] = latin_default_font_family;  // Portuguese
-    language_font_family_[ThreeCC("spa")] = latin_default_font_family;  //
+    language_font_family_[ThreeCC("spa")] = latin_default_font_family;  // Spanish
+}
+
+void RendererImpl::SetStrokeWidth(float dots) {
+    region_renderer_.SetStrokeWidth(dots);
+    InvalidatePrevRenderedImages();
+}
+
+void RendererImpl::SetRep
