@@ -73,4 +73,5 @@ void RendererImpl::LoadDefaultFontFamilies() {
 
     // Default fonts for latin languages (Portuguese / Spanish)
     std::vector<std::string> latin_default_font_family = { "sans-serif" };
-    language_
+    language_font_family_[ThreeCC("por")] = latin_default_font_family;  // Portuguese
+    language_font_family_[ThreeCC("spa")] = latin_default_font_family;  //
