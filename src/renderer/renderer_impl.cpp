@@ -71,4 +71,6 @@ void RendererImpl::LoadDefaultFontFamilies() {
 #endif
     language_font_family_[ThreeCC("jpn")] = std::move(jpn_default_font_family);
 
-    // Default fonts for 
+    // Default fonts for latin languages (Portuguese / Spanish)
+    std::vector<std::string> latin_default_font_family = { "sans-serif" };
+    language_
