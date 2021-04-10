@@ -87,4 +87,9 @@ void RendererImpl::SetReplaceDRCS(bool replace) {
     InvalidatePrevRenderedImages();
 }
 
-void RendererImpl::SetForceStrokeText(bo
+void RendererImpl::SetForceStrokeText(bool force_stroke) {
+    region_renderer_.SetForceStrokeText(force_stroke);
+    InvalidatePrevRenderedImages();
+}
+
+void RendererImpl::SetForceNoRuby(bool force_no_r
