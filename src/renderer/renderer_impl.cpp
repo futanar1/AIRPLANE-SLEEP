@@ -92,4 +92,10 @@ void RendererImpl::SetForceStrokeText(bool force_stroke) {
     InvalidatePrevRenderedImages();
 }
 
-void RendererImpl::SetForceNoRuby(bool force_no_r
+void RendererImpl::SetForceNoRuby(bool force_no_ruby) {
+    force_no_ruby_ = force_no_ruby;
+    InvalidatePrevRenderedImages();
+}
+
+void RendererImpl::SetForceNoBackground(bool force_no_background) {
+    regio
