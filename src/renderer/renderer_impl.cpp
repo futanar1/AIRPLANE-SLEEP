@@ -98,4 +98,8 @@ void RendererImpl::SetForceNoRuby(bool force_no_ruby) {
 }
 
 void RendererImpl::SetForceNoBackground(bool force_no_background) {
-    regio
+    region_renderer_.SetForceNoBackground(force_no_background);
+    InvalidatePrevRenderedImages();
+}
+
+void RendererImpl::SetMergeRegionImages(bo
