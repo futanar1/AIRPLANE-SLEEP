@@ -102,4 +102,9 @@ void RendererImpl::SetForceNoBackground(bool force_no_background) {
     InvalidatePrevRenderedImages();
 }
 
-void RendererImpl::SetMergeRegionImages(bo
+void RendererImpl::SetMergeRegionImages(bool merge) {
+    bool prev = merge_region_images_;
+    merge_region_images_ = merge;
+    if (prev != merge) {
+        InvalidatePrevRenderedImages();
+  
