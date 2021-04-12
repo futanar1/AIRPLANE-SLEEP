@@ -107,4 +107,8 @@ void RendererImpl::SetMergeRegionImages(bool merge) {
     merge_region_images_ = merge;
     if (prev != merge) {
         InvalidatePrevRenderedImages();
-  
+    }
+}
+
+bool RendererImpl::SetDefaultFontFamily(const std::vector<std::string>& font_family, bool force_default) {
+    force_default_font_fa
