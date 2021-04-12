@@ -111,4 +111,8 @@ void RendererImpl::SetMergeRegionImages(bool merge) {
 }
 
 bool RendererImpl::SetDefaultFontFamily(const std::vector<std::string>& font_family, bool force_default) {
-    force_default_font_fa
+    force_default_font_family_ = force_default;
+    return SetLanguageSpecificFontFamily(0, font_family);
+}
+
+bool RendererImpl::SetLanguageSpecificFontFamily(uint32_t language_code, const std::ve
