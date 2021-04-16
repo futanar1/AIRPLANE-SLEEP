@@ -115,4 +115,9 @@ bool RendererImpl::SetDefaultFontFamily(const std::vector<std::string>& font_fam
     return SetLanguageSpecificFontFamily(0, font_family);
 }
 
-bool RendererImpl::SetLanguageSpecificFontFamily(uint32_t language_code, const std::ve
+bool RendererImpl::SetLanguageSpecificFontFamily(uint32_t language_code, const std::vector<std::string>& font_family) {
+    if (font_family.empty()) {
+        return false;
+    }
+
+    language_font_family_[language_code] =
