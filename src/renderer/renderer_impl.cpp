@@ -126,4 +126,6 @@ bool RendererImpl::SetLanguageSpecificFontFamily(uint32_t language_code, const s
     return true;
 }
 
-bool RendererImpl::SetFrameSize(int frame_
+bool RendererImpl::SetFrameSize(int frame_width, int frame_height) {
+    if (frame_width < 0 || frame_height < 0) {
+        assert(frame_width >= 0 && frame_height >= 0 && "Frame width/heig
