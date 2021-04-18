@@ -134,4 +134,10 @@ bool RendererImpl::SetFrameSize(int frame_width, int frame_height) {
 
     if (frame_width_ != frame_width || frame_height_ != frame_height) {
         InvalidatePrevRenderedImages();
- 
+    }
+
+    frame_width_ = frame_width;
+    frame_height_ = frame_height;
+    frame_size_inited_ = true;
+
+    SetMargins(margin_top_, margin_bottom_, margi
