@@ -120,4 +120,10 @@ bool RendererImpl::SetLanguageSpecificFontFamily(uint32_t language_code, const s
         return false;
     }
 
-    language_font_family_[language_code] =
+    language_font_family_[language_code] = font_family;
+
+    InvalidatePrevRenderedImages();
+    return true;
+}
+
+bool RendererImpl::SetFrameSize(int frame_
