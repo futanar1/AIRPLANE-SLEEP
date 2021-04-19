@@ -151,4 +151,8 @@ bool RendererImpl::SetMargins(int top, int bottom, int left, int right) {
         return false;
     }
 
-    int video_width = 
+    int video_width = frame_width_ - left - right;
+    int video_height = frame_height_ - top - bottom;
+
+    if (video_width < 0 || video_height < 0) {
+   
