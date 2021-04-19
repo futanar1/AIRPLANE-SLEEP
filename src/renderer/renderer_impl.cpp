@@ -147,4 +147,8 @@ bool RendererImpl::SetFrameSize(int frame_width, int frame_height) {
 
 bool RendererImpl::SetMargins(int top, int bottom, int left, int right) {
     if (!frame_size_inited_) {
-    
+        assert(frame_size_inited_ && "Frame size is not indicated, call SetFrameSize() first");
+        return false;
+    }
+
+    int video_width = 
