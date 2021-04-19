@@ -140,4 +140,11 @@ bool RendererImpl::SetFrameSize(int frame_width, int frame_height) {
     frame_height_ = frame_height;
     frame_size_inited_ = true;
 
-    SetMargins(margin_top_, margin_bottom_, margi
+    SetMargins(margin_top_, margin_bottom_, margin_left_, margin_right_);
+
+    return true;
+}
+
+bool RendererImpl::SetMargins(int top, int bottom, int left, int right) {
+    if (!frame_size_inited_) {
+    
