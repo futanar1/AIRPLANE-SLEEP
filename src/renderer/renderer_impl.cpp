@@ -155,4 +155,8 @@ bool RendererImpl::SetMargins(int top, int bottom, int left, int right) {
     int video_height = frame_height_ - top - bottom;
 
     if (video_width < 0 || video_height < 0) {
-   
+        log_->e("RendererImpl: Invalid margins, video area size attempts to be < 0");
+        return false;
+    }
+
+    if (margin_top_ != top || margi
