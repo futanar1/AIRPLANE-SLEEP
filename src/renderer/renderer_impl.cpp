@@ -159,4 +159,8 @@ bool RendererImpl::SetMargins(int top, int bottom, int left, int right) {
         return false;
     }
 
-    if (margin_top_ != top || margi
+    if (margin_top_ != top || margin_bottom_ != bottom || margin_left_ != left || margin_right_ != right) {
+        InvalidatePrevRenderedImages();
+    }
+
+    video_area_width_ = video_wid
