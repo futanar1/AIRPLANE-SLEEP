@@ -163,4 +163,8 @@ bool RendererImpl::SetMargins(int top, int bottom, int left, int right) {
         InvalidatePrevRenderedImages();
     }
 
-    video_area_width_ = video_wid
+    video_area_width_ = video_width;
+    video_area_height_ = video_height;
+    video_area_start_x_ = left;
+    video_area_start_y_ = top;
+    video_area_size
