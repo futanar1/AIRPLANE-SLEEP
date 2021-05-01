@@ -167,4 +167,10 @@ bool RendererImpl::SetMargins(int top, int bottom, int left, int right) {
     video_area_height_ = video_height;
     video_area_start_x_ = left;
     video_area_start_y_ = top;
-    video_area_size
+    video_area_size_inited_ = true;
+
+    margin_top_ = top;
+    margin_bottom_ = bottom;
+    margin_left_ = left;
+    margin_right_ = right;
+    margins_init
