@@ -173,4 +173,10 @@ bool RendererImpl::SetMargins(int top, int bottom, int left, int right) {
     margin_bottom_ = bottom;
     margin_left_ = left;
     margin_right_ = right;
-    margins_init
+    margins_inited_ = true;
+
+    return true;
+}
+
+void RendererImpl::SetStoragePolicy(CaptionStoragePolicy policy, std::optional<size_t> upper_limit) {
+    st
