@@ -179,4 +179,8 @@ bool RendererImpl::SetMargins(int top, int bottom, int left, int right) {
 }
 
 void RendererImpl::SetStoragePolicy(CaptionStoragePolicy policy, std::optional<size_t> upper_limit) {
-    st
+    storage_policy_ = policy;
+
+    if (policy == CaptionStoragePolicy::kUpperLimitCount) {
+        assert(upper_limit.has_value());
+        up
