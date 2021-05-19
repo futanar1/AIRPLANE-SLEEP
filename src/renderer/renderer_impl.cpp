@@ -185,4 +185,10 @@ void RendererImpl::SetStoragePolicy(CaptionStoragePolicy policy, std::optional<s
         assert(upper_limit.has_value());
         upper_limit_count_ = upper_limit.value();
     } else if (policy == CaptionStoragePolicy::kUpperLimitDuration) {
-        assert(upper_
+        assert(upper_limit.has_value());
+        upper_limit_duration_ = upper_limit.value();
+    }
+}
+
+bool RendererImpl::AppendCaption(const Caption& caption) {
+ 
