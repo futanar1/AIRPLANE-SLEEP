@@ -191,4 +191,7 @@ void RendererImpl::SetStoragePolicy(CaptionStoragePolicy policy, std::optional<s
 }
 
 bool RendererImpl::AppendCaption(const Caption& caption) {
- 
+    assert(caption.pts != PTS_NOPTS && "Caption without PTS is not supported");
+    assert(caption.plane_width > 0 && caption.plane_height > 0);
+
+    
