@@ -198,4 +198,9 @@ bool RendererImpl::AppendCaption(const Caption& caption) {
         return false;
     }
 
-    int
+    int64_t pts = caption.pts;
+
+    if (captions_.empty()) {
+        captions_.emplace(pts, caption);
+    } else {
+        auto prev = captions_.lower_boun
