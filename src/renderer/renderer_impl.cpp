@@ -203,4 +203,9 @@ bool RendererImpl::AppendCaption(const Caption& caption) {
     if (captions_.empty()) {
         captions_.emplace(pts, caption);
     } else {
-        auto prev = captions_.lower_boun
+        auto prev = captions_.lower_bound(pts - 1);
+        if (prev == captions_.end() || (prev != captions_.begin() && prev->first > pts - 1)) {
+            --prev;
+        }
+
+  
