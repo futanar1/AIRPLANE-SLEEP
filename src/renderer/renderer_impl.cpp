@@ -214,4 +214,11 @@ bool RendererImpl::AppendCaption(const Caption& caption) {
             prev_caption.wait_duration = pts - prev_caption.pts;
         }
 
-        captions_.insert_or_assign(s
+        captions_.insert_or_assign(std::next(prev), pts, caption);
+    }
+
+    if (pts <= prev_rendered_caption_pts_) {
+        InvalidatePrevRenderedImages();
+    }
+
+  
