@@ -221,4 +221,9 @@ bool RendererImpl::AppendCaption(const Caption& caption) {
         InvalidatePrevRenderedImages();
     }
 
-  
+    CleanupCaptionsIfNecessary();
+    return true;
+}
+
+bool RendererImpl::AppendCaption(Caption&& caption) {
+    assert(caption.pts != PTS_NOPTS && "Caption wi
