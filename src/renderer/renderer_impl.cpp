@@ -226,4 +226,7 @@ bool RendererImpl::AppendCaption(const Caption& caption) {
 }
 
 bool RendererImpl::AppendCaption(Caption&& caption) {
-    assert(caption.pts != PTS_NOPTS && "Caption wi
+    assert(caption.pts != PTS_NOPTS && "Caption without PTS is not supported");
+    assert(caption.plane_width > 0 && caption.plane_height > 0);
+
+    if (caption.pts == PTS_NOPTS || caption.plane_width 
