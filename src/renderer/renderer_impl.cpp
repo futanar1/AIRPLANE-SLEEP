@@ -239,4 +239,9 @@ bool RendererImpl::AppendCaption(Caption&& caption) {
         captions_.emplace(pts, std::move(caption));
     } else {
         auto prev = captions_.lower_bound(pts - 1);
-        if (prev == captions_.end() || (prev != capt
+        if (prev == captions_.end() || (prev != captions_.begin() && prev->first > pts - 1)) {
+            --prev;
+        }
+
+        // Correct previous caption's duration
+        if (prev->fir
