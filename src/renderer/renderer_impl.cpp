@@ -236,4 +236,7 @@ bool RendererImpl::AppendCaption(Caption&& caption) {
     int64_t pts = caption.pts;
 
     if (captions_.empty()) {
-        captions_.emplace(pts, st
+        captions_.emplace(pts, std::move(caption));
+    } else {
+        auto prev = captions_.lower_bound(pts - 1);
+        if (prev == captions_.end() || (prev != capt
