@@ -244,4 +244,6 @@ bool RendererImpl::AppendCaption(Caption&& caption) {
         }
 
         // Correct previous caption's duration
-        if (prev->fir
+        if (prev->first < pts && prev->second.wait_duration == DURATION_INDEFINITE) {
+            Caption& prev_caption = prev->second;
+            prev_caption
