@@ -252,4 +252,12 @@ bool RendererImpl::AppendCaption(Caption&& caption) {
         captions_.insert_or_assign(std::next(prev), pts, std::move(caption));
     }
 
-    if (pts <
+    if (pts <= prev_rendered_caption_pts_) {
+        InvalidatePrevRenderedImages();
+    }
+
+    CleanupCaptionsIfNecessary();
+    return true;
+}
+
+void Re
