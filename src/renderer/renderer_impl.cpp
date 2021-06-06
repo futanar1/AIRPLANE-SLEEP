@@ -263,4 +263,8 @@ bool RendererImpl::AppendCaption(Caption&& caption) {
 void RendererImpl::CleanupCaptionsIfNecessary() {
     if (storage_policy_ == CaptionStoragePolicy::kUnlimited) {
         return;
-    } else if (storage_policy
+    } else if (storage_policy_ == CaptionStoragePolicy::kMinimum) {
+        if (prev_rendered_caption_pts_ == PTS_NOPTS) {
+            return;
+        }
+    
