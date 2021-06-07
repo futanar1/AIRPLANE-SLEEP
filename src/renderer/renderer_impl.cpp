@@ -267,4 +267,5 @@ void RendererImpl::CleanupCaptionsIfNecessary() {
         if (prev_rendered_caption_pts_ == PTS_NOPTS) {
             return;
         }
-    
+        auto prev_rendered_caption_iter = captions_.find(prev_rendered_caption_pts_);
+        if (prev_rendered_caption_iter != captions_.en
