@@ -268,4 +268,7 @@ void RendererImpl::CleanupCaptionsIfNecessary() {
             return;
         }
         auto prev_rendered_caption_iter = captions_.find(prev_rendered_caption_pts_);
-        if (prev_rendered_caption_iter != captions_.en
+        if (prev_rendered_caption_iter != captions_.end()) {
+            captions_.erase(captions_.begin(), prev_rendered_caption_iter);
+        }
+    } else if (storage_policy_ == CaptionStoragePo
