@@ -277,4 +277,7 @@ void RendererImpl::CleanupCaptionsIfNecessary() {
         }
         auto erase_end = std::prev(captions_.end(), static_cast<ptrdiff_t>(upper_limit_count_));
         if (erase_end != captions_.begin()) {
-            c
+            captions_.erase(captions_.begin(), erase_end);
+        }
+    } else if (storage_policy_ == CaptionStoragePolicy::kUpperLimitDuration) {
+        if
