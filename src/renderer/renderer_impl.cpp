@@ -271,4 +271,8 @@ void RendererImpl::CleanupCaptionsIfNecessary() {
         if (prev_rendered_caption_iter != captions_.end()) {
             captions_.erase(captions_.begin(), prev_rendered_caption_iter);
         }
-    } else if (storage_policy_ == CaptionStoragePo
+    } else if (storage_policy_ == CaptionStoragePolicy::kUpperLimitCount) {
+        if (captions_.size() <= upper_limit_count_) {
+            return;
+        }
+        auto erase_end =
