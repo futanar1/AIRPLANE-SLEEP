@@ -275,4 +275,6 @@ void RendererImpl::CleanupCaptionsIfNecessary() {
         if (captions_.size() <= upper_limit_count_) {
             return;
         }
-        auto erase_end =
+        auto erase_end = std::prev(captions_.end(), static_cast<ptrdiff_t>(upper_limit_count_));
+        if (erase_end != captions_.begin()) {
+            c
