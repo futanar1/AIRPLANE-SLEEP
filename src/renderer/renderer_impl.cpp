@@ -287,4 +287,11 @@ void RendererImpl::CleanupCaptionsIfNecessary() {
         int64_t erase_end_pts = last_caption_pts - static_cast<int64_t>(upper_limit_duration_);
         auto erase_end = captions_.lower_bound(erase_end_pts);
         if (erase_end != captions_.end() && erase_end != captions_.begin()) {
-            captions_.erase(captions_.begin(), er
+            captions_.erase(captions_.begin(), erase_end);
+        }
+    }
+}
+
+RenderStatus RendererImpl::TryRender(int64_t pts) {
+    if (!frame_size_inited_ || !margins_inited_) {
+        return RenderS
