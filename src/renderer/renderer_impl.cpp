@@ -284,4 +284,5 @@ void RendererImpl::CleanupCaptionsIfNecessary() {
             return;
         }
         int64_t last_caption_pts = captions_.rbegin()->first;
-        int64_t e
+        int64_t erase_end_pts = last_caption_pts - static_cast<int64_t>(upper_limit_duration_);
+        auto erase_end = captions_.lower_bound(
