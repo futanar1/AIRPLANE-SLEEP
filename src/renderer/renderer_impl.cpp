@@ -280,4 +280,8 @@ void RendererImpl::CleanupCaptionsIfNecessary() {
             captions_.erase(captions_.begin(), erase_end);
         }
     } else if (storage_policy_ == CaptionStoragePolicy::kUpperLimitDuration) {
-        if
+        if (captions_.empty()) {
+            return;
+        }
+        int64_t last_caption_pts = captions_.rbegin()->first;
+        int64_t e
