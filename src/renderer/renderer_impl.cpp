@@ -306,4 +306,7 @@ RenderStatus RendererImpl::TryRender(int64_t pts) {
         --iter;
     }
 
-    Caption& caption = iter->s
+    Caption& caption = iter->second;
+    if (pts < caption.pts || (caption.wait_duration != DURATION_INDEFINITE && pts >= caption.pts + caption.wait_duration)) {
+        // Timeout
+   
