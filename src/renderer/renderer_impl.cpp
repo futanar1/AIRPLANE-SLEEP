@@ -294,4 +294,12 @@ void RendererImpl::CleanupCaptionsIfNecessary() {
 
 RenderStatus RendererImpl::TryRender(int64_t pts) {
     if (!frame_size_inited_ || !margins_inited_) {
-        return RenderS
+        return RenderStatus::kError;
+    }
+
+    if (captions_.empty()) {
+        return RenderStatus::kNoImage;
+    }
+
+    auto iter = captions_.lower_bound(pts);
+ 
