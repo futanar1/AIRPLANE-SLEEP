@@ -326,4 +326,6 @@ RenderStatus RendererImpl::TryRender(int64_t pts) {
     return RenderStatus::kGotImage;
 }
 
-RenderStatus RendererImpl
+RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
+    if (!frame_size_inited_ || !margins_inited_) {
+        assert(frame_size_inited_ && margins_inited_ 
