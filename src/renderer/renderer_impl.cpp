@@ -315,4 +315,6 @@ RenderStatus RendererImpl::TryRender(int64_t pts) {
         return RenderStatus::kNoImage;
     }
 
-    if (has_
+    if (has_prev_rendered_caption_ && prev_rendered_caption_pts_ == caption.pts) {
+        if (!prev_rendered_images_.empty()) {
+            return RenderStatus::kGotImageUnchanged;
