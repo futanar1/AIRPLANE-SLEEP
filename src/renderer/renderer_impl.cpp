@@ -309,4 +309,10 @@ RenderStatus RendererImpl::TryRender(int64_t pts) {
     Caption& caption = iter->second;
     if (pts < caption.pts || (caption.wait_duration != DURATION_INDEFINITE && pts >= caption.pts + caption.wait_duration)) {
         // Timeout
-   
+        return RenderStatus::kNoImage;
+    }
+    if (caption.regions.empty()) {
+        return RenderStatus::kNoImage;
+    }
+
+    if (has_
