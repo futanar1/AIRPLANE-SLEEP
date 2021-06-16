@@ -328,4 +328,9 @@ RenderStatus RendererImpl::TryRender(int64_t pts) {
 
 RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     if (!frame_size_inited_ || !margins_inited_) {
-        assert(frame_size_inited_ && margins_inited_ 
+        assert(frame_size_inited_ && margins_inited_ && "Frame size / margins must be indicated first");
+        return RenderStatus::kError;
+    }
+
+    out_result.pts = 0;
+ 
