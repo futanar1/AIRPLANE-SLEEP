@@ -338,4 +338,8 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
 
     if (captions_.empty()) {
         InvalidatePrevRenderedImages();
-        return RenderS
+        return RenderStatus::kNoImage;
+    }
+
+    auto iter = captions_.lower_bound(pts);
+    if (iter == captions_.end() || (iter != captions_.begin() && iter->fi
