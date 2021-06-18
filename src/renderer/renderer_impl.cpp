@@ -333,4 +333,9 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     }
 
     out_result.pts = 0;
- 
+    out_result.duration = 0;
+    out_result.images.clear();
+
+    if (captions_.empty()) {
+        InvalidatePrevRenderedImages();
+        return RenderS
