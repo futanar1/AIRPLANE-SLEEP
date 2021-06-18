@@ -342,4 +342,9 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     }
 
     auto iter = captions_.lower_bound(pts);
-    if (iter == captions_.end() || (iter != captions_.begin() && iter->fi
+    if (iter == captions_.end() || (iter != captions_.begin() && iter->first > pts)) {
+        --iter;
+    }
+
+    Caption& caption = iter->second;
+    if (pts < caption.pts || (caption.wait_durati
