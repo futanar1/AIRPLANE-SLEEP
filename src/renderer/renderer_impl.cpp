@@ -347,4 +347,6 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     }
 
     Caption& caption = iter->second;
-    if (pts < caption.pts || (caption.wait_durati
+    if (pts < caption.pts || (caption.wait_duration != DURATION_INDEFINITE && pts >= caption.pts + caption.wait_duration)) {
+        // Timeout
+        InvalidatePrev
