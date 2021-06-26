@@ -354,4 +354,8 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     }
     if (caption.regions.empty()) {
         InvalidatePrevRenderedImages();
-        return R
+        return RenderStatus::kNoImage;
+    }
+
+    if (has_prev_rendered_caption_ && prev_rendered_caption_pts_ == caption.pts) {
+        // Reuse previous r
