@@ -358,4 +358,7 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     }
 
     if (has_prev_rendered_caption_ && prev_rendered_caption_pts_ == caption.pts) {
-        // Reuse previous r
+        // Reuse previous rendered caption
+        if (!prev_rendered_images_.empty()) {
+            out_result.pts = prev_rendered_caption_pts_;
+            out_result.d
