@@ -361,4 +361,6 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
         // Reuse previous rendered caption
         if (!prev_rendered_images_.empty()) {
             out_result.pts = prev_rendered_caption_pts_;
-            out_result.d
+            out_result.duration = prev_rendered_caption_duration_;
+            out_result.images = prev_rendered_images_;
+            return RenderStatus::kGotImageUnchan
