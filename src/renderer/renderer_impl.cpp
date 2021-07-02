@@ -370,4 +370,9 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
         }
     }
 
-    // Prepare for renderi
+    // Prepare for rendering
+
+    // Set up Font Language
+    region_renderer_.SetFontLanguage(caption.iso6392_language_code);
+
+    // Set up Font
