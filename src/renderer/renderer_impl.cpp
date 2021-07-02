@@ -363,4 +363,11 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
             out_result.pts = prev_rendered_caption_pts_;
             out_result.duration = prev_rendered_caption_duration_;
             out_result.images = prev_rendered_images_;
-            return RenderStatus::kGotImageUnchan
+            return RenderStatus::kGotImageUnchanged;
+        } else {
+            InvalidatePrevRenderedImages();
+            return RenderStatus::kNoImage;
+        }
+    }
+
+    // Prepare for renderi
