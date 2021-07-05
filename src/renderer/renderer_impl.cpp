@@ -382,4 +382,7 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     }
     region_renderer_.SetFontFamily(language_font_family_[language_code]);
 
- 
+    // Set up origin plane size / target caption area
+    AdjustCaptionArea(caption.plane_width, caption.plane_height);
+
+    std::vector
