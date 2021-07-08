@@ -385,4 +385,8 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     // Set up origin plane size / target caption area
     AdjustCaptionArea(caption.plane_width, caption.plane_height);
 
-    std::vector
+    std::vector<Image> images;
+    for (CaptionRegion& region : caption.regions) {
+        if (region.is_ruby && force_no_ruby_) {
+            continue;
+        
