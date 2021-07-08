@@ -389,4 +389,7 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     for (CaptionRegion& region : caption.regions) {
         if (region.is_ruby && force_no_ruby_) {
             continue;
-        
+        }
+
+        Result<Image, RegionRenderError> result = region_renderer_.RenderCaptionRegion(region, caption.drcs_map);
+       
