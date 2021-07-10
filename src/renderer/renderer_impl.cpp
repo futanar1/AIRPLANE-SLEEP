@@ -394,4 +394,8 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
         Result<Image, RegionRenderError> result = region_renderer_.RenderCaptionRegion(region, caption.drcs_map);
         if (result.is_ok()) {
             images.push_back(std::move(result.value()));
-        } else if (result.error() == RegionR
+        } else if (result.error() == RegionRenderError::kImageTooSmall) {
+            // Skip image which is too small
+            continue;
+        } else {
+            log_->e("RendererImp
