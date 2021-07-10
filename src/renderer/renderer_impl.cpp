@@ -398,4 +398,6 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
             // Skip image which is too small
             continue;
         } else {
-            log_->e("RendererImp
+            log_->e("RendererImpl: RenderCaptionRegion() failed with error: %d", static_cast<int>(result.error()));
+            InvalidatePrevRenderedImages();
+       
