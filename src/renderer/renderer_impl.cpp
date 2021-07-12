@@ -400,4 +400,9 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
         } else {
             log_->e("RendererImpl: RenderCaptionRegion() failed with error: %d", static_cast<int>(result.error()));
             InvalidatePrevRenderedImages();
-       
+            return RenderStatus::kError;
+        }
+    }
+
+    if (merge_region_images_ && images.size() > 1) {
+        Image merged = MergeImages(image
