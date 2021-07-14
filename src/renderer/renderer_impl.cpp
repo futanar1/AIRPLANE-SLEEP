@@ -405,4 +405,10 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     }
 
     if (merge_region_images_ && images.size() > 1) {
-        Image merged = MergeImages(image
+        Image merged = MergeImages(images);
+        images.clear();
+        images.push_back(std::move(merged));
+    }
+
+    has_prev_rendered_caption_ = true;
+    prev_rendered_caption_pts_ = caption
