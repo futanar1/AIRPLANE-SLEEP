@@ -416,4 +416,9 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     prev_rendered_images_ = std::move(images);
 
     out_result.pts = caption.pts;
-    out_
+    out_result.duration = caption.wait_duration;
+    out_result.images = prev_rendered_images_;
+    return RenderStatus::kGotImage;
+}
+
+Image RendererImpl::MergeImag
