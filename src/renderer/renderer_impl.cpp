@@ -411,4 +411,9 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     }
 
     has_prev_rendered_caption_ = true;
-    prev_rendered_caption_pts_ = caption
+    prev_rendered_caption_pts_ = caption.pts;
+    prev_rendered_caption_duration_ = caption.wait_duration;
+    prev_rendered_images_ = std::move(images);
+
+    out_result.pts = caption.pts;
+    out_
