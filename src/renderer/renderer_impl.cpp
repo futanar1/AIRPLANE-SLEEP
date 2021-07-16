@@ -424,4 +424,8 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
 Image RendererImpl::MergeImages(std::vector<Image>& images) {
     if (images.empty()) return Image{};
 
-    Rect rect(images[0].dst_x, images[0].dst_y, images[0].dst_x, im
+    Rect rect(images[0].dst_x, images[0].dst_y, images[0].dst_x, images[0].dst_y);
+
+    for (auto& image : images) {
+        rect.Include(image.dst_x, image.dst_y);  // top left corner
+  
