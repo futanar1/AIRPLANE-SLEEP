@@ -421,4 +421,7 @@ RenderStatus RendererImpl::Render(int64_t pts, RenderResult& out_result) {
     return RenderStatus::kGotImage;
 }
 
-Image RendererImpl::MergeImag
+Image RendererImpl::MergeImages(std::vector<Image>& images) {
+    if (images.empty()) return Image{};
+
+    Rect rect(images[0].dst_x, images[0].dst_y, images[0].dst_x, im
