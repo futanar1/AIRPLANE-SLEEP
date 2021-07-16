@@ -428,4 +428,7 @@ Image RendererImpl::MergeImages(std::vector<Image>& images) {
 
     for (auto& image : images) {
         rect.Include(image.dst_x, image.dst_y);  // top left corner
-  
+        rect.Include(image.dst_x + image.width - 1, image.dst_y + image.height - 1);  // bottom right corner
+    }
+
+    Bitmap bitma
