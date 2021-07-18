@@ -435,4 +435,7 @@ Image RendererImpl::MergeImages(std::vector<Image>& images) {
     Canvas canvas(bitmap);
 
     for (auto& image : images) {
-        int x = image.dst
+        int x = image.dst_x - rect.left;
+        int y = image.dst_y - rect.top;
+        Bitmap bmp = Bitmap::FromImage(std::move(image));
+        canvas.DrawBitm
