@@ -431,4 +431,8 @@ Image RendererImpl::MergeImages(std::vector<Image>& images) {
         rect.Include(image.dst_x + image.width - 1, image.dst_y + image.height - 1);  // bottom right corner
     }
 
-    Bitmap bitma
+    Bitmap bitmap(rect.width(), rect.height(), PixelFormat::kRGBA8888);
+    Canvas canvas(bitmap);
+
+    for (auto& image : images) {
+        int x = image.dst
