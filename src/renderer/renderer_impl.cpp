@@ -444,4 +444,8 @@ Image RendererImpl::MergeImages(std::vector<Image>& images) {
     Image merged = Bitmap::ToImage(std::move(bitmap));
     merged.dst_x = rect.left;
     merged.dst_y = rect.top;
-    return
+    return merged;
+}
+
+void RendererImpl::AdjustCaptionArea(int origin_plane_width, int origin_plane_height) {
+    float x_magnification = static_cast<float>(video_a
