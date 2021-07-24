@@ -438,4 +438,10 @@ Image RendererImpl::MergeImages(std::vector<Image>& images) {
         int x = image.dst_x - rect.left;
         int y = image.dst_y - rect.top;
         Bitmap bmp = Bitmap::FromImage(std::move(image));
-        canvas.DrawBitm
+        canvas.DrawBitmap(bmp, x, y);
+    }
+
+    Image merged = Bitmap::ToImage(std::move(bitmap));
+    merged.dst_x = rect.left;
+    merged.dst_y = rect.top;
+    return
