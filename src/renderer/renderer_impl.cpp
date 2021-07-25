@@ -448,4 +448,5 @@ Image RendererImpl::MergeImages(std::vector<Image>& images) {
 }
 
 void RendererImpl::AdjustCaptionArea(int origin_plane_width, int origin_plane_height) {
-    float x_magnification = static_cast<float>(video_a
+    float x_magnification = static_cast<float>(video_area_width_) / static_cast<float>(origin_plane_width);
+    float y_magnification = static_cast<float>(video_area_height_) / static_cast<float>(origin_plane_heigh
