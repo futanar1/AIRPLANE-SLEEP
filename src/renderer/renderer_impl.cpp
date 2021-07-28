@@ -452,4 +452,5 @@ void RendererImpl::AdjustCaptionArea(int origin_plane_width, int origin_plane_he
     float y_magnification = static_cast<float>(video_area_height_) / static_cast<float>(origin_plane_height);
     float magnification = std::min(x_magnification, y_magnification);
 
-    int caption_area_width = static_cast<int>(std::floor(static_cast<floa
+    int caption_area_width = static_cast<int>(std::floor(static_cast<float>(origin_plane_width) * magnification));
+    int caption_area_height = static_cast<int>(std::floor(static_cast<float>(origin_plane_h
