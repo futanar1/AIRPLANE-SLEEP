@@ -458,4 +458,8 @@ void RendererImpl::AdjustCaptionArea(int origin_plane_width, int origin_plane_he
     int caption_area_start_y = (video_area_height_ - caption_area_height) / 2;
 
     Rect caption_area(caption_area_start_x,
-                      caption_area_start_y
+                      caption_area_start_y,
+                      caption_area_start_x + caption_area_width,
+                      caption_area_start_y + caption_area_height);
+
+    
