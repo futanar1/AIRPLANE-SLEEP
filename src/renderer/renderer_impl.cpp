@@ -462,4 +462,5 @@ void RendererImpl::AdjustCaptionArea(int origin_plane_width, int origin_plane_he
                       caption_area_start_x + caption_area_width,
                       caption_area_start_y + caption_area_height);
 
-    
+    region_renderer_.SetOriginalPlaneSize(origin_plane_width, origin_plane_height);
+    region_renderer_.SetTargetCaptionAreaRect(
