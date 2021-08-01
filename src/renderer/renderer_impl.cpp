@@ -475,4 +475,7 @@ void RendererImpl::InvalidatePrevRenderedImages() {
     has_prev_rendered_caption_ = false;
     prev_rendered_caption_pts_ = PTS_NOPTS;
     prev_rendered_caption_duration_ = 0;
-    prev_rendered_images
+    prev_rendered_images_.clear();
+}
+
+}  // namespace aribcaption::internal
