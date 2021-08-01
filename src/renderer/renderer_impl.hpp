@@ -77,3 +77,46 @@ private:
     CaptionType expected_caption_type_ = CaptionType::kDefault;
 
     // iso639_language_code => FontFamily
+    // language code 0 as default FontFamily
+    std::unordered_map<uint32_t, std::vector<std::string>> language_font_family_;
+
+    bool force_no_ruby_ = false;
+    bool force_default_font_family_ = false;
+
+    bool frame_size_inited_ = false;
+    int frame_width_ = 0;
+    int frame_height_ = 0;
+
+    bool video_area_size_inited_ = false;
+    int video_area_width_ = 0;
+    int video_area_height_ = 0;
+    int video_area_start_x_ = 0;
+    int video_area_start_y_ = 0;
+
+    bool margins_inited_ = false;
+    int margin_top_ = 0;
+    int margin_bottom_ = 0;
+    int margin_left_ = 0;
+    int margin_right_ = 0;
+
+    CaptionStoragePolicy storage_policy_ = CaptionStoragePolicy::kMinimum;
+    size_t upper_limit_count_ = 0;
+    size_t upper_limit_duration_ = 0;
+
+    bool merge_region_images_ = false;
+
+    // PTS => Caption
+    // Sorted by PTS incrementally
+    std::map<int64_t, Caption> captions_;
+
+    RegionRenderer region_renderer_;
+
+    bool has_prev_rendered_caption_ = false;
+    int64_t prev_rendered_caption_pts_ = PTS_NOPTS;
+    int64_t prev_rendered_caption_duration_ = 0;
+    std::vector<Image> prev_rendered_images_;
+};
+
+}  // namespace aribcaption::internal
+
+#endif  // ARIBCAPTION_RENDERER_IMPL_HPP
