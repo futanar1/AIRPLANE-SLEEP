@@ -25,4 +25,13 @@
 #endif
 
 #if defined(ARIBCC_USE_DIRECTWRITE)
-    #include "renderer/text_rendere
+    #include "renderer/text_renderer_directwrite.hpp"
+#endif
+
+#if defined(ARIBCC_USE_FREETYPE)
+    #include "renderer/text_renderer_freetype.hpp"
+#endif
+
+namespace aribcaption {
+
+std::u
