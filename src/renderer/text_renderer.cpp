@@ -20,4 +20,9 @@
 #include "aribcc_config.h"
 #include "renderer/text_renderer.hpp"
 
-#if defined(A
+#if defined(ARIBCC_USE_CORETEXT)
+    #include "renderer/text_renderer_coretext.hpp"
+#endif
+
+#if defined(ARIBCC_USE_DIRECTWRITE)
+    #include "renderer/text_rendere
