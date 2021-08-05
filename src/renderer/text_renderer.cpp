@@ -34,4 +34,6 @@
 
 namespace aribcaption {
 
-std::u
+std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Context& context, FontProvider& font_provider) {
+    switch (type) {
+#if
