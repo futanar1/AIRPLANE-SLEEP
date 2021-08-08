@@ -70,3 +70,7 @@ auto TextRenderer::FontProviderErrorToStatus(FontProviderError error) -> TextRen
         case FontProviderError::kFontNotFound:
             return TextRenderStatus::kFontNotFound;
         case FontProviderError::kCodePointNotFound:
+            return TextRenderStatus::kCodePointNotFound;
+        case FontProviderError::kOtherError:
+        default:
+            return TextRenderStatus::k
