@@ -43,4 +43,9 @@ std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Contex
 
 #if defined(ARIBCC_USE_DIRECTWRITE)
         case TextRendererType::kDirectWrite:
-            return std::make_unique<Text
+            return std::make_unique<TextRendererDirectWrite>(context, font_provider);
+#endif
+
+#if defined(ARIBCC_USE_FREETYPE)
+        case TextRendererType::kFreetype:
+            re
