@@ -58,4 +58,6 @@ std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Contex
 #elif defined(__APPLE__) && defined(ARIBCC_USE_CORETEXT)
             return std::make_unique<TextRendererCoreText>(context, font_provider);
 #elif defined(ARIBCC_USE_FREETYPE)
-  
+            return std::make_unique<TextRendererFreetype>(context, font_provider);
+#else
+            static_assert(false, "No available auto
