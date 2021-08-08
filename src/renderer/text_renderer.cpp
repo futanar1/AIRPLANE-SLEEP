@@ -53,4 +53,6 @@ std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Contex
 
         case TextRendererType::kAuto:
         default:
-#if defi
+#if defined(_WIN32) && defined(ARIBCC_USE_DIRECTWRITE)
+            return std::make_unique<TextRendererDirectWrite>(context, font_provider);
+#elif define
