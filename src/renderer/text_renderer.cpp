@@ -60,4 +60,10 @@ std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Contex
 #elif defined(ARIBCC_USE_FREETYPE)
             return std::make_unique<TextRendererFreetype>(context, font_provider);
 #else
-            static_assert(false, "No available auto
+            static_assert(false, "No available auto-select TextRenderer!");
+#endif
+    }
+}
+
+auto TextRenderer::FontProviderErrorToStatus(FontProviderError error) -> TextRenderStatus {
+    switch (error) 
