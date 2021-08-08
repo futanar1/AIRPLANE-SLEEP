@@ -48,4 +48,9 @@ std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Contex
 
 #if defined(ARIBCC_USE_FREETYPE)
         case TextRendererType::kFreetype:
-            re
+            return std::make_unique<TextRendererFreetype>(context, font_provider);
+#endif
+
+        case TextRendererType::kAuto:
+        default:
+#if defi
