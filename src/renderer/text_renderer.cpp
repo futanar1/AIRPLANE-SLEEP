@@ -55,4 +55,7 @@ std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Contex
         default:
 #if defined(_WIN32) && defined(ARIBCC_USE_DIRECTWRITE)
             return std::make_unique<TextRendererDirectWrite>(context, font_provider);
-#elif define
+#elif defined(__APPLE__) && defined(ARIBCC_USE_CORETEXT)
+            return std::make_unique<TextRendererCoreText>(context, font_provider);
+#elif defined(ARIBCC_USE_FREETYPE)
+  
