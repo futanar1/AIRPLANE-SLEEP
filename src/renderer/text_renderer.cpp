@@ -66,4 +66,7 @@ std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Contex
 }
 
 auto TextRenderer::FontProviderErrorToStatus(FontProviderError error) -> TextRenderStatus {
-    switch (error) 
+    switch (error) {
+        case FontProviderError::kFontNotFound:
+            return TextRenderStatus::kFontNotFound;
+        case FontProviderError::kCodePointNotFound:
