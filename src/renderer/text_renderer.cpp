@@ -38,4 +38,9 @@ std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Contex
     switch (type) {
 #if defined(ARIBCC_USE_CORETEXT)
         case TextRendererType::kCoreText:
-            return std::make_unique<TextRendererCoreText>(context,
+            return std::make_unique<TextRendererCoreText>(context, font_provider);
+#endif
+
+#if defined(ARIBCC_USE_DIRECTWRITE)
+        case TextRendererType::kDirectWrite:
+            return std::make_unique<Text
