@@ -36,4 +36,6 @@ namespace aribcaption {
 
 std::unique_ptr<TextRenderer> TextRenderer::Create(TextRendererType type, Context& context, FontProvider& font_provider) {
     switch (type) {
-#if
+#if defined(ARIBCC_USE_CORETEXT)
+        case TextRendererType::kCoreText:
+            return std::make_unique<TextRendererCoreText>(context,
