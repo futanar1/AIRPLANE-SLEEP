@@ -73,4 +73,8 @@ auto TextRenderer::FontProviderErrorToStatus(FontProviderError error) -> TextRen
             return TextRenderStatus::kCodePointNotFound;
         case FontProviderError::kOtherError:
         default:
-            return TextRenderStatus::k
+            return TextRenderStatus::kOtherError;
+    }
+}
+
+}  // namespace aribcaption
