@@ -47,4 +47,12 @@ enum class TextRenderFallbackPolicy {
     kFailOnCodePointNotFound
 };
 
-class TextRen
+class TextRenderContext {
+public:
+    struct ContextPrivate {
+    public:
+        ContextPrivate() = default;
+        virtual ~ContextPrivate() = default;
+    };
+public:
+    expli
