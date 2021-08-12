@@ -55,4 +55,5 @@ public:
         virtual ~ContextPrivate() = default;
     };
 public:
-    expli
+    explicit TextRenderContext(Bitmap& bmp) : bitmap_(&bmp) {}
+    TextRenderContext(Bitmap& bmp, std::unique_ptr<ContextPrivate> priv) : bit
