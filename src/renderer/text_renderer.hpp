@@ -17,4 +17,10 @@
  */
 
 #ifndef ARIBCAPTION_TEXT_RENDERER_HPP
-#define ARIBCAPTION_TEXT_RENDE
+#define ARIBCAPTION_TEXT_RENDERER_HPP
+
+#include <memory>
+#include <optional>
+#include "aribcaption/caption.hpp"
+#include "aribcaption/context.hpp"
+#include "ar
