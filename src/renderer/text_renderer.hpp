@@ -28,4 +28,14 @@
 #include "renderer/bitmap.hpp"
 #include "renderer/font_provider.hpp"
 
-namespace aribca
+namespace aribcaption {
+
+struct UnderlineInfo {
+    int start_x = 0;
+    int width = 0;
+};
+
+enum class TextRenderStatus {
+    kOK,
+    kFontNotFound,
+    k
