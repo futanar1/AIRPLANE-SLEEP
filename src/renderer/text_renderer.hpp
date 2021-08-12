@@ -23,4 +23,9 @@
 #include <optional>
 #include "aribcaption/caption.hpp"
 #include "aribcaption/context.hpp"
-#include "ar
+#include "aribcaption/renderer.hpp"
+#include "base/result.hpp"
+#include "renderer/bitmap.hpp"
+#include "renderer/font_provider.hpp"
+
+namespace aribca
