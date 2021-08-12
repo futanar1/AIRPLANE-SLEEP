@@ -38,4 +38,13 @@ struct UnderlineInfo {
 enum class TextRenderStatus {
     kOK,
     kFontNotFound,
-    k
+    kCodePointNotFound,
+    kOtherError
+};
+
+enum class TextRenderFallbackPolicy {
+    kAutoFallback,
+    kFailOnCodePointNotFound
+};
+
+class TextRen
