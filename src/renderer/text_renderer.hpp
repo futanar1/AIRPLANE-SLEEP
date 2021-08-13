@@ -56,4 +56,10 @@ public:
     };
 public:
     explicit TextRenderContext(Bitmap& bmp) : bitmap_(&bmp) {}
-    TextRenderContext(Bitmap& bmp, std::unique_ptr<ContextPrivate> priv) : bit
+    TextRenderContext(Bitmap& bmp, std::unique_ptr<ContextPrivate> priv) : bitmap_(&bmp), priv_(std::move(priv)) {}
+    ~TextRenderContext() = default;
+
+    [[nodiscard]]
+    Bitmap& GetBitmap() const {
+        return *bitmap_;
+   
