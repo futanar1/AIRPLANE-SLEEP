@@ -62,4 +62,12 @@ public:
     [[nodiscard]]
     Bitmap& GetBitmap() const {
         return *bitmap_;
-   
+    }
+
+    [[nodiscard]]
+    ContextPrivate* GetPrivate() const {
+        return priv_.get();
+    }
+public:
+    // Disallow copy and assign
+    TextRenderContext(c
