@@ -73,3 +73,5 @@ public:
     TextRenderContext(const TextRenderContext&) = delete;
     TextRenderContext& operator=(const TextRenderContext&) = delete;
     // Allow move construct / move assignment
+    TextRenderContext(TextRenderContext&&) noexcept = default;
+    TextRenderContext& operator=(TextRenderContext&&) noexcept = default
