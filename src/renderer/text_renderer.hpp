@@ -70,4 +70,6 @@ public:
     }
 public:
     // Disallow copy and assign
-    TextRenderContext(c
+    TextRenderContext(const TextRenderContext&) = delete;
+    TextRenderContext& operator=(const TextRenderContext&) = delete;
+    // Allow move construct / move assignment
