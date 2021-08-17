@@ -87,4 +87,8 @@ protected:
     static auto FontProviderErrorToStatus(FontProviderError error) -> TextRenderStatus;
 public:
     TextRenderer() = default;
-   
+    virtual ~TextRenderer() = default;
+public:
+    virtual bool Initialize() = 0;
+    virtual void SetLanguage(uint32_t iso6392_language_code) = 0;
+    virtual bool S
