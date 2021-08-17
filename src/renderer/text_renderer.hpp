@@ -83,4 +83,8 @@ private:
 class TextRenderer {
 public:
     static std::unique_ptr<TextRenderer> Create(TextRendererType type, Context& context, FontProvider& font_provider);
-prote
+protected:
+    static auto FontProviderErrorToStatus(FontProviderError error) -> TextRenderStatus;
+public:
+    TextRenderer() = default;
+   
