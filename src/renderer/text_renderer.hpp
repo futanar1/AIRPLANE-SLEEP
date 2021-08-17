@@ -80,4 +80,7 @@ private:
     std::unique_ptr<ContextPrivate> priv_;
 };
 
-class TextRenderer
+class TextRenderer {
+public:
+    static std::unique_ptr<TextRenderer> Create(TextRendererType type, Context& context, FontProvider& font_provider);
+prote
