@@ -96,4 +96,6 @@ public:
     virtual void EndDraw(TextRenderContext& context) = 0;
     virtual auto DrawChar(TextRenderContext& render_ctx, int x, int y,
                           uint32_t ucs4, CharStyle style, ColorRGBA color, ColorRGBA stroke_color,
-                          float stroke_width, int ch
+                          float stroke_width, int char_width, int char_height,
+                          std::optional<UnderlineInfo> underline_info,
+                          TextRenderFallbackPolic
