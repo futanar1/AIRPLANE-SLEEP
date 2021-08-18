@@ -94,4 +94,6 @@ public:
     virtual bool SetFontFamily(const std::vector<std::string>& font_family) = 0;
     virtual auto BeginDraw(Bitmap& target_bmp) -> TextRenderContext = 0;
     virtual void EndDraw(TextRenderContext& context) = 0;
-    virtual auto DrawChar(TextRenderContext& render_ctx, int x, int y
+    virtual auto DrawChar(TextRenderContext& render_ctx, int x, int y,
+                          uint32_t ucs4, CharStyle style, ColorRGBA color, ColorRGBA stroke_color,
+                          float stroke_width, int ch
