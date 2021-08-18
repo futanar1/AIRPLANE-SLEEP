@@ -91,4 +91,5 @@ public:
 public:
     virtual bool Initialize() = 0;
     virtual void SetLanguage(uint32_t iso6392_language_code) = 0;
-    virtual bool S
+    virtual bool SetFontFamily(const std::vector<std::string>& font_family) = 0;
+    virtual auto BeginDraw(Bitmap& target_bmp) -> TextRenderContext
