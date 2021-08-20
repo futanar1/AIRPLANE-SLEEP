@@ -297,3 +297,36 @@ auto TextRendererCoreText::RGBAToCGColor(ColorRGBA rgba) -> ScopedCFRef<CGColorR
     CGFloat components[] = {
         static_cast<CGFloat>(rgba.r) / 255.0f,
         static_cast<CGFloat>(rgba.g) / 255.0f,
+        static_cast<CGFloat>(rgba.b) / 255.0f,
+        static_cast<CGFloat>(rgba.a) / 255.0f,
+    };
+    ScopedCFRef<CGColorSpaceRef> space(CGColorSpaceCreateDeviceRGB());
+    ScopedCFRef<CGColorRef> cgcolor(CGColorCreate(space.get(), components));
+
+    return cgcolor;
+}
+
+auto TextRendererCoreText::CreateBitmapTargetCGContext(Bitmap& bitmap) -> ScopedCFRef<CGContextRef> {
+    size_t bits_per_component = 8;
+    ScopedCFRef<CGColorSpaceRef> space(CGColorSpaceCreateDeviceRGB());
+    uint32_t bitmap_info = kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big;
+
+    ScopedCFRef<CGContextRef> cgctx(CGBitmapContextCreate(bitmap.data(),
+                                                          bitmap.width(),
+                                                          bitmap.height(),
+                                                          bits_per_component,
+                                                          bitmap.stride(),
+                                                          space.get(),
+                                                          bitmap_info));
+    return cgctx;
+}
+
+auto TextRendererCoreText::CreateSizedCTFont(CTFontRef ctfont, int char_height) -> ScopedCFRef<CTFontRef> {
+    ScopedCFRef<CTFontRef> sized_ctfont(CTFontCreateCopyWithAttributes(ctfont,
+                                                                       static_cast<CGFloat>(char_height),
+                                                                       nullptr,
+                                                                       nullptr));
+    return sized_ctfont;
+}
+
+}  // namespace aribcaption
