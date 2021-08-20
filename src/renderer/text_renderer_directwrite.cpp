@@ -299,3 +299,157 @@ auto TextRendererDirectWrite::BeginDraw(Bitmap& target_bmp) -> TextRenderContext
     // Create WIC-target Direct2D render target
     priv->d2d_render_target = CreateWICRenderTarget(priv->wic_bitmap.Get());
     if (!priv->d2d_render_target) {
+        log_->e("TextRendererDirectWrite: Create WIC ID2D1RenderTarget failed");
+        return TextRenderContext(target_bmp);
+    }
+
+    priv->d2d_render_target->BeginDraw();
+    priv->d2d_render_target->Clear();
+    priv->d2d_render_target->SetAntialiasMode(D2D1_ANTIALIAS_MODE_PER_PRIMITIVE);
+    priv->d2d_render_target->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE);
+
+    return TextRenderContext{target_bmp, std::move(priv)};
+}
+
+void TextRendererDirectWrite::EndDraw(TextRenderContext& context) {
+    auto priv = static_cast<TextRenderContextPrivateDirectWrite*>(context.GetPrivate());
+
+    HRESULT hr = priv->d2d_render_target->EndDraw();
+    if (FAILED(hr)) {
+        log_->e("TextRendererDirectWrite: ID2D1RenderTarget::EndDraw() returned error");
+    }
+    priv->d2d_render_target.Reset();
+
+    bool result = BlendWICBitmapToBitmap(priv->wic_bitmap.Get(), context.GetBitmap(), 0, 0);
+    if (!result) {
+        log_->e("TextRendererDirectWrite: BlendWICBitmapToBitmap() failed");
+    }
+    priv->wic_bitmap.Reset();
+}
+
+auto TextRendererDirectWrite::DrawChar(TextRenderContext& render_ctx, int target_x, int target_y,
+                                       uint32_t ucs4, CharStyle style, ColorRGBA color, ColorRGBA stroke_color,
+                                       float stroke_width, int char_width, int char_height,
+                                       std::optional<UnderlineInfo> underline_info,
+                                       TextRenderFallbackPolicy fallback_policy) -> TextRenderStatus {
+    if (!render_ctx.GetPrivate()) {
+        log_->e("TextRendererDirectWrite: Invalid TextRenderContext, BeginDraw() failed or not called");
+        return TextRenderStatus::kOtherError;
+    }
+
+    assert(char_height > 0);
+    if (stroke_width < 0.0f) {
+        stroke_width = 0.0f;
+    }
+
+    // Handle space characters
+    if (ucs4 == 0x0009 || ucs4 == 0x0020 || ucs4 == 0x00A0 || ucs4 == 0x1680 ||
+        ucs4 == 0x3000 || ucs4 == 0x202F || ucs4 == 0x205F || (ucs4 >= 0x2000 && ucs4 <= 0x200A)) {
+        return TextRenderStatus::kOK;
+    }
+
+    // Load main font if not loaded
+    if (!main_faceinfo_) {
+        auto result = LoadDWriteFont();
+        if (result.is_err()) {
+            log_->e("TextRendererDirectWrite: Cannot find valid font");
+            return FontProviderErrorToStatus(result.error());
+        }
+        auto& pair = result.value();
+        main_faceinfo_ = std::move(pair.first);
+        main_face_index_ = pair.second;
+    }
+
+    // Setup IDWriteTextFormat for main font
+    if (!main_text_format_ || char_height != main_text_format_pixel_height_) {
+        main_text_format_pixel_height_ = char_height;
+        main_text_format_ = CreateDWriteTextFormat(main_faceinfo_.value(), char_height);
+        if (!main_text_format_) {
+            log_->e("TextRendererDirectWrite: Create IDWriteTextFormat failed");
+            return TextRenderStatus::kOtherError;
+        }
+    }
+
+    FontfaceInfo* face_info = &main_faceinfo_.value();
+    IDWriteTextFormat* text_format = main_text_format_.Get();
+
+    // If codepoint was not found in main font, load fallback font
+    if (!FontfaceHasCharacter(main_faceinfo_.value(), ucs4)) {
+        log_->w("TextRendererDirectWrite: Main font %s doesn't contain U+%04X",
+                main_faceinfo_.value().family_name.c_str(), ucs4);
+
+        if (fallback_policy == TextRenderFallbackPolicy::kFailOnCodePointNotFound) {
+            return TextRenderStatus::kCodePointNotFound;
+        }
+
+        if (main_face_index_ + 1 >= font_family_.size()) {
+            // Fallback fonts not available
+            return TextRenderStatus::kCodePointNotFound;
+        }
+
+        bool reset_fallback_text_format = false;
+        // Check fallback faceinfo
+        if (!fallback_faceinfo_ || !FontfaceHasCharacter(fallback_faceinfo_.value(), ucs4)) {
+            // Fallback font not loaded, or doesn't contain required codepoint
+            auto result = LoadDWriteFont(ucs4, main_face_index_ + 1);
+            if (result.is_err()) {
+                log_->e("TextRendererDirectWrite: Cannot find available fallback font for U+%04X", ucs4);
+                return FontProviderErrorToStatus(result.error());
+            }
+            auto& pair = result.value();
+            fallback_faceinfo_ = std::move(pair.first);
+            reset_fallback_text_format = true;
+        }
+
+        // Setup IDWriteTextFormat for fallback font
+        if (!fallback_text_format_ ||
+            char_height != fallback_text_format_pixel_height_ ||
+            reset_fallback_text_format) {
+            fallback_text_format_pixel_height_ = char_height;
+            fallback_text_format_ = CreateDWriteTextFormat(fallback_faceinfo_.value(), char_height);
+            if (!fallback_text_format_) {
+                log_->e("TextRendererDirectWrite: Create fallback IDWriteTextFormat failed");
+                return TextRenderStatus::kOtherError;
+            }
+        }
+
+        face_info = &fallback_faceinfo_.value();
+        text_format = fallback_text_format_.Get();
+    }
+
+    std::u16string wide_char;
+    utf::UTF16AppendCodePoint(wide_char, ucs4);
+
+    // Create DirectWrite TextLayout
+    ComPtr<IDWriteTextLayout> text_layout;
+    HRESULT hr = dwrite_factory_->CreateTextLayout(reinterpret_cast<WCHAR*>(wide_char.data()),
+                                                   static_cast<UINT32>(wide_char.length()),
+                                                   text_format, 16384.0f, 16384.0f, &text_layout);
+    if (FAILED(hr) || !text_layout) {
+        log_->e("TextRendererDirectWrite: Create IDWriteTextLayout failed");
+        return TextRenderStatus::kOtherError;
+    }
+
+    // Set underline property if required
+    if (style & CharStyle::kCharStyleUnderline) {
+        text_layout->SetUnderline(TRUE, DWRITE_TEXT_RANGE{0, 1});
+    }
+
+    // Get font's metrics
+    auto face_info_priv = static_cast<FontfaceInfoPrivateDirectWrite*>(face_info->provider_priv.get());
+    DWRITE_FONT_METRICS font_metrics = {0};
+    face_info_priv->font->GetMetrics(&font_metrics);
+    int ascent = MulDiv(font_metrics.ascent, char_height, font_metrics.designUnitsPerEm);
+    [[maybe_unused]]
+    int descent = MulDiv(font_metrics.descent, char_height, font_metrics.designUnitsPerEm);
+
+    // Calculate horizontal scale factor
+    float horizontal_scale = 1.0f;
+    if (char_width != char_height) {
+        horizontal_scale = static_cast<float>(char_width) / static_cast<float>(char_height);
+    }
+
+    // Calculate reserve spaces for outline stroke
+    int margin_x = 0;
+    int margin_y = 0;
+    if (style & CharStyle::kCharStyleStroke && stroke_width > 0.0f) {
