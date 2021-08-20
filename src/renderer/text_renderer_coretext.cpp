@@ -145,3 +145,155 @@ auto TextRendererCoreText::DrawChar(TextRenderContext& render_ctx, int target_x,
                                                   reinterpret_cast<UniChar*>(utf16.data()),
                                                   glyphs,
                                                   static_cast<CFIndex>(codeunit_count));
+
+    // Check whether codepoint exists in main CTFont, otherwise load fallback CTFont
+    if (!has_glyph) {
+        ScopedCFRef<CFStringRef> cf_main_family_name(CTFontCopyFamilyName(ctfont));
+        std::string main_family_name = cfstr::CFStringToStdString(cf_main_family_name.get());
+        log_->w("TextRendererCoreText: Main font %s doesn't contain U+%04X", main_family_name.c_str(), ucs4);
+
+        if (fallback_policy == TextRenderFallbackPolicy::kFailOnCodePointNotFound) {
+            return TextRenderStatus::kCodePointNotFound;
+        }
+
+        if (main_face_index_ + 1 >= font_family_.size()) {
+            // Fallback fonts not available
+            return TextRenderStatus::kCodePointNotFound;
+        }
+
+        bool reset_sized_fallback = false;
+        // Missing glyph, check fallback CTFont
+        if (!fallback_ctfont_ || !CTFontGetGlyphsForCharacters(fallback_ctfont_.get(),
+                                                               reinterpret_cast<UniChar*>(utf16.data()),
+                                                               glyphs,
+                                                               static_cast<CFIndex>(codeunit_count))) {
+            // Fallback CTFont not loaded, or fallback CTFont doesn't contain required codepoint
+            // Load next fallback CTFont by specific codepoint
+            auto result = LoadCTFont(ucs4, main_face_index_ + 1);
+            if (result.is_err()) {
+                log_->e("TextRendererCoreText: Cannot find available fallback font for U+%04X", ucs4);
+                return FontProviderErrorToStatus(result.error());
+            }
+            std::pair<ScopedCFRef<CTFontRef>, size_t>& pair = result.value();
+            fallback_ctfont_ = std::move(pair.first);
+            reset_sized_fallback = true;
+        }
+
+        // Build size-specified fallback CTFont
+        if (!fallback_ctfont_sized_ || char_height != fallback_ctfont_pixel_height_ || reset_sized_fallback) {
+            fallback_ctfont_pixel_height_ = char_height;
+            fallback_ctfont_sized_ = CreateSizedCTFont(fallback_ctfont_.get(), char_height);
+            if (!fallback_ctfont_sized_) {
+                log_->e("TextRendererCoreText: Create sized fallback CTFont failed");
+                return TextRenderStatus::kOtherError;
+            }
+        }
+
+        ctfont = fallback_ctfont_sized_.get();
+    }
+
+    // Re-retrieve glyph from sized CTFont
+    CTFontGetGlyphsForCharacters(ctfont,
+                                 reinterpret_cast<UniChar*>(utf16.data()),
+                                 glyphs,
+                                 static_cast<CFIndex>(codeunit_count));
+
+    CGFloat ascent = CTFontGetAscent(ctfont);
+    CGFloat descent = CTFontGetDescent(ctfont);
+    CGFloat em_height = ascent + descent;
+
+    CGFloat em_adjust_y = (static_cast<CGFloat>(char_height) - em_height) / 2.0f;
+    CGFloat charbox_bottom = render_ctx.GetBitmap().height() - (target_y + char_height);
+    CGFloat baseline_y = std::round(charbox_bottom + descent + em_adjust_y);
+
+    CGFloat underline_pos = CTFontGetUnderlinePosition(ctfont);
+    CGFloat underline_thickness = CTFontGetUnderlineThickness(ctfont);
+
+    auto render_ctx_priv = static_cast<TextRenderContextPrivateCoreText*>(render_ctx.GetPrivate());
+    const ScopedCFRef<CGContextRef>& ctx = render_ctx_priv->cg_context;
+
+    CGContextSaveGState(ctx.get());
+
+    // Draw Underline if required
+    if ((style & kCharStyleUnderline) && underline_info && underline_thickness > 0.0f) {
+        CGFloat underline_y = baseline_y + underline_pos;
+        ScopedCFRef<CGColorRef> cg_underline_color = RGBAToCGColor(color);
+        CGContextSetStrokeColorWithColor(ctx.get(), cg_underline_color.get());
+        CGContextSetLineWidth(ctx.get(), underline_thickness);
+
+        CGContextMoveToPoint(ctx.get(), underline_info->start_x, underline_y);
+        CGContextAddLineToPoint(ctx.get(), underline_info->start_x + underline_info->width, underline_y);
+        CGContextStrokePath(ctx.get());
+    }
+
+    CGPoint origin = CGPointMake(target_x, baseline_y);
+
+    // Scale character correctly if char_width is different from char_height
+    if (char_width != char_height) {
+        CGFloat horizontal_scale = static_cast<CGFloat>(char_width) / static_cast<CGFloat>(char_height);
+        CGContextTranslateCTM(ctx.get(), origin.x, origin.y);
+        CGContextScaleCTM(ctx.get(), horizontal_scale, 1.0f);
+        CGContextTranslateCTM(ctx.get(), -origin.x, -origin.y);
+    }
+
+    // Draw stroke border if required
+    if (style & CharStyle::kCharStyleStroke && stroke_width > 0.0f) {
+        CGAffineTransform path_matrix = CGAffineTransformMakeTranslation(origin.x, origin.y);
+        ScopedCFRef<CGPathRef> path(CTFontCreatePathForGlyph(ctfont, glyphs[0], &path_matrix));
+        CGContextAddPath(ctx.get(), path.get());
+
+        ScopedCFRef<CGColorRef> cg_stroke_color = RGBAToCGColor(stroke_color);
+        CGContextSetStrokeColorWithColor(ctx.get(), cg_stroke_color.get());
+        CGContextSetLineWidth(ctx.get(), stroke_width * 2);
+        CGContextSetLineCap(ctx.get(), kCGLineCapRound);
+        CGContextSetLineJoin(ctx.get(), kCGLineJoinRound);
+        CGContextStrokePath(ctx.get());
+    }
+
+    // Draw character (fill)
+    ScopedCFRef<CGColorRef> cg_fill_color = RGBAToCGColor(color);
+    CGContextSetFillColorWithColor(ctx.get(), cg_fill_color.get());
+    CTFontDrawGlyphs(ctfont, &glyphs[0], &origin, 1, ctx.get());
+
+    CGContextRestoreGState(ctx.get());
+
+    return TextRenderStatus::kOK;
+}
+
+auto TextRendererCoreText::LoadCTFont(std::optional<uint32_t> codepoint, std::optional<size_t> begin_index)
+        -> Result<std::pair<ScopedCFRef<CTFontRef>, size_t>, FontProviderError> {
+    if (begin_index && begin_index.value() >= font_family_.size()) {
+        return Err(FontProviderError::kFontNotFound);
+    }
+
+    // begin_index is optional
+    size_t font_index = begin_index.value_or(0);
+
+    const std::string& font_name = font_family_[font_index];
+    auto result = font_provider_.GetFontFace(font_name, codepoint);
+
+    while (result.is_err() && font_index + 1 < font_family_.size()) {
+        // Find next suitable font
+        font_index++;
+        result = font_provider_.GetFontFace(font_family_[font_index], codepoint);
+    }
+    if (result.is_err()) {
+        // Not found, return Err Result
+        return Err(result.error());
+    }
+
+    FontfaceInfo& info = result.value();
+    if (info.provider_type != FontProviderType::kCoreText) {
+        log_->e("TextRendererCoreText: Font provider must be FontProviderCoreText");
+        return Err(FontProviderError::kOtherError);
+    }
+
+    auto priv = static_cast<FontfaceInfoPrivateCoreText*>(info.provider_priv.get());
+
+    return Ok(std::make_pair(std::move(priv->ct_font), font_index));
+}
+
+auto TextRendererCoreText::RGBAToCGColor(ColorRGBA rgba) -> ScopedCFRef<CGColorRef> {
+    CGFloat components[] = {
+        static_cast<CGFloat>(rgba.r) / 255.0f,
+        static_cast<CGFloat>(rgba.g) / 255.0f,
