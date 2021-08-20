@@ -101,4 +101,10 @@ public:
                           TextRenderFallbackPolicy fallback_policy) -> TextRenderStatus = 0;
 public:
     // Disallow copy and assign
-    TextRenderer(const TextRenderer&) = del
+    TextRenderer(const TextRenderer&) = delete;
+    TextRenderer& operator=(const TextRenderer&) = delete;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_TEXT_RENDERER_HPP
