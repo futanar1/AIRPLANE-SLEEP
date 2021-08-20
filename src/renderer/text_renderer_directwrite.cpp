@@ -167,3 +167,135 @@ public:
             delete this;
             return 0;
         }
+        return result;
+    }
+
+    IFACEMETHOD(QueryInterface)(IID const& riid, void** ppv_object) {
+        if (riid == __uuidof(IDWriteTextRenderer) ||
+            riid == __uuidof(IDWritePixelSnapping) ||
+            riid == __uuidof(IUnknown)) {
+            *ppv_object = this;
+        } else {
+            *ppv_object = nullptr;
+            return E_FAIL;
+        }
+
+        this->AddRef();
+        return S_OK;
+    }
+private:
+    unsigned long ref_count_ = 0;
+    float horizontal_scale_ = 1.0f;
+    float vertical_scale_ = 1.0f;
+    bool draw_outline_stroke_ = false;
+    float stroke_width_ = 0.0f;
+    ComPtr<ID2D1StrokeStyle> stroke_style_;
+    ComPtr<ID2D1Factory> d2d_factory_;
+    ComPtr<ID2D1RenderTarget> render_target_;
+    ComPtr<ID2D1SolidColorBrush> fill_brush_;
+    ComPtr<ID2D1SolidColorBrush> outline_brush_;
+    UnderlineDrawCB underline_draw_cb_;
+};
+
+
+TextRendererDirectWrite::TextRendererDirectWrite(Context& context, FontProvider& font_provider)
+    : log_(GetContextLogger(context)), font_provider_(font_provider) {
+    assert(font_provider.GetType() == FontProviderType::kDirectWrite);
+}
+
+TextRendererDirectWrite::~TextRendererDirectWrite() = default;
+
+bool TextRendererDirectWrite::Initialize() {
+    auto& provider = static_cast<FontProviderDirectWrite&>(font_provider_);
+    if (provider.GetType() != FontProviderType::kDirectWrite) {
+        log_->e("TextRendererDirectWrite: Font provider must be FontProviderDirectWrite");
+        return false;
+    }
+
+    // Retrieve IDWriteFactory from FontProviderDirectWrite
+    dwrite_factory_ = provider.GetDWriteFactory();
+    if (!dwrite_factory_) {
+        log_->e("TextRendererDirectWrite: FontProviderDirectWrite::GetDWriteFactory() returns nullptr");
+        return false;
+    }
+
+    // Create IWICImagingFactory
+    HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory,
+                                  nullptr,
+                                  CLSCTX_INPROC_SERVER,
+                                  IID_PPV_ARGS(&wic_factory_));
+    if (FAILED(hr)) {
+        log_->e("TextRendererDirectWrite: CoCreateInstance for CLSID_WICImagingFactory failed");
+        return false;
+    }
+
+    // Create ID2D1Factory
+    D2D1_FACTORY_OPTIONS d2d1_options = {D2D1_DEBUG_LEVEL_ERROR};
+#ifndef NDEBUG
+    d2d1_options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+#endif
+    hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, d2d1_options, d2d_factory_.GetAddressOf());
+    if (FAILED(hr)) {
+        log_->e("TextRendererDirectWrite: D2D1CreateFactory() failed");
+        return false;
+    }
+
+    // Create d2d stroke style for outline stroke
+    hr = d2d_factory_->CreateStrokeStyle(
+        D2D1::StrokeStyleProperties(
+            D2D1_CAP_STYLE_ROUND,
+            D2D1_CAP_STYLE_ROUND,
+            D2D1_CAP_STYLE_ROUND,
+            D2D1_LINE_JOIN_ROUND,
+            10.0f,
+            D2D1_DASH_STYLE_SOLID,
+            0.0f),
+        nullptr,
+        0,
+        &stroke_style_);
+    if (FAILED(hr)) {
+        log_->e("TextRendererDirectWrite: ID2D1Factory::CreateStrokeStyle() failed");
+        return false;
+    }
+
+    return true;
+}
+
+void TextRendererDirectWrite::SetLanguage(uint32_t iso6392_language_code) {
+    iso6392_language_code_ = iso6392_language_code;
+}
+
+bool TextRendererDirectWrite::SetFontFamily(const std::vector<std::string>& font_family) {
+    if (font_family.empty()) {
+        return false;
+    }
+
+    font_family_ = font_family;
+    return false;
+}
+
+struct TextRenderContextPrivateDirectWrite : public TextRenderContext::ContextPrivate {
+public:
+    TextRenderContextPrivateDirectWrite() = default;
+    ~TextRenderContextPrivateDirectWrite() override = default;
+public:
+    ComPtr<IWICBitmap> wic_bitmap;
+    ComPtr<ID2D1RenderTarget> d2d_render_target;
+};
+
+auto TextRendererDirectWrite::BeginDraw(Bitmap& target_bmp) -> TextRenderContext {
+    auto priv = std::make_unique<TextRenderContextPrivateDirectWrite>();
+    // Create WIC bitmap
+    HRESULT hr = wic_factory_->CreateBitmap(static_cast<UINT>(target_bmp.width()),
+                                            static_cast<UINT>(target_bmp.height()),
+                                            GUID_WICPixelFormat32bppPRGBA,
+                                            WICBitmapCreateCacheOption::WICBitmapCacheOnLoad,
+                                            &priv->wic_bitmap);
+    if (FAILED(hr)) {
+        log_->e("TextRendererDirectWrite: Allocate IWICBitmap failed");
+        return TextRenderContext(target_bmp);
+    }
+
+    // Create WIC-target Direct2D render target
+    priv->d2d_render_target = CreateWICRenderTarget(priv->wic_bitmap.Get());
+    if (!priv->d2d_render_target) {
