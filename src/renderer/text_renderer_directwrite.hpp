@@ -49,3 +49,42 @@ public:
                   float stroke_width, int char_width, int char_height,
                   std::optional<UnderlineInfo> underline_info,
                   TextRenderFallbackPolicy fallback_policy) -> TextRenderStatus override;
+private:
+    auto LoadDWriteFont(std::optional<uint32_t> codepoint = std::nullopt,
+                        std::optional<size_t> begin_index = std::nullopt)
+        -> Result<std::pair<FontfaceInfo, size_t>, FontProviderError>;
+    auto CreateDWriteTextFormat(FontfaceInfo& face_info, int font_size) -> ComPtr<IDWriteTextFormat>;
+    auto CreateWICRenderTarget(IWICBitmap* target) -> ComPtr<ID2D1RenderTarget>;
+    bool BlendWICBitmapToBitmap(IWICBitmap* wic_bitmap, Bitmap& target_bmp,
+                                int target_x, int target_y);
+private:
+    static D2D1_COLOR_F RGBAToD2DColor(ColorRGBA color);
+    static bool FontfaceHasCharacter(FontfaceInfo& fontface, uint32_t ucs4);
+private:
+    std::shared_ptr<Logger> log_;
+
+    FontProvider& font_provider_;
+    uint32_t iso6392_language_code_ = 0;
+    std::vector<std::string> font_family_;
+
+    ScopedCOMInitializer com_initializer_;
+    ComPtr<IDWriteFactory> dwrite_factory_;
+    ComPtr<IWICImagingFactory> wic_factory_;
+    ComPtr<ID2D1Factory> d2d_factory_;
+    ComPtr<ID2D1StrokeStyle> stroke_style_;
+
+    size_t main_face_index_ = 0;
+
+    std::optional<FontfaceInfo> main_faceinfo_;
+    std::optional<FontfaceInfo> fallback_faceinfo_;
+
+    int main_text_format_pixel_height_ = 0;
+    int fallback_text_format_pixel_height_ = 0;
+
+    ComPtr<IDWriteTextFormat> main_text_format_;
+    ComPtr<IDWriteTextFormat> fallback_text_format_;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_TEXT_RENDERER_DIRECTWRITE_HPP
