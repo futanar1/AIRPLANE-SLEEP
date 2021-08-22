@@ -20,4 +20,8 @@
 #include <cstring>
 #include <cstdint>
 #include <cmath>
-#inc
+#include "base/scoped_holder.hpp"
+#include "base/utf_helper.hpp"
+#include "renderer/alphablend.hpp"
+#include "renderer/canvas.hpp"
+#i
