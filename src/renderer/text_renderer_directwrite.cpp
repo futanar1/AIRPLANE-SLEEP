@@ -453,3 +453,140 @@ auto TextRendererDirectWrite::DrawChar(TextRenderContext& render_ctx, int target
     int margin_x = 0;
     int margin_y = 0;
     if (style & CharStyle::kCharStyleStroke && stroke_width > 0.0f) {
+        margin_x = margin_y = static_cast<int>(ceilf(stroke_width));
+    }
+
+    // Get rendered text's width & height
+    DWRITE_TEXT_METRICS metrics = {0};
+    hr = text_layout->GetMetrics(&metrics);
+    if (FAILED(hr)) {
+        log_->e("TextRendererDirectWrite: GetMetrics() failed");
+        return TextRenderStatus::kOtherError;
+    }
+
+    // Calculate charbox size
+    int charbox_width = static_cast<int>(ceilf((metrics.width + (float)margin_x * 2) * horizontal_scale));
+    int charbox_height = static_cast<int>(ceilf(metrics.height)) + margin_y * 2;
+    if (charbox_width == 0) {
+        charbox_width = static_cast<int>(static_cast<float>(charbox_height) * horizontal_scale);
+    }
+
+    // Adjust x coordinate for reserve spaces
+    target_x -= margin_x;
+
+    // Adjust target_y based on actual text bitmap height
+    int y_adjust = (char_height - charbox_height) / 2;
+    target_y += y_adjust;
+
+    auto render_ctx_priv = static_cast<TextRenderContextPrivateDirectWrite*>(render_ctx.GetPrivate());
+    Bitmap& target_bmp = render_ctx.GetBitmap();
+    ID2D1RenderTarget* render_target = render_ctx_priv->d2d_render_target.Get();
+
+    auto underline_callback = [&](const DWRITE_UNDERLINE* underline) -> void {
+        if (!underline_info)
+            return;
+
+        int underline_y = target_y + ascent + static_cast<int>(underline->offset);
+        Rect underline_rect(underline_info->start_x,
+                            underline_y,
+                            underline_info->start_x + underline_info->width,
+                            underline_y + 1);
+
+        int half_thickness = static_cast<int>(ceilf(underline->thickness / 2));
+
+        underline_rect.top -= half_thickness - 1;
+        underline_rect.bottom += half_thickness;
+
+        Canvas canvas(target_bmp);
+        canvas.DrawRect(color, underline_rect);
+    };
+
+    ComPtr<ID2D1SolidColorBrush> fill_brush;
+    render_target->CreateSolidColorBrush(RGBAToD2DColor(color), &fill_brush);
+
+    ComPtr<ID2D1SolidColorBrush> outline_brush;
+    render_target->CreateSolidColorBrush(RGBAToD2DColor(stroke_color), &outline_brush);
+
+    ComPtr<OutlineTextRenderer> outline_text_renderer(new OutlineTextRenderer(
+        horizontal_scale, 1.0f, style & CharStyle::kCharStyleStroke, stroke_width * 2,
+        stroke_style_, d2d_factory_, render_target, fill_brush, outline_brush, underline_callback));
+
+    text_layout->Draw(nullptr,
+                      outline_text_renderer.Get(),
+                      static_cast<float>(target_x + margin_x),
+                      static_cast<float>(target_y + margin_y));
+
+    return TextRenderStatus::kOK;
+}
+
+auto TextRendererDirectWrite::LoadDWriteFont(std::optional<uint32_t> codepoint,
+                                             std::optional<size_t> begin_index)
+    -> Result<std::pair<FontfaceInfo, size_t>, FontProviderError> {
+    if (begin_index && begin_index.value() >= font_family_.size()) {
+        return Err(FontProviderError::kFontNotFound);
+    }
+
+    // begin_index is optional
+    size_t font_index = begin_index.value_or(0);
+
+    const std::string& font_name = font_family_[font_index];
+    auto result = font_provider_.GetFontFace(font_name, codepoint);
+
+    while (result.is_err() && font_index + 1 < font_family_.size()) {
+        // Find next suitable font
+        font_index++;
+        result = font_provider_.GetFontFace(font_family_[font_index], codepoint);
+    }
+    if (result.is_err()) {
+        // Not found, return Err Result
+        return Err(result.error());
+    }
+
+    FontfaceInfo& info = result.value();
+    if (info.provider_type != FontProviderType::kDirectWrite) {
+        log_->e("TextRendererDirectWrite: Font provider must be FontProviderDirectWrite");
+        return Err(FontProviderError::kOtherError);
+    }
+
+    return Ok(std::make_pair(std::move(info), font_index));
+}
+
+static const wchar_t* ISO6392ToWindowsLocaleName(uint32_t iso6392_language_code) {
+    switch (iso6392_language_code) {
+        case ThreeCC("por"):
+            return L"pt-BR";
+        case ThreeCC("spa"):
+            return L"es-CL";
+        case ThreeCC("eng"):
+            return L"en";
+        case ThreeCC("jpn"):
+        default:
+            return L"ja-JP";
+    }
+}
+
+auto TextRendererDirectWrite::CreateDWriteTextFormat(FontfaceInfo& face_info, int font_size)
+    -> ComPtr<IDWriteTextFormat> {
+    ComPtr<IDWriteTextFormat> text_format;
+    std::wstring font_family_name = wchar::UTF8ToWideString(face_info.family_name);
+
+    HRESULT hr = dwrite_factory_->CreateTextFormat(font_family_name.c_str(),
+                                                   nullptr,
+                                                   DWRITE_FONT_WEIGHT_NORMAL,
+                                                   DWRITE_FONT_STYLE_NORMAL,
+                                                   DWRITE_FONT_STRETCH_NORMAL,
+                                                   static_cast<float>(font_size),
+                                                   ISO6392ToWindowsLocaleName(iso6392_language_code_),
+                                                   &text_format);
+    if (FAILED(hr) || !text_format) {
+        log_->e("TextRendererDirectWrite: IDWriteFactory::CreateTextFormat() failed");
+        return nullptr;
+    }
+
+    text_format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+    text_format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+    return text_format;
+}
+
+auto TextRendererDirectWrite::CreateWICRenderTarget(IWICBitmap* target) -> ComPtr<ID2D1RenderTarget> {
