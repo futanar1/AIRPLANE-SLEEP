@@ -590,3 +590,81 @@ auto TextRendererDirectWrite::CreateDWriteTextFormat(FontfaceInfo& face_info, in
 }
 
 auto TextRendererDirectWrite::CreateWICRenderTarget(IWICBitmap* target) -> ComPtr<ID2D1RenderTarget> {
+    D2D1_RENDER_TARGET_PROPERTIES properties;
+    properties.type = D2D1_RENDER_TARGET_TYPE_SOFTWARE;
+    properties.pixelFormat.format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    properties.pixelFormat.alphaMode = D2D1_ALPHA_MODE_PREMULTIPLIED;
+    properties.dpiX = 96.0f;
+    properties.dpiY = 96.0f;
+    properties.usage = D2D1_RENDER_TARGET_USAGE_FORCE_BITMAP_REMOTING;
+    properties.minLevel = D2D1_FEATURE_LEVEL_DEFAULT;
+
+    ComPtr<ID2D1RenderTarget> render_target;
+    HRESULT hr = d2d_factory_->CreateWicBitmapRenderTarget(target, properties, &render_target);
+    if (FAILED(hr)) {
+        log_->e("TextRendererDirectWrite: CreateWicBitmapRenderTarget() failed");
+    }
+
+    return render_target;
+}
+
+bool TextRendererDirectWrite::BlendWICBitmapToBitmap(IWICBitmap* wic_bitmap,
+                                                     Bitmap& target_bmp,
+                                                     int target_x, int target_y) {
+    uint32_t width = 0;
+    uint32_t height = 0;
+    wic_bitmap->GetSize(&width, &height);
+
+    WICRect lock_rect = {0, 0, static_cast<int>(width), static_cast<int>(height)};
+
+    ComPtr<IWICBitmapLock> lock;
+    HRESULT hr = wic_bitmap->Lock(&lock_rect, WICBitmapLockRead, &lock);
+    if (FAILED(hr)) {
+        log_->e("TextRendererDirectWrite: IWICBitmap::Lock() failed");
+        return false;
+    }
+
+    uint32_t stride = 0;
+    lock->GetStride(&stride);
+
+    uint32_t buffer_size = 0;
+    uint8_t* buffer = nullptr;
+    hr = lock->GetDataPointer(&buffer_size, &buffer);
+    if (FAILED(hr) || !buffer) {
+        log_->e("TextRendererDirectWrite: IWICBitmapLock::GetDataPointer() failed");
+        return false;
+    }
+
+    Rect rect{target_x, target_y, target_x + (int)width, target_y + (int)height};
+    Rect clipped = Rect::ClipRect(target_bmp.GetRect(), rect);
+    int clip_x_offset = clipped.left - target_x;
+    int clip_y_offset = clipped.top - target_y;
+    auto line_width = static_cast<size_t>(clipped.width());
+
+    for (int y = clipped.top; y < clipped.bottom; y++) {
+        ColorRGBA* dest_begin = target_bmp.GetPixelAt(clipped.left, y);
+        int src_begin_offset = (clip_y_offset + y - clipped.top) * (int)stride + clip_x_offset * 4;
+        auto src_begin = reinterpret_cast<const ColorRGBA*>(buffer + src_begin_offset);
+        alphablend::BlendLine_PremultipliedSrc(dest_begin, src_begin, line_width);
+    }
+
+    return true;
+}
+
+D2D1_COLOR_F TextRendererDirectWrite::RGBAToD2DColor(ColorRGBA color) {
+    return D2D1::ColorF(static_cast<float>(color.r) / 255.0f,
+                        static_cast<float>(color.g) / 255.0f,
+                        static_cast<float>(color.b) / 255.0f,
+                        static_cast<float>(color.a) / 255.0f);
+}
+
+bool TextRendererDirectWrite::FontfaceHasCharacter(FontfaceInfo& fontface, uint32_t ucs4) {
+    auto face_info_priv = static_cast<FontfaceInfoPrivateDirectWrite*>(fontface.provider_priv.get());
+
+    BOOL ucs4_exists = FALSE;
+    HRESULT hr = face_info_priv->font->HasCharacter(ucs4, &ucs4_exists);
+
+    return SUCCEEDED(hr) && ucs4_exists;
+}
+
+}  // namespace aribcaption
