@@ -24,4 +24,9 @@
 #include "base/utf_helper.hpp"
 #include "renderer/alphablend.hpp"
 #include "renderer/canvas.hpp"
-#i
+#include "renderer/text_renderer_freetype.hpp"
+#include FT_STROKER_H
+#include FT_SFNT_NAMES_H
+#include FT_TRUETYPE_IDS_H
+
+namespace aribcaption
