@@ -29,4 +29,7 @@
 #include FT_SFNT_NAMES_H
 #include FT_TRUETYPE_IDS_H
 
-namespace aribcaption
+namespace aribcaption {
+
+TextRendererFreetype::TextRendererFreetype(Context& context, FontProvider& font_provider) :
+      log_(GetContextLogger(context))
