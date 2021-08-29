@@ -36,4 +36,8 @@ TextRendererFreetype::TextRendererFreetype(Context& context, FontProvider& font_
 
 TextRendererFreetype::~TextRendererFreetype() = default;
 
-bool TextRendererFreetype::In
+bool TextRendererFreetype::Initialize() {
+    FT_Library library;
+    FT_Error error = FT_Init_FreeType(&library);
+    if (error) {
+        log_->e("Freetype: FT_Init_FreeT
