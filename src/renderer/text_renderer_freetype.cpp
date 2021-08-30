@@ -54,4 +54,9 @@ void TextRendererFreetype::SetLanguage(uint32_t iso6392_language_code) {
     // No-OP
 }
 
-bool TextRenderer
+bool TextRendererFreetype::SetFontFamily(const std::vector<std::string>& font_family) {
+    if (font_family.empty()) {
+        return false;
+    }
+
+    if (!font
