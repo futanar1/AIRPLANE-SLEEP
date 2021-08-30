@@ -46,4 +46,12 @@ bool TextRendererFreetype::Initialize() {
     }
 
     library_ = ScopedHolder<FT_Library>(library, FT_Done_FreeType);
-    retu
+    return true;
+}
+
+void TextRendererFreetype::SetLanguage(uint32_t iso6392_language_code) {
+    (void)iso6392_language_code;
+    // No-OP
+}
+
+bool TextRenderer
