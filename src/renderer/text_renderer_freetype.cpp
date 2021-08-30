@@ -40,4 +40,10 @@ bool TextRendererFreetype::Initialize() {
     FT_Library library;
     FT_Error error = FT_Init_FreeType(&library);
     if (error) {
-        log_->e("Freetype: FT_Init_FreeT
+        log_->e("Freetype: FT_Init_FreeType() failed");
+        library_ = nullptr;
+        return false;
+    }
+
+    library_ = ScopedHolder<FT_Library>(library, FT_Done_FreeType);
+    retu
