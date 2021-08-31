@@ -76,4 +76,9 @@ auto TextRendererFreetype::BeginDraw(Bitmap& target_bmp) -> TextRenderContext {
     return TextRenderContext(target_bmp);
 }
 
-void TextRendererFreetype
+void TextRendererFreetype::EndDraw(TextRenderContext& context) {
+    (void)context;
+    // No-op
+}
+
+auto TextRendererFreetype::DrawChar(TextRenderContext& r
