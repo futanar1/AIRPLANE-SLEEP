@@ -72,4 +72,8 @@ bool TextRendererFreetype::SetFontFamily(const std::vector<std::string>& font_fa
     return true;
 }
 
-auto 
+auto TextRendererFreetype::BeginDraw(Bitmap& target_bmp) -> TextRenderContext {
+    return TextRenderContext(target_bmp);
+}
+
+void TextRendererFreetype
