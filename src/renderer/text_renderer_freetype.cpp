@@ -81,4 +81,5 @@ void TextRendererFreetype::EndDraw(TextRenderContext& context) {
     // No-op
 }
 
-auto TextRendererFreetype::DrawChar(TextRenderContext& r
+auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x, int target_y,
+                                    uint32_t ucs4, CharStyle style, ColorRGBA color, ColorRGBA stroke_c
