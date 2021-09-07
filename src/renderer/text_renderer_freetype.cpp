@@ -84,4 +84,6 @@ void TextRendererFreetype::EndDraw(TextRenderContext& context) {
 auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x, int target_y,
                                     uint32_t ucs4, CharStyle style, ColorRGBA color, ColorRGBA stroke_color,
                                     float stroke_width, int char_width, int char_height,
-                                    std::optional<UnderlineInfo>
+                                    std::optional<UnderlineInfo> underline_info,
+                                    TextRenderFallbackPolicy fallback_policy) -> TextRenderStatus {
+    assert(char_height 
