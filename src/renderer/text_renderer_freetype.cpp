@@ -99,4 +99,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
 
     if (!main_face_) {
         // If main FT_Face is not yet loaded, try load FT_Face from font_family_
-        // We
+        // We don't care about the codepoint (ucs4) now
+        auto result = LoadFontFace(false);
+        if (result.is_err()) {
+        
