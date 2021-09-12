@@ -86,4 +86,10 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
                                     float stroke_width, int char_width, int char_height,
                                     std::optional<UnderlineInfo> underline_info,
                                     TextRenderFallbackPolicy fallback_policy) -> TextRenderStatus {
-    assert(char_height 
+    assert(char_height > 0);
+    if (stroke_width < 0.0f) {
+        stroke_width = 0.0f;
+    }
+
+    // Handle space characters
+    if (ucs4 == 0x0009 || uc
