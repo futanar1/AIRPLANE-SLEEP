@@ -102,4 +102,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         // We don't care about the codepoint (ucs4) now
         auto result = LoadFontFace(false);
         if (result.is_err()) {
-        
+            log_->e("Freetype: Cannot find valid font");
+            return FontProviderErrorToStatus(result.error());
+        }
+        std::pair<FT_Face
