@@ -110,4 +110,8 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         main_face_index_ = pair.second;
     }
 
-    
+    FT_Face face = main_face_;
+    FT_UInt glyph_index = FT_Get_Char_Index(face, ucs4);
+
+    if (glyph_index == 0) {
+        log_->w(
