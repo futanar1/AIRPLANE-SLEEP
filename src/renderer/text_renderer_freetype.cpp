@@ -105,4 +105,9 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
             log_->e("Freetype: Cannot find valid font");
             return FontProviderErrorToStatus(result.error());
         }
-        std::pair<FT_Face
+        std::pair<FT_Face, size_t>& pair = result.value();
+        main_face_ = ScopedHolder<FT_Face>(pair.first, FT_Done_Face);
+        main_face_index_ = pair.second;
+    }
+
+    
