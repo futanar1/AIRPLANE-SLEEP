@@ -116,4 +116,9 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
     if (glyph_index == 0) {
         log_->w("Freetype: Main font %s doesn't contain U+%04X", face->family_name, ucs4);
 
-        if (fallback_policy == TextRenderFallbackPolicy::kFailOnCode
+        if (fallback_policy == TextRenderFallbackPolicy::kFailOnCodePointNotFound) {
+            return TextRenderStatus::kCodePointNotFound;
+        }
+
+        // Missing glyph, check fallback face
+        if (fallback_face_ &
