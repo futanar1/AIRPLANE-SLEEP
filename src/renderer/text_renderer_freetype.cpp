@@ -129,4 +129,6 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         } else {
             // Fallback fontface not loaded, or fallback fontface doesn't contain required codepoint
             // Load next fallback font face by specific codepoint
-            auto result 
+            auto result = LoadFontFace(true, ucs4, main_face_index_ + 1);
+            if (result.is_err()) {
+                log_->e("Freetype: Cannot find a
