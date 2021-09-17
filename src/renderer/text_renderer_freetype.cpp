@@ -134,4 +134,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
                 log_->e("Freetype: Cannot find available fallback font for U+%04X", ucs4);
                 return FontProviderErrorToStatus(result.error());
             }
-           
+            std::pair<FT_Face, size_t>& pair = result.value();
+            fallback_face_ = ScopedHolder<FT_Face>(pair.first, FT_Done_Face);
+
+  
