@@ -131,4 +131,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
             // Load next fallback font face by specific codepoint
             auto result = LoadFontFace(true, ucs4, main_face_index_ + 1);
             if (result.is_err()) {
-                log_->e("Freetype: Cannot find a
+                log_->e("Freetype: Cannot find available fallback font for U+%04X", ucs4);
+                return FontProviderErrorToStatus(result.error());
+            }
+           
