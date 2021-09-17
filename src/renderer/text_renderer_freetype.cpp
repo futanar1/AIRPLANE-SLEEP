@@ -127,4 +127,6 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
             // Fallback fonts not available
             return TextRenderStatus::kCodePointNotFound;
         } else {
-            // Fallback fontface not lo
+            // Fallback fontface not loaded, or fallback fontface doesn't contain required codepoint
+            // Load next fallback font face by specific codepoint
+            auto result 
