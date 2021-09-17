@@ -123,4 +123,8 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         // Missing glyph, check fallback face
         if (fallback_face_ && (glyph_index = FT_Get_Char_Index(fallback_face_, ucs4))) {
             face = fallback_face_;
-        } else if (main_face_index_ + 1 >= font_f
+        } else if (main_face_index_ + 1 >= font_family_.size()) {
+            // Fallback fonts not available
+            return TextRenderStatus::kCodePointNotFound;
+        } else {
+            // Fallback fontface not lo
