@@ -137,4 +137,6 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
             std::pair<FT_Face, size_t>& pair = result.value();
             fallback_face_ = ScopedHolder<FT_Face>(pair.first, FT_Done_Face);
 
-  
+            // Use this fallback fontface for rendering this time
+            face = fallback_face_;
+            glyph_index = 
