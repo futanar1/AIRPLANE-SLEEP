@@ -141,4 +141,10 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
             face = fallback_face_;
             glyph_index = FT_Get_Char_Index(face, ucs4);
             if (glyph_index == 0) {
-                log_->e("Freetype: Got glyph_index == 0 for U+%04X in fallback f
+                log_->e("Freetype: Got glyph_index == 0 for U+%04X in fallback font", ucs4);
+                return TextRenderStatus::kCodePointNotFound;
+            }
+        }
+    }
+
+    if (FT_Set_Pixel_Sizes(face, static_cas
