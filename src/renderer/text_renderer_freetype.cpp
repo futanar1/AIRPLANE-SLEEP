@@ -153,4 +153,6 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
     }
 
     int baseline = static_cast<int>(face->size->metrics.ascender >> 6);
-    int ascender = static_cast<int>(face->
+    int ascender = static_cast<int>(face->size->metrics.ascender >> 6);
+    int descender = static_cast<int>(face->size->metrics.descender >> 6);
+    int underline = static_cast<int>(FT_MulFix(face->underline_po
