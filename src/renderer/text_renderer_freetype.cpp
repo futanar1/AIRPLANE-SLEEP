@@ -156,4 +156,9 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
     int ascender = static_cast<int>(face->size->metrics.ascender >> 6);
     int descender = static_cast<int>(face->size->metrics.descender >> 6);
     int underline = static_cast<int>(FT_MulFix(face->underline_position, face->size->metrics.x_scale) >> 6);
-    int underline_thickness = static_cast<int>(FT_MulFix(face->underline_thickness, face->size->metrics.x_scale) 
+    int underline_thickness = static_cast<int>(FT_MulFix(face->underline_thickness, face->size->metrics.x_scale) >> 6);
+
+    int em_height = ascender + std::abs(descender);
+    int em_adjust_y = (char_height - em_height) / 2;
+
+    if (FT_Load_Glyph(face, glyph_in
