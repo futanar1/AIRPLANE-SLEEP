@@ -149,4 +149,8 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
 
     if (FT_Set_Pixel_Sizes(face, static_cast<FT_UInt>(char_width), static_cast<FT_UInt>(char_height))) {
         log_->e("Freetype: FT_Set_Pixel_Sizes failed");
-        return Te
+        return TextRenderStatus::kOtherError;
+    }
+
+    int baseline = static_cast<int>(face->size->metrics.ascender >> 6);
+    int ascender = static_cast<int>(face->
