@@ -168,4 +168,9 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
 
     // Generate glyph bitmap for filling
     ScopedHolder<FT_Glyph> glyph_image(nullptr, FT_Done_Glyph);
-    if (FT_Get_Glyph(face->glyph, &glyph_image)
+    if (FT_Get_Glyph(face->glyph, &glyph_image)) {
+        log_->e("Freetype: FT_Get_Glyph failed");
+        return TextRenderStatus::kOtherError;
+    }
+
+    if (FT_Glyph_To_Bitmap(&glyph_image, FT_RE
