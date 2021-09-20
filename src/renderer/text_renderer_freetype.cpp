@@ -166,4 +166,6 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         return TextRenderStatus::kOtherError;
     }
 
-    // Gene
+    // Generate glyph bitmap for filling
+    ScopedHolder<FT_Glyph> glyph_image(nullptr, FT_Done_Glyph);
+    if (FT_Get_Glyph(face->glyph, &glyph_image)
