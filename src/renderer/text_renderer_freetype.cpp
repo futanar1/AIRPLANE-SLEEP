@@ -161,4 +161,9 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
     int em_height = ascender + std::abs(descender);
     int em_adjust_y = (char_height - em_height) / 2;
 
-    if (FT_Load_Glyph(face, glyph_in
+    if (FT_Load_Glyph(face, glyph_index, FT_LOAD_NO_BITMAP)) {
+        log_->e("Freetype: FT_Load_Glyph failed");
+        return TextRenderStatus::kOtherError;
+    }
+
+    // Gene
