@@ -178,4 +178,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         return TextRenderStatus::kOtherError;
     }
 
-    
+    ScopedHolder<FT_Glyph> border_glyph_image(nullptr, FT_Done_Glyph);
+
+    // If we need stroke text (border)
+    if (style & CharStyle::kCharSt
