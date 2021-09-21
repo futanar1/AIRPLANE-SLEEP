@@ -181,4 +181,6 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
     ScopedHolder<FT_Glyph> border_glyph_image(nullptr, FT_Done_Glyph);
 
     // If we need stroke text (border)
-    if (style & CharStyle::kCharSt
+    if (style & CharStyle::kCharStyleStroke && stroke_width > 0.0f) {
+        // Generate glyph bitmap for stroke border
+        ScopedHolder<FT_Glyph> stroke_glyph(nullptr, FT_Done_Glyph);
