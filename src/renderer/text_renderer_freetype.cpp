@@ -191,4 +191,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
 
         ScopedHolder<FT_Stroker> stroker(nullptr, FT_Stroker_Done);
         FT_Stroker_New(library_, &stroker);
-        FT_Stroker_S
+        FT_Stroker_Set(stroker,
+                       static_cast<FT_Fixed>(stroke_width * 64),
+                       FT_STROKER_LINECAP_ROUND,
+                       FT_STROKER_LINEJO
