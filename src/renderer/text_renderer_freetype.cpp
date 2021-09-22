@@ -207,4 +207,8 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         border_glyph_image = std::move(stroke_glyph);
     }
 
-    Canvas canvas(render_ctx.GetBitmap()
+    Canvas canvas(render_ctx.GetBitmap());
+
+    // Draw Underline if required
+    if ((style & kCharStyleUnderline) && underline_info && underline_thickness > 0) {
+        int un
