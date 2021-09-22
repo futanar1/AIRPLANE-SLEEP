@@ -194,4 +194,9 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         FT_Stroker_Set(stroker,
                        static_cast<FT_Fixed>(stroke_width * 64),
                        FT_STROKER_LINECAP_ROUND,
-                       FT_STROKER_LINEJO
+                       FT_STROKER_LINEJOIN_ROUND,
+                       0);
+
+        FT_Glyph_StrokeBorder(&stroke_glyph, stroker, false, true);
+
+        if (FT_Glyph_To_Bitmap(&stroke_glyph, F
