@@ -186,4 +186,9 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         ScopedHolder<FT_Glyph> stroke_glyph(nullptr, FT_Done_Glyph);
         if (FT_Get_Glyph(face->glyph, &stroke_glyph)) {
             log_->e("Freetype: FT_Get_Glyph failed");
-            return TextRenderStatus::kOtherErro
+            return TextRenderStatus::kOtherError;
+        }
+
+        ScopedHolder<FT_Stroker> stroker(nullptr, FT_Stroker_Done);
+        FT_Stroker_New(library_, &stroker);
+        FT_Stroker_S
