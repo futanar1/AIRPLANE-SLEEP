@@ -184,3 +184,6 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
     if (style & CharStyle::kCharStyleStroke && stroke_width > 0.0f) {
         // Generate glyph bitmap for stroke border
         ScopedHolder<FT_Glyph> stroke_glyph(nullptr, FT_Done_Glyph);
+        if (FT_Get_Glyph(face->glyph, &stroke_glyph)) {
+            log_->e("Freetype: FT_Get_Glyph failed");
+            return TextRenderStatus::kOtherErro
