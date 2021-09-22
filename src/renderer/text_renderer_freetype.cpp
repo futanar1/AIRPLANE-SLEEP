@@ -201,4 +201,10 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
 
         if (FT_Glyph_To_Bitmap(&stroke_glyph, FT_RENDER_MODE_NORMAL, nullptr, true)) {
             log_->e("Freetype: FT_Glyph_To_Bitmap failed");
-            return TextRenderS
+            return TextRenderStatus::kOtherError;
+        }
+
+        border_glyph_image = std::move(stroke_glyph);
+    }
+
+    Canvas canvas(render_ctx.GetBitmap()
