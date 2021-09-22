@@ -211,4 +211,5 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
 
     // Draw Underline if required
     if ((style & kCharStyleUnderline) && underline_info && underline_thickness > 0) {
-        int un
+        int underline_y = target_y + baseline + em_adjust_y + std::abs(underline);
+        Rect underline_rect(underline_info->sta
