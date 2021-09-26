@@ -215,4 +215,9 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         Rect underline_rect(underline_info->start_x,
                             underline_y,
                             underline_info->start_x + underline_info->width,
-                            under
+                            underline_y + 1);
+
+        int half_thickness = underline_thickness / 2;
+
+        if (underline_thickness % 2) {  // odd number
+            underline
