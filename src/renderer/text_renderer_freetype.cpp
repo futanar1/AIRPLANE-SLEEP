@@ -223,4 +223,11 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
             underline_rect.top -= half_thickness;
             underline_rect.bottom += half_thickness;
         } else {  // even number
-            underline_rect.top -= half_thick
+            underline_rect.top -= half_thickness - 1;
+            underline_rect.bottom += half_thickness;
+        }
+
+        canvas.DrawRect(color, underline_rect);
+    }
+
+    // Draw stro
