@@ -233,3 +233,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
     // Draw stroke border bitmap, if required
     if (border_glyph_image) {
         auto border_bitmap_glyph = reinterpret_cast<FT_BitmapGlyph>(border_glyph_image.Get());
+        int start_x = target_x + border_bitmap_glyph->left;
+        int start_y = target_y + baseline + em_adjust_y - border_bitmap_glyph->top;
+
+        
