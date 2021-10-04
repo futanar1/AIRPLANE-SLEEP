@@ -236,4 +236,8 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         int start_x = target_x + border_bitmap_glyph->left;
         int start_y = target_y + baseline + em_adjust_y - border_bitmap_glyph->top;
 
-        
+        Bitmap bmp = FTBitmapToColoredBitmap(border_bitmap_glyph->bitmap, stroke_color);
+        canvas.DrawBitmap(bmp, start_x, start_y);
+    }
+
+    // Draw filling
