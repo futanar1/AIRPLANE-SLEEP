@@ -230,4 +230,6 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         canvas.DrawRect(color, underline_rect);
     }
 
-    // Draw stro
+    // Draw stroke border bitmap, if required
+    if (border_glyph_image) {
+        auto border_bitmap_glyph = reinterpret_cast<FT_BitmapGlyph>(border_glyph_image.Get());
