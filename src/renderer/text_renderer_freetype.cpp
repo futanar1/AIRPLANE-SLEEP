@@ -243,4 +243,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
     // Draw filling bitmap
     if (glyph_image) {
         auto bitmap_glyph = reinterpret_cast<FT_BitmapGlyph>(glyph_image.Get());
-        int start_x = target_x + bitma
+        int start_x = target_x + bitmap_glyph->left;
+        int start_y = target_y + baseline + em_adjust_y - bitmap_glyph->top;
+
+        Bitmap bmp = FTBitmapToColoredBitmap(bitmap_glyp
