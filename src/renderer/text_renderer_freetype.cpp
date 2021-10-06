@@ -240,4 +240,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         canvas.DrawBitmap(bmp, start_x, start_y);
     }
 
-    // Draw filling
+    // Draw filling bitmap
+    if (glyph_image) {
+        auto bitmap_glyph = reinterpret_cast<FT_BitmapGlyph>(glyph_image.Get());
+        int start_x = target_x + bitma
