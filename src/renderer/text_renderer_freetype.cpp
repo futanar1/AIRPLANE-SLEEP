@@ -253,4 +253,5 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
     return TextRenderStatus::kOK;
 }
 
-Bitmap TextRendererFree
+Bitmap TextRendererFreetype::FTBitmapToColoredBitmap(const FT_Bitmap& ft_bmp, ColorRGBA color) {
+    Bitmap bitmap(static_cast<int>(ft_bmp.width), static_cast<int>(ft_
