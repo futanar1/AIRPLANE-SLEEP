@@ -254,4 +254,7 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
 }
 
 Bitmap TextRendererFreetype::FTBitmapToColoredBitmap(const FT_Bitmap& ft_bmp, ColorRGBA color) {
-    Bitmap bitmap(static_cast<int>(ft_bmp.width), static_cast<int>(ft_
+    Bitmap bitmap(static_cast<int>(ft_bmp.width), static_cast<int>(ft_bmp.rows), PixelFormat::kRGBA8888);
+
+    for (uint32_t y = 0; y < ft_bmp.rows; y++) {
+        uint32_t src_index = y * ft_bmp.pitch
