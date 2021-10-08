@@ -246,4 +246,11 @@ auto TextRendererFreetype::DrawChar(TextRenderContext& render_ctx, int target_x,
         int start_x = target_x + bitmap_glyph->left;
         int start_y = target_y + baseline + em_adjust_y - bitmap_glyph->top;
 
-        Bitmap bmp = FTBitmapToColoredBitmap(bitmap_glyp
+        Bitmap bmp = FTBitmapToColoredBitmap(bitmap_glyph->bitmap, color);
+        canvas.DrawBitmap(bmp, start_x, start_y);
+    }
+
+    return TextRenderStatus::kOK;
+}
+
+Bitmap TextRendererFree
