@@ -257,4 +257,8 @@ Bitmap TextRendererFreetype::FTBitmapToColoredBitmap(const FT_Bitmap& ft_bmp, Co
     Bitmap bitmap(static_cast<int>(ft_bmp.width), static_cast<int>(ft_bmp.rows), PixelFormat::kRGBA8888);
 
     for (uint32_t y = 0; y < ft_bmp.rows; y++) {
-        uint32_t src_index = y * ft_bmp.pitch
+        uint32_t src_index = y * ft_bmp.pitch;
+        const uint8_t* src = &ft_bmp.buffer[src_index];
+        ColorRGBA* dest = bitmap.GetPixelAt(0, static_cast<int>(y));
+
+        al
