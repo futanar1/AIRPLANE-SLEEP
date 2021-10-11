@@ -261,4 +261,10 @@ Bitmap TextRendererFreetype::FTBitmapToColoredBitmap(const FT_Bitmap& ft_bmp, Co
         const uint8_t* src = &ft_bmp.buffer[src_index];
         ColorRGBA* dest = bitmap.GetPixelAt(0, static_cast<int>(y));
 
-        al
+        alphablend::FillLineWithAlphas(dest, src, color, ft_bmp.width);
+    }
+
+    return bitmap;
+}
+
+static bool MatchFontFamilyName(FT_Face 
