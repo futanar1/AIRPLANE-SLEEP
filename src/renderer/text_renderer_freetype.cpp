@@ -267,4 +267,7 @@ Bitmap TextRendererFreetype::FTBitmapToColoredBitmap(const FT_Bitmap& ft_bmp, Co
     return bitmap;
 }
 
-static bool MatchFontFamilyName(FT_Face 
+static bool MatchFontFamilyName(FT_Face face, const std::string& family_name) {
+    FT_UInt sfnt_name_count = FT_Get_Sfnt_Name_Count(face);
+
+    for (FT_UInt i = 0; i < sfnt_name_count; i++) {
