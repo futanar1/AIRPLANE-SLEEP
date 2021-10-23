@@ -271,3 +271,10 @@ static bool MatchFontFamilyName(FT_Face face, const std::string& family_name) {
     FT_UInt sfnt_name_count = FT_Get_Sfnt_Name_Count(face);
 
     for (FT_UInt i = 0; i < sfnt_name_count; i++) {
+        FT_SfntName sfnt_name{};
+
+        if (FT_Get_Sfnt_Name(face, i, &sfnt_name)) {
+            continue;
+        }
+
+        if (sfnt_
