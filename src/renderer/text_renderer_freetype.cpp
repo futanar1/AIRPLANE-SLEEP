@@ -277,4 +277,6 @@ static bool MatchFontFamilyName(FT_Face face, const std::string& family_name) {
             continue;
         }
 
-        if (sfnt_
+        if (sfnt_name.name_id == TT_NAME_ID_FONT_FAMILY || sfnt_name.name_id == TT_NAME_ID_FULL_NAME) {
+            std::string name_str;
+            if 
