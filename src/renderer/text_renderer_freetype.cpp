@@ -283,4 +283,7 @@ static bool MatchFontFamilyName(FT_Face face, const std::string& family_name) {
                 name_str = utf::ConvertUTF16BEToUTF8(reinterpret_cast<uint16_t*>(sfnt_name.string),
                                                      sfnt_name.string_len / 2);
             } else {
-                name_str = std::string(sfnt_
+                name_str = std::string(sfnt_name.string, sfnt_name.string + sfnt_name.string_len);
+            }
+            if (name_str == family_name) {
+                return 
