@@ -286,4 +286,13 @@ static bool MatchFontFamilyName(FT_Face face, const std::string& family_name) {
                 name_str = std::string(sfnt_name.string, sfnt_name.string + sfnt_name.string_len);
             }
             if (name_str == family_name) {
-                return 
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+auto TextRendererFreetype::LoadFontFace(bool is_fallback,
+                                        std::op
