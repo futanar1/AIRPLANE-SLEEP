@@ -279,4 +279,5 @@ static bool MatchFontFamilyName(FT_Face face, const std::string& family_name) {
 
         if (sfnt_name.name_id == TT_NAME_ID_FONT_FAMILY || sfnt_name.name_id == TT_NAME_ID_FULL_NAME) {
             std::string name_str;
-            if 
+            if (sfnt_name.platform_id == TT_PLATFORM_MICROSOFT) {
+                name_str = utf::ConvertUTF16BEToUTF8(reinterpret_cast<uint16_t*>(sfnt_nam
