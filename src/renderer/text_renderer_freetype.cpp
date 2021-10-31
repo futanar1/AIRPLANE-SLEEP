@@ -297,4 +297,9 @@ static bool MatchFontFamilyName(FT_Face face, const std::string& family_name) {
 auto TextRendererFreetype::LoadFontFace(bool is_fallback,
                                         std::optional<uint32_t> codepoint,
                                         std::optional<size_t> begin_index)
-        -> Result<std::pair<FT_Face, size_t>, FontPr
+        -> Result<std::pair<FT_Face, size_t>, FontProviderError> {
+    if (begin_index && begin_index.value() >= font_family_.size()) {
+        return Err(FontProviderError::kFontNotFound);
+    }
+
+   
