@@ -302,4 +302,8 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
         return Err(FontProviderError::kFontNotFound);
     }
 
-   
+    // begin_index is optional
+    size_t font_index = begin_index.value_or(0);
+
+    const std::string& font_name = font_family_[font_index];
+    auto result = f
