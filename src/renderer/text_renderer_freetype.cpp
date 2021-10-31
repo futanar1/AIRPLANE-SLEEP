@@ -295,4 +295,6 @@ static bool MatchFontFamilyName(FT_Face face, const std::string& family_name) {
 }
 
 auto TextRendererFreetype::LoadFontFace(bool is_fallback,
-                                        std::op
+                                        std::optional<uint32_t> codepoint,
+                                        std::optional<size_t> begin_index)
+        -> Result<std::pair<FT_Face, size_t>, FontPr
