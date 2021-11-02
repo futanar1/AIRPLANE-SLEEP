@@ -309,4 +309,9 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
     auto result = font_provider_.GetFontFace(font_name, codepoint);
 
     while (result.is_err() && font_index + 1 < font_family_.size()) {
-        // Find next sui
+        // Find next suitable font
+        font_index++;
+        result = font_provider_.GetFontFace(font_family_[font_index], codepoint);
+    }
+    if (result.is_err()) {
+ 
