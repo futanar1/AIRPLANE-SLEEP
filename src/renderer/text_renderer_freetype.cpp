@@ -314,4 +314,10 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
         result = font_provider_.GetFontFace(font_family_[font_index], codepoint);
     }
     if (result.is_err()) {
- 
+        // Not found, return Err Result
+        return Err(result.error());
+    }
+
+    FontfaceInfo& info = result.value();
+
+    bool use_m
