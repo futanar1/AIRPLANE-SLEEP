@@ -320,4 +320,7 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
 
     FontfaceInfo& info = result.value();
 
-    bool use_m
+    bool use_memory_data = false;
+    std::vector<uint8_t>* memory_data = nullptr;
+    if (!info.font_data.empty()) {
+        use_memory_data = tr
