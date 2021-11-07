@@ -327,4 +327,7 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
         if (!is_fallback) {
             main_face_.Reset();
             main_face_data_ = std::move(info.font_data);
-            memory_data = &main_face_d
+            memory_data = &main_face_data_;
+        } else {  // is_fallback
+            fallback_face_.Reset();
+            fallback_face_data_ = std::move(info.font_d
