@@ -343,4 +343,6 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
     } else {  // use_memory_data
         if (FT_New_Memory_Face(library_,
                                memory_data->data(),
-    
+                               static_cast<FT_Long>(memory_data->size()),
+                               info.face_index,
+                          
