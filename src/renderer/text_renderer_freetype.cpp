@@ -351,4 +351,7 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
     }
 
     if (info.face_index >= 0) {
-        return Ok(std
+        return Ok(std::make_pair(face, font_index));
+    } else {
+        // face_index is negative, e.g. -1, means face index is unknown
+        // Find
