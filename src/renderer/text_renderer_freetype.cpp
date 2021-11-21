@@ -356,4 +356,8 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
         // face_index is negative, e.g. -1, means face index is unknown
         // Find exact font face by PostScript name or Family name
         if (info.family_name.empty() && info.postscript_name.empty()) {
-            log_->e(
+            log_->e("Freetype: Missing Family name / PostScript name for cases that face_index < 0");
+            return Err(FontProviderError::kOtherError);
+        }
+
+    
