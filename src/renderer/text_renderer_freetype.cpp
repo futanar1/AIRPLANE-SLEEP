@@ -345,4 +345,10 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
                                memory_data->data(),
                                static_cast<FT_Long>(memory_data->size()),
                                info.face_index,
-                          
+                               &face)) {
+            return Err(FontProviderError::kFontNotFound);
+        }
+    }
+
+    if (info.face_index >= 0) {
+        return Ok(std
