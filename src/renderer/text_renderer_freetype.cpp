@@ -360,4 +360,8 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
             return Err(FontProviderError::kOtherError);
         }
 
-    
+        for (FT_Long i = 0; i < face->num_faces; i++) {
+            FT_Done_Face(face);
+
+            if (!use_memory_data) {
+                if (FT_N
