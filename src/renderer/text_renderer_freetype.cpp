@@ -354,4 +354,6 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
         return Ok(std::make_pair(face, font_index));
     } else {
         // face_index is negative, e.g. -1, means face index is unknown
-        // Find
+        // Find exact font face by PostScript name or Family name
+        if (info.family_name.empty() && info.postscript_name.empty()) {
+            log_->e(
