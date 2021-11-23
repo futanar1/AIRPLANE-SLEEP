@@ -367,3 +367,6 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
                 if (FT_New_Face(library_, info.filename.c_str(), i, &face)) {
                     return Err(FontProviderError::kFontNotFound);
                 }
+            } else {  // use_memory_data
+                if (FT_New_Memory_Face(library_,
+                                       memory_
