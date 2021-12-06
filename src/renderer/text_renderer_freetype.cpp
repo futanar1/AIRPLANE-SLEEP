@@ -375,4 +375,7 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
                                        &face)) {
                     return Err(FontProviderError::kFontNotFound);
                 }
-         
+            }
+
+            // Find by comparing PostScript name
+            if (!info.postscript_name.empty() && info.postscript_name == FT_Get_Postscript_Name(face)) {
