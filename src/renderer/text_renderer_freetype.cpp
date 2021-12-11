@@ -380,4 +380,9 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
             // Find by comparing PostScript name
             if (!info.postscript_name.empty() && info.postscript_name == FT_Get_Postscript_Name(face)) {
                 return Ok(std::make_pair(face, font_index));
-            } else if (!info.family_name.empty() && MatchFontFamilyName(face, info.family
+            } else if (!info.family_name.empty() && MatchFontFamilyName(face, info.family_name)) {
+                // Find by matching family name
+                return Ok(std::make_pair(face, font_index));
+            }
+        }
+        retu
