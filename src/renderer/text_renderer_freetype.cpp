@@ -385,4 +385,8 @@ auto TextRendererFreetype::LoadFontFace(bool is_fallback,
                 return Ok(std::make_pair(face, font_index));
             }
         }
-        retu
+        return Err(FontProviderError::kFontNotFound);
+    }
+}
+
+}  // namespace aribcaption
