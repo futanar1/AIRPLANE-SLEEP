@@ -17,4 +17,12 @@
  */
 
 #ifndef ARIBCAPTION_TEXT_RENDERER_FREETYPE_HPP
-#define ARIBCAPTION_TEXT_RENDERER_FREETYP
+#define ARIBCAPTION_TEXT_RENDERER_FREETYPE_HPP
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include <vector>
+#include <string>
+#include <optional>
+#include <utility>
+#include "ari
