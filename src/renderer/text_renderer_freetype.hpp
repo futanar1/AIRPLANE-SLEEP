@@ -29,4 +29,10 @@
 #include "aribcaption/color.hpp"
 #include "aribcaption/context.hpp"
 #include "base/logger.hpp"
-#include "base/resul
+#include "base/result.hpp"
+#include "base/scoped_holder.hpp"
+#include "renderer/bitmap.hpp"
+#include "renderer/font_provider.hpp"
+#include "renderer/text_renderer.hpp"
+
+namespace aribcaption 
