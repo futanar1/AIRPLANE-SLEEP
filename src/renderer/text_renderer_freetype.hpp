@@ -35,4 +35,9 @@
 #include "renderer/font_provider.hpp"
 #include "renderer/text_renderer.hpp"
 
-namespace aribcaption 
+namespace aribcaption {
+
+class TextRendererFreetype : public TextRenderer {
+public:
+    TextRendererFreetype(Context& context, FontProvider& font_provider);
+    ~TextRenderer
