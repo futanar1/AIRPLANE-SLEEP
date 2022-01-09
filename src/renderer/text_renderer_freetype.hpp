@@ -43,4 +43,6 @@ public:
     ~TextRendererFreetype() override;
 public:
     bool Initialize() override;
-    void SetLanguage(uint32_t iso6392_language_code) overri
+    void SetLanguage(uint32_t iso6392_language_code) override;
+    bool SetFontFamily(const std::vector<std::string>& font_family) override;
+    auto BeginDraw(Bitmap& target_bmp) -> TextRenderContext override;
