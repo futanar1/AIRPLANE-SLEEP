@@ -46,3 +46,6 @@ public:
     void SetLanguage(uint32_t iso6392_language_code) override;
     bool SetFontFamily(const std::vector<std::string>& font_family) override;
     auto BeginDraw(Bitmap& target_bmp) -> TextRenderContext override;
+    void EndDraw(TextRenderContext& context) override;
+    auto DrawChar(TextRenderContext& render_ctx, int x, int y,
+                  uint32_t ucs4, CharStyle style, 
