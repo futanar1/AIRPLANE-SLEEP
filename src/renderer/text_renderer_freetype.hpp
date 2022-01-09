@@ -48,4 +48,6 @@ public:
     auto BeginDraw(Bitmap& target_bmp) -> TextRenderContext override;
     void EndDraw(TextRenderContext& context) override;
     auto DrawChar(TextRenderContext& render_ctx, int x, int y,
-                  uint32_t ucs4, CharStyle style, 
+                  uint32_t ucs4, CharStyle style, ColorRGBA color, ColorRGBA stroke_color,
+                  float stroke_width, int char_width, int char_height,
+           
