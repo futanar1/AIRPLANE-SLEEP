@@ -54,4 +54,6 @@ public:
                   TextRenderFallbackPolicy fallback_policy) -> TextRenderStatus override;
 private:
     static Bitmap FTBitmapToColoredBitmap(const FT_Bitmap& ft_bmp, ColorRGBA color);
-    auto LoadFon
+    auto LoadFontFace(bool is_fallback,
+                      std::optional<uint32_t> codepoint = std::nullopt,
+                      std::optional<size_t> begin_ind
