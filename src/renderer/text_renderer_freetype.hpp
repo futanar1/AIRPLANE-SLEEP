@@ -51,4 +51,7 @@ public:
                   uint32_t ucs4, CharStyle style, ColorRGBA color, ColorRGBA stroke_color,
                   float stroke_width, int char_width, int char_height,
                   std::optional<UnderlineInfo> underline_info,
-                  TextRenderFallbackPolicy fallback_policy) -> Tex
+                  TextRenderFallbackPolicy fallback_policy) -> TextRenderStatus override;
+private:
+    static Bitmap FTBitmapToColoredBitmap(const FT_Bitmap& ft_bmp, ColorRGBA color);
+    auto LoadFon
