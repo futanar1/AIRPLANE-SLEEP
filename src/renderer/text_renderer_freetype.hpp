@@ -65,4 +65,7 @@ private:
     std::vector<std::string> font_family_;
 
     ScopedHolder<FT_Library> library_;
-    ScopedHolder<FT
+    ScopedHolder<FT_Face> main_face_;
+    ScopedHolder<FT_Face> fallback_face_;
+    std::vector<uint8_t> main_face_data_;
+    std::vector<uint8_t>
