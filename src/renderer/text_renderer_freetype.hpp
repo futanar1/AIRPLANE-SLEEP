@@ -68,4 +68,10 @@ private:
     ScopedHolder<FT_Face> main_face_;
     ScopedHolder<FT_Face> fallback_face_;
     std::vector<uint8_t> main_face_data_;
-    std::vector<uint8_t>
+    std::vector<uint8_t> fallback_face_data_;
+    size_t main_face_index_ = 0;
+};
+
+}  // namespace aribcaption
+
+#endif  // ARIBCAPTION_TEXT_RENDERER_FREETYPE_HPP
