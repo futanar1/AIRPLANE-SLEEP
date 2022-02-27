@@ -35,4 +35,12 @@ target_include_directories(test_alphablend
         ../stopwatch/include
 )
 
-target_link_libraries(test_alph
+target_link_libraries(test_alphablend
+    PRIVATE
+        aribcaption
+)
+
+set_target_properties(test_alphablend
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
