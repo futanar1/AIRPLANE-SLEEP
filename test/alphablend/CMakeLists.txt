@@ -28,4 +28,11 @@ target_compile_features(test_alphablend
         cxx_std_17
 )
 
-target_
+target_include_directories(test_alphablend
+    PRIVATE
+        ../../include
+        ../../src
+        ../stopwatch/include
+)
+
+target_link_libraries(test_alph
