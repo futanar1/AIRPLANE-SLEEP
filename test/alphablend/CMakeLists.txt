@@ -18,4 +18,14 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-add_e
+add_executable(test_alphablend
+    EXCLUDE_FROM_ALL
+        test.cpp
+)
+
+target_compile_features(test_alphablend
+    PRIVATE
+        cxx_std_17
+)
+
+target_
