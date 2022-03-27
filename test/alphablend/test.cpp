@@ -19,4 +19,12 @@
 #include <cstdint>
 #include <cstdio>
 #include "renderer/bitmap.hpp"
-#include "ren
+#include "renderer/canvas.hpp"
+#include "stopwatch.hpp"
+
+using namespace aribcaption;
+
+int main(int argc, char** argv) {
+    constexpr int count = 1000;
+
+    
