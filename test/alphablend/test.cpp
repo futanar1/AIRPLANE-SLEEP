@@ -27,4 +27,8 @@ using namespace aribcaption;
 int main(int argc, char** argv) {
     constexpr int count = 1000;
 
-    
+    auto stopwatch = StopWatch::Create();
+
+    Bitmap background(3840, 2160, PixelFormat::kRGBA8888);
+    Canvas canvas(background);
+    canvas.ClearCol
