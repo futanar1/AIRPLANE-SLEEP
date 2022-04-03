@@ -35,4 +35,9 @@ int main(int argc, char** argv) {
 
     Bitmap foreground(3840, 2160, PixelFormat::kRGBA8888);
     Canvas fg_canvas(foreground);
-    fg_canvas.ClearColor(Color
+    fg_canvas.ClearColor(ColorRGBA(0, 255, 0, 128));
+
+    stopwatch->Start();
+
+    for (int i = 0; i < count; i++) {
+        canvas.DrawBitmap(foregro
