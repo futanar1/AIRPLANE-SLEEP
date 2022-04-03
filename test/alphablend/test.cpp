@@ -40,4 +40,11 @@ int main(int argc, char** argv) {
     stopwatch->Start();
 
     for (int i = 0; i < count; i++) {
-        canvas.DrawBitmap(foregro
+        canvas.DrawBitmap(foreground, 0, 0);
+    }
+
+    stopwatch->Stop();
+    int64_t elapsed = stopwatch->GetMicroseconds();
+    int64_t average = elapsed / count;
+
+ 
