@@ -31,4 +31,8 @@ int main(int argc, char** argv) {
 
     Bitmap background(3840, 2160, PixelFormat::kRGBA8888);
     Canvas canvas(background);
-    canvas.ClearCol
+    canvas.ClearColor(ColorRGBA(255, 0, 0, 180));
+
+    Bitmap foreground(3840, 2160, PixelFormat::kRGBA8888);
+    Canvas fg_canvas(foreground);
+    fg_canvas.ClearColor(Color
