@@ -47,4 +47,7 @@ int main(int argc, char** argv) {
     int64_t elapsed = stopwatch->GetMicroseconds();
     int64_t average = elapsed / count;
 
- 
+    printf("count = %d\ntotal = %lfms\naverage = %lfms\n",
+           count,
+           static_cast<double>(elapsed) / 1000.0f,
+           stat
