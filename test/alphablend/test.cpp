@@ -50,4 +50,7 @@ int main(int argc, char** argv) {
     printf("count = %d\ntotal = %lfms\naverage = %lfms\n",
            count,
            static_cast<double>(elapsed) / 1000.0f,
-           stat
+           static_cast<double>(average) / 1000.0f);
+
+    return 0;
+}
