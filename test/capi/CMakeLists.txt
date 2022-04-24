@@ -32,4 +32,15 @@ target_include_directories(test_capi
     PRIVATE
         ../../include
         ../png_writer/include
-        
+        ../sample_data/include
+)
+
+target_link_libraries(test_capi
+    PRIVATE
+        aribcaption
+        png_writer
+)
+
+set_target_properties(test_capi
+    PROPERTIES
+        R
