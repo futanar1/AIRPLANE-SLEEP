@@ -23,4 +23,13 @@ add_executable(test_capi
         test.c
 )
 
-target_compile_featur
+target_compile_features(test_capi
+    PRIVATE
+        c_std_11
+)
+
+target_include_directories(test_capi
+    PRIVATE
+        ../../include
+        ../png_writer/include
+        
