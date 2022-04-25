@@ -102,3 +102,24 @@ int main(int argc, char* argv[]) {
                render_status == ARIBCC_RENDER_STATUS_GOT_IMAGE_UNCHANGED) {
         printf("ImageCount: %u\n", render_result.image_count);
     }
+
+    for (uint32_t i = 0; i < render_result.image_count; i++) {
+        aribcc_image_t* image = &render_result.images[i];
+        char filename[32] = {0};
+        snprintf(filename, sizeof(filename), "capi_test_image_%u.png", i);
+        png_writer_write_image_c(filename, image);
+    }
+
+    aribcc_render_result_cleanup(&render_result);
+
+    aribcc_renderer_free(renderer);
+    aribcc_decoder_free(decoder);
+    aribcc_context_free(ctx);
+
+
+#ifdef _WIN32
+    SetConsoleOutputCP(old_codepage);
+#endif
+
+    return 0;
+}
