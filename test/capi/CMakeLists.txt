@@ -43,4 +43,5 @@ target_link_libraries(test_capi
 
 set_target_properties(test_capi
     PROPERTIES
-        R
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
