@@ -24,4 +24,14 @@ find_library(AVCODEC_LIBRARY avcodec)
 find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h)
 find_library(AVFORMAT_LIBRARY avformat)
 
-add_executable(test_caption
+add_executable(test_caption2srt
+    EXCLUDE_FROM_ALL
+        main.cpp
+)
+
+target_compile_features(test_caption2srt
+    PRIVATE
+        cxx_std_17
+)
+
+target_include_direc
