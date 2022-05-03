@@ -42,4 +42,11 @@ target_include_directories(test_caption2srt
 
 target_link_libraries(test_caption2srt
     PRIVATE
-  
+        aribcaption
+        ${AVCODEC_LIBRARY}
+        ${AVFORMAT_LIBRARY}
+)
+
+set_target_properties(test_caption2srt
+    PROPERTIES
+        RUNTIM
