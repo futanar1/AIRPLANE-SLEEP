@@ -34,4 +34,12 @@ target_compile_features(test_caption2srt
         cxx_std_17
 )
 
-target_include_direc
+target_include_directories(test_caption2srt
+    PRIVATE
+        ${AVCODEC_INCLUDE_DIR}
+        ${AVFORMAT_INCLUDE_DIR}
+)
+
+target_link_libraries(test_caption2srt
+    PRIVATE
+  
