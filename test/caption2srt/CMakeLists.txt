@@ -49,4 +49,5 @@ target_link_libraries(test_caption2srt
 
 set_target_properties(test_caption2srt
     PROPERTIES
-        RUNTIM
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
