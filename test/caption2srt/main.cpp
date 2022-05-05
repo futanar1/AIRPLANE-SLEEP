@@ -117,3 +117,146 @@ public:
         int ret = 0;
         bool first_video_found = false;
         int64_t first_video_pts = 0;
+
+        AVPacket packet{};
+
+        while ((ret = av_read_frame(format_context_, &packet) == 0)) {
+            if (packet.stream_index == video_stream_index_ && !first_video_found) {
+                first_video_found = true;
+                first_video_pts = packet.pts;
+            } else if (packet.stream_index == arib_caption_index_) {
+                AVStream* stream = format_context_->streams[arib_caption_index_];
+                packet.pts -= first_video_pts;
+                av_packet_rescale_ts(&packet, stream->time_base, AVRational{1, 1000});
+                ConvertCaptionPacket(&packet);
+            }
+            av_packet_unref(&packet);
+        }
+
+        while (!caption_queue_.empty()) {
+            Caption& caption = caption_queue_.front();
+            if (caption.text.empty()) {
+                caption_queue_.pop_front();
+                continue;
+            } else if (caption.wait_duration == DURATION_INDEFINITE) {
+                caption.wait_duration = 1000;
+            }
+            DumpToSRT(caption);
+            caption_queue_.pop_front();
+        }
+    }
+private:
+    void InitCaptionDecoder() {
+        context_.SetLogcatCallback([](LogLevel level, const char* message) {
+            if (level == LogLevel::kError || level == LogLevel::kWarning) {
+                fprintf(stderr, "%s\n", message);
+            } else {
+                printf("%s\n", message);
+            }
+        });
+
+        decoder_.Initialize(EncodingScheme::kAuto, CaptionType::kCaption);
+    }
+
+    static std::string MillisecondsToTime(int64_t millis) {
+        std::ostringstream oss;
+
+        oss << std::setfill('0') << std::setw(2) << millis / 1000 / 60 / 60;
+        oss << ':';
+
+        oss << std::setfill('0') << std::setw(2) << (millis / 1000 / 60) % 60;
+        oss << ':';
+
+        oss << std::setfill('0') << std::setw(2) << (millis / 1000) % 60;
+        oss << ',';
+
+        oss << std::setfill('0') << std::setw(2) << millis % 1000;
+
+        return oss.str();
+    }
+
+    void DumpToSRT(const Caption& caption) {
+        ofs_ << srt_index_ << std::endl;
+        ofs_ << MillisecondsToTime(caption.pts) << " --> ";
+        ofs_ << MillisecondsToTime(caption.pts + caption.wait_duration) << std::endl;
+        ofs_ << caption.text << std::endl << std::endl;
+        srt_index_++;
+    }
+
+    bool ConvertCaptionPacket(AVPacket* packet) {
+        DecodeResult decode_result;
+
+        auto status = decoder_.Decode(packet->data, packet->size, packet->pts, decode_result);
+
+        if (status == DecodeStatus::kError) {
+            fprintf(stderr, "Decoder::Decode() returned error\n");
+            return false;
+        } else if (status == DecodeStatus::kNoCaption) {
+            return true;
+        }
+
+        std::unique_ptr<Caption> caption = std::move(decode_result.caption);
+
+        if (caption->wait_duration == DURATION_INDEFINITE) {
+            printf("[%.3lfs][INDEFINITE] %s\n",
+                   (double)caption->pts / 1000.0f,
+                   caption->text.c_str());
+        } else {
+            printf("[%.3lfs][%.7lfs] %s\n",
+                   (double)caption->pts / 1000.0f,
+                   (double)caption->wait_duration / 1000.0f,
+                   caption->text.c_str());
+        }
+        fflush(stdout);
+
+        if (!caption_queue_.empty()) {
+            Caption& prev = caption_queue_.back();
+            if (prev.wait_duration == DURATION_INDEFINITE) {
+                prev.wait_duration = caption->pts - prev.pts - 1;
+            }
+        }
+        caption_queue_.push_back(std::move(*caption));
+
+        while (!caption_queue_.empty() && caption_queue_.front().wait_duration != DURATION_INDEFINITE) {
+            Caption& cap = caption_queue_.front();
+            if (cap.text.empty()) {
+                caption_queue_.pop_front();
+                continue;
+            }
+
+            DumpToSRT(cap);
+            caption_queue_.pop_front();
+        }
+
+        return true;
+    }
+   private:
+    AVFormatContext* format_context_ = nullptr;
+    int video_stream_index_ = -1;
+    int arib_caption_index_ = -1;
+
+    Context context_;
+    Decoder decoder_;
+
+    std::deque<Caption> caption_queue_;
+    std::ofstream ofs_;
+
+    int srt_index_ = 1;
+};
+
+int main(int argc, const char* argv[]) {
+#ifdef _WIN32
+    UTF8CodePage enable_utf8_console;
+#endif
+
+    if (argc < 3) {
+        printf("Usage: %s [MPEG-TS INPUT] [SRT OUTPUT] \n\n", argv[0]);
+        return -1;
+    }
+
+    CaptionConverter converter;
+
+    if (!converter.Open(argv[1], argv[2])) {
+        fprintf(stderr, "Open input MPEG-TS failed\n");
+        return -1;
+    }
