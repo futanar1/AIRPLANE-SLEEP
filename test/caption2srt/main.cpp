@@ -260,3 +260,7 @@ int main(int argc, const char* argv[]) {
         fprintf(stderr, "Open input MPEG-TS failed\n");
         return -1;
     }
+
+    converter.RunLoop();
+    return 0;
+}
