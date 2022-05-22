@@ -40,4 +40,11 @@ target_include_directories(test_drcs
     PRIVATE
         ../../include
         ../../src
-        ../
+        ../png_writer/include
+        ../sample_data/include
+        ${FREETYPE_INCLUDE_DIRS}
+        ${Fontconfig_INCLUDE_DIRS}
+)
+
+target_link_libraries(test_drcs
+  
