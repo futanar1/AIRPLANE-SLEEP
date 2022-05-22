@@ -19,4 +19,16 @@
 cmake_minimum_required(VERSION 3.1)
 
 if(NOT ARIBCC_USE_FREETYPE)
-    find
+    find_package(Freetype)
+endif()
+
+if(NOT ARIBCC_USE_FONTCONFIG)
+    find_package(Fontconfig)
+endif()
+
+add_executable(test_drcs
+    EXCLUDE_FROM_ALL
+        test.cpp
+)
+
+target_compile_
