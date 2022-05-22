@@ -31,4 +31,13 @@ add_executable(test_drcs
         test.cpp
 )
 
-target_compile_
+target_compile_features(test_drcs
+    PRIVATE
+        cxx_std_17
+)
+
+target_include_directories(test_drcs
+    PRIVATE
+        ../../include
+        ../../src
+        ../
