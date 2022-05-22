@@ -47,4 +47,11 @@ target_include_directories(test_drcs
 )
 
 target_link_libraries(test_drcs
-  
+    PRIVATE
+        aribcaption
+        png_writer
+        ${FREETYPE_LIBRARIES}
+        ${Fontconfig_LIBRARIES}
+)
+
+set_target_pro
