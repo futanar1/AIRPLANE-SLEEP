@@ -54,4 +54,7 @@ target_link_libraries(test_drcs
         ${Fontconfig_LIBRARIES}
 )
 
-set_target_pro
+set_target_properties(test_drcs
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
