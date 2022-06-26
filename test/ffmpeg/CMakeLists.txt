@@ -39,4 +39,12 @@ target_include_directories(test_ffmpeg
         ../../include
         ../../src
         ../png_writer/include
-        ../stopwatch/incl
+        ../stopwatch/include
+        ${AVCODEC_INCLUDE_DIR}
+        ${AVFORMAT_INCLUDE_DIR}
+)
+
+target_link_libraries(test_ffmpeg
+    PRIVATE
+        aribcaption
+        png_wri
