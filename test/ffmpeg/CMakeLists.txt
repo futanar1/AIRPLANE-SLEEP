@@ -23,3 +23,15 @@ find_library(AVCODEC_LIBRARY avcodec)
 
 find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h)
 find_library(AVFORMAT_LIBRARY avformat)
+
+add_executable(test_ffmpeg
+    EXCLUDE_FROM_ALL
+        test.cpp
+)
+
+target_compile_features(test_ffmpeg
+    PRIVATE
+        cxx_std_17
+)
+
+targ
