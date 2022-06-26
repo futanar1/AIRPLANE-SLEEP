@@ -34,4 +34,9 @@ target_compile_features(test_ffmpeg
         cxx_std_17
 )
 
-targ
+target_include_directories(test_ffmpeg
+    PRIVATE
+        ../../include
+        ../../src
+        ../png_writer/include
+        ../stopwatch/incl
