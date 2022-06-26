@@ -18,4 +18,8 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-find_path(AVCODEC_INCLUDE_DIR libavcodec/avcod
+find_path(AVCODEC_INCLUDE_DIR libavcodec/avcodec.h)
+find_library(AVCODEC_LIBRARY avcodec)
+
+find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h)
+find_library(AVFORMAT_LIBRARY avformat)
