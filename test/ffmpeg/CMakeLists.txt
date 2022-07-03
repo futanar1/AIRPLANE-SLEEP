@@ -47,4 +47,11 @@ target_include_directories(test_ffmpeg
 target_link_libraries(test_ffmpeg
     PRIVATE
         aribcaption
-        png_wri
+        png_writer
+        ${AVCODEC_LIBRARY}
+        ${AVFORMAT_LIBRARY}
+)
+
+set_target_properties(test_ffmpeg
+    PROPERTIES
+        RUNTIME_OUTPUT_D
