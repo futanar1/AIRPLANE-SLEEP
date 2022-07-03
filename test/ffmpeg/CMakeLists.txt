@@ -54,4 +54,5 @@ target_link_libraries(test_ffmpeg
 
 set_target_properties(test_ffmpeg
     PROPERTIES
-        RUNTIME_OUTPUT_D
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
