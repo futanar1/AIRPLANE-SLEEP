@@ -30,4 +30,10 @@ extern "C" {
 #include <cstdint>
 #include <cstdio>
 #include <memory>
-#include "aribcaption/ari
+#include "aribcaption/aribcaption.hpp"
+#include "renderer/bitmap.hpp"
+#include "renderer/canvas.hpp"
+#include "png_writer.hpp"
+#include "stopwatch.hpp"
+
+using namespace 
