@@ -22,4 +22,12 @@
 
 extern "C" {
     #include <libavformat/avformat.h>
-    #include <liba
+    #include <libavcodec/avcodec.h>
+}
+
+#include <cinttypes>
+#include <cstdlib>
+#include <cstdint>
+#include <cstdio>
+#include <memory>
+#include "aribcaption/ari
