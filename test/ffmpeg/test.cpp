@@ -42,4 +42,10 @@ constexpr int frame_area_width = 1920;
 constexpr int frame_area_height = 1080;
 constexpr int margin_left = 0;
 constexpr int margin_top = 0;
-const
+constexpr int margin_right = 0;
+constexpr int margin_bottom = 0;
+
+#ifdef _WIN32
+class UTF8CodePage {
+public:
+    UTF8CodePage() : old_code
