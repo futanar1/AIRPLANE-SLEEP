@@ -36,4 +36,10 @@ extern "C" {
 #include "png_writer.hpp"
 #include "stopwatch.hpp"
 
-using namespace 
+using namespace aribcaption;
+
+constexpr int frame_area_width = 1920;
+constexpr int frame_area_height = 1080;
+constexpr int margin_left = 0;
+constexpr int margin_top = 0;
+const
