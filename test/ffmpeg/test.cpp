@@ -48,4 +48,8 @@ constexpr int margin_bottom = 0;
 #ifdef _WIN32
 class UTF8CodePage {
 public:
-    UTF8CodePage() : old_code
+    UTF8CodePage() : old_codepage_(GetConsoleOutputCP()) {
+        SetConsoleOutputCP(CP_UTF8);
+    }
+    ~UTF8CodePage() {
+        SetConsoleOutputCP(old_codepage_)
