@@ -62,4 +62,8 @@ private:
 class CaptionDecodeRendererFFmpeg {
 public:
     explicit CaptionDecodeRendererFFmpeg()
-        : a
+        : aribcc_decoder_(aribcc_context_), aribcc_renderer_(aribcc_context_) {}
+
+    ~CaptionDecodeRendererFFmpeg() {
+        if (format_context_) {
+   
