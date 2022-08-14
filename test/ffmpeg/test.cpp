@@ -52,4 +52,14 @@ public:
         SetConsoleOutputCP(CP_UTF8);
     }
     ~UTF8CodePage() {
-        SetConsoleOutputCP(old_codepage_)
+        SetConsoleOutputCP(old_codepage_);
+    }
+private:
+    UINT old_codepage_;
+};
+#endif
+
+class CaptionDecodeRendererFFmpeg {
+public:
+    explicit CaptionDecodeRendererFFmpeg()
+        : a
