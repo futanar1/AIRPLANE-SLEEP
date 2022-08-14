@@ -66,4 +66,9 @@ public:
 
     ~CaptionDecodeRendererFFmpeg() {
         if (format_context_) {
-   
+            avformat_close_input(&format_context_);
+        }
+    }
+public:
+    bool Open(const char* input_filename) {
+        InitCaptionDecod
