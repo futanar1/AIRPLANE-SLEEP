@@ -71,4 +71,10 @@ public:
     }
 public:
     bool Open(const char* input_filename) {
-        InitCaptionDecod
+        InitCaptionDecoderRenderer();
+
+        format_context_ = avformat_alloc_context();
+
+        int ret = 0;
+
+        if ((ret = avformat_open_input(&format_context_, input_filename,
