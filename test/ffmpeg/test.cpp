@@ -77,4 +77,9 @@ public:
 
         int ret = 0;
 
-        if ((ret = avformat_open_input(&format_context_, input_filename,
+        if ((ret = avformat_open_input(&format_context_, input_filename, nullptr, nullptr)) < 0) {
+            fprintf(stderr, "avformat_open_input failed\n");
+            return false;
+        }
+
+        if ((ret = avformat_find_stream_info(format_c
