@@ -89,4 +89,6 @@ public:
 
         for (size_t i = 0; i < format_context_->nb_streams; i++) {
             AVStream* stream = format_context_->streams[i];
-     
+            AVCodecParameters* codec_params = stream->codecpar;
+
+            if (codec_params->codec_type == AVMEDIA_TYPE_SUBTITLE && codec_params->codec_i
