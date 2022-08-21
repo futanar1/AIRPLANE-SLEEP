@@ -87,4 +87,6 @@ public:
             return false;
         }
 
-        for (
+        for (size_t i = 0; i < format_context_->nb_streams; i++) {
+            AVStream* stream = format_context_->streams[i];
+     
