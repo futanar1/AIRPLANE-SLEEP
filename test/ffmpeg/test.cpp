@@ -82,4 +82,9 @@ public:
             return false;
         }
 
-        if ((ret = avformat_find_stream_info(format_c
+        if ((ret = avformat_find_stream_info(format_context_, nullptr)) < 0) {
+            fprintf(stderr, "avformat_find_stream_info failed\n");
+            return false;
+        }
+
+        for (
