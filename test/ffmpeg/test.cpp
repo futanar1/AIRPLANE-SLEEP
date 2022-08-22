@@ -93,4 +93,11 @@ public:
 
             if (codec_params->codec_type == AVMEDIA_TYPE_SUBTITLE && codec_params->codec_id == AV_CODEC_ID_ARIB_CAPTION) {
                 // if (!(stream->disposition & AV_DISPOSITION_URGENT)) {
-                arib_caption_index_
+                arib_caption_index_ = stream->index;
+                break;
+                // }
+            }
+        }
+
+        if (arib_caption_index_ == -1) {
+           
