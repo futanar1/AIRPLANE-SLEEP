@@ -91,4 +91,6 @@ public:
             AVStream* stream = format_context_->streams[i];
             AVCodecParameters* codec_params = stream->codecpar;
 
-            if (codec_params->codec_type == AVMEDIA_TYPE_SUBTITLE && codec_params->codec_i
+            if (codec_params->codec_type == AVMEDIA_TYPE_SUBTITLE && codec_params->codec_id == AV_CODEC_ID_ARIB_CAPTION) {
+                // if (!(stream->disposition & AV_DISPOSITION_URGENT)) {
+                arib_caption_index_
