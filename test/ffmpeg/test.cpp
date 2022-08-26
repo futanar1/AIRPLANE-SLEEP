@@ -100,4 +100,7 @@ public:
         }
 
         if (arib_caption_index_ == -1) {
-           
+            fprintf(stderr, "ARIB caption stream not found\n");
+            avformat_close_input(&format_context_);
+            return false;
+       
