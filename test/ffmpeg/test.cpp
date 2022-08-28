@@ -114,4 +114,6 @@ public:
 
         while ((ret = av_read_frame(format_context_, &packet) == 0)) {
             if (packet.stream_index == arib_caption_index_) {
-                AVStream* stream = format_context_->str
+                AVStream* stream = format_context_->streams[arib_caption_index_];
+                av_packet_rescale_ts(&packet, stream->time_base, AVRational{1, 1000});
+                // pa
