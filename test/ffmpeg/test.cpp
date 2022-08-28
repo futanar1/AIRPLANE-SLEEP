@@ -116,4 +116,8 @@ public:
             if (packet.stream_index == arib_caption_index_) {
                 AVStream* stream = format_context_->streams[arib_caption_index_];
                 av_packet_rescale_ts(&packet, stream->time_base, AVRational{1, 1000});
-                // pa
+                // packet.pts = superimpose_pts_++;
+                DecodeRenderAndSave(&packet);
+            }
+            av_packet_unref(&packet);
+        }
