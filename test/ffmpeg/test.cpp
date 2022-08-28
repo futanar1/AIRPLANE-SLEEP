@@ -112,4 +112,6 @@ public:
         int ret = 0;
         AVPacket packet{};
 
-        while ((ret = av_read_frame(format_c
+        while ((ret = av_read_frame(format_context_, &packet) == 0)) {
+            if (packet.stream_index == arib_caption_index_) {
+                AVStream* stream = format_context_->str
