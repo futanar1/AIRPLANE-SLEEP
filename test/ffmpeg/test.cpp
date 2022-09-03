@@ -126,4 +126,6 @@ private:
     void InitCaptionDecoderRenderer() {
         stop_watch_ = StopWatch::Create();
 
-        aribcc_context_.SetLogcatCallb
+        aribcc_context_.SetLogcatCallback([](LogLevel level, const char* message) {
+            if (level == LogLevel::kError || level == LogLevel::kWarning) {
+                fprintf(stderr, "%s\n", mess
