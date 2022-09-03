@@ -121,3 +121,9 @@ public:
             }
             av_packet_unref(&packet);
         }
+    }
+private:
+    void InitCaptionDecoderRenderer() {
+        stop_watch_ = StopWatch::Create();
+
+        aribcc_context_.SetLogcatCallb
