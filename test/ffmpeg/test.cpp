@@ -128,4 +128,10 @@ private:
 
         aribcc_context_.SetLogcatCallback([](LogLevel level, const char* message) {
             if (level == LogLevel::kError || level == LogLevel::kWarning) {
-                fprintf(stderr, "%s\n", mess
+                fprintf(stderr, "%s\n", message);
+            } else {
+                printf("%s\n", message);
+            }
+        });
+
+        aribcc_decoder_.Initialize(EncodingScheme::kAuto, Capti
