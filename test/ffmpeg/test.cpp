@@ -140,4 +140,9 @@ private:
         // aribcc_renderer_.SetForceStrokeText(true);
         aribcc_renderer_.SetFrameSize(frame_area_width, frame_area_height);
         aribcc_renderer_.SetMargins(margin_top, margin_bottom, margin_left, margin_right);
-        // aribcc_renderer_.SetLanguageSpecificFo
+        // aribcc_renderer_.SetLanguageSpecificFontFamily(ThreeCC("jpn"), {"Rounded M+ 1m for ARIB"});
+    }
+
+    bool DecodeRenderAndSave(AVPacket* packet) {
+        DecodeResult decode_result;
+
