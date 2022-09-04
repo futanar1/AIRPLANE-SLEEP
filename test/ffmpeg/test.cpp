@@ -138,4 +138,6 @@ private:
 
         aribcc_renderer_.Initialize();
         // aribcc_renderer_.SetForceStrokeText(true);
-        aribcc_renderer_.SetFrameSize(frame_area_widt
+        aribcc_renderer_.SetFrameSize(frame_area_width, frame_area_height);
+        aribcc_renderer_.SetMargins(margin_top, margin_bottom, margin_left, margin_right);
+        // aribcc_renderer_.SetLanguageSpecificFo
