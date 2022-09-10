@@ -146,3 +146,6 @@ private:
     bool DecodeRenderAndSave(AVPacket* packet) {
         DecodeResult decode_result;
 
+        auto status = aribcc_decoder_.Decode(packet->data, packet->size, packet->pts, decode_result);
+
+        if (status == DecodeStat
