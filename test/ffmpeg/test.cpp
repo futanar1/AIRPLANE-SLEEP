@@ -150,4 +150,7 @@ private:
 
         if (status == DecodeStatus::kGotCaption) {
             std::unique_ptr<Caption> caption = std::move(decode_result.caption);
-            if (caption->wait_duration =
+            if (caption->wait_duration == DURATION_INDEFINITE) {
+                printf("[%.3lfs][INDEFINITE] %s\n",
+                       (double)caption->pts / 1000.0f,
+             
