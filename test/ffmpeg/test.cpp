@@ -148,4 +148,6 @@ private:
 
         auto status = aribcc_decoder_.Decode(packet->data, packet->size, packet->pts, decode_result);
 
-        if (status == DecodeStat
+        if (status == DecodeStatus::kGotCaption) {
+            std::unique_ptr<Caption> caption = std::move(decode_result.caption);
+            if (caption->wait_duration =
