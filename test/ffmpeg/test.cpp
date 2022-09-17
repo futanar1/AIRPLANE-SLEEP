@@ -153,4 +153,8 @@ private:
             if (caption->wait_duration == DURATION_INDEFINITE) {
                 printf("[%.3lfs][INDEFINITE] %s\n",
                        (double)caption->pts / 1000.0f,
-             
+                       caption->text.c_str());
+            } else {
+                printf("[%.3lfs][%.7lfs] %s\n",
+                       (double)caption->pts / 1000.0f,
+              
