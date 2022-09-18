@@ -157,4 +157,8 @@ private:
             } else {
                 printf("[%.3lfs][%.7lfs] %s\n",
                        (double)caption->pts / 1000.0f,
-              
+                       (double)caption->wait_duration / 1000.0f,
+                       caption->text.c_str());
+            }
+            fflush(stdout);
+   
