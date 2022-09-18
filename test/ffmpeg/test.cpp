@@ -161,4 +161,7 @@ private:
                        caption->text.c_str());
             }
             fflush(stdout);
-   
+            if (caption->iso6392_language_code == 0) {
+                caption->iso6392_language_code = ThreeCC("jpn");
+            }
+            aribcc_r
