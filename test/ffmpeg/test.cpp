@@ -167,4 +167,9 @@ private:
             aribcc_renderer_.AppendCaption(std::move(*caption));
         } else if (status == DecodeStatus::kNoCaption) {
             return true;
-        } else if (
+        } else if (status == DecodeStatus::kError) {
+            fprintf(stderr, "Decoder::Decode() returned error\n");
+            return false;
+        }
+
+    
