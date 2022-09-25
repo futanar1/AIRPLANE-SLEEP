@@ -164,4 +164,7 @@ private:
             if (caption->iso6392_language_code == 0) {
                 caption->iso6392_language_code = ThreeCC("jpn");
             }
-            aribcc_r
+            aribcc_renderer_.AppendCaption(std::move(*caption));
+        } else if (status == DecodeStatus::kNoCaption) {
+            return true;
+        } else if (
