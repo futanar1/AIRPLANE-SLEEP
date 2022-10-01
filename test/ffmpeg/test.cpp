@@ -172,4 +172,8 @@ private:
             return false;
         }
 
-    
+        RenderResult render_result;
+
+        stop_watch_->Start();
+        auto render_status = aribcc_renderer_.Render(packet->pts, render_result);
+ 
