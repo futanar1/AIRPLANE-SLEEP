@@ -187,4 +187,9 @@ private:
             return true;
         }
 
-        Bitmap screen_bmp(frame_area_width, frame_area_height, PixelFormat::kRGBA8888)
+        Bitmap screen_bmp(frame_area_width, frame_area_height, PixelFormat::kRGBA8888);
+        Canvas screen_canvas(screen_bmp);
+
+        stop_watch_->Start();
+        for (Image& img : render_result.images) {
+            i
