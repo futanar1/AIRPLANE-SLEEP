@@ -176,4 +176,9 @@ private:
 
         stop_watch_->Start();
         auto render_status = aribcc_renderer_.Render(packet->pts, render_result);
- 
+        stop_watch_->Stop();
+
+        int64_t render_time = stop_watch_->GetMicroseconds();
+
+        if (render_status == RenderStatus::kError) {
+           
