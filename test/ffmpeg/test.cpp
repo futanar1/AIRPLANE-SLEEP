@@ -181,4 +181,6 @@ private:
         int64_t render_time = stop_watch_->GetMicroseconds();
 
         if (render_status == RenderStatus::kError) {
-           
+            fprintf(stderr, "Renderer::Render() returned error\n");
+            return false;
+        } else if (render_status == RenderStatus::kN
