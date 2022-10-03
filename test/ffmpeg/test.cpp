@@ -192,4 +192,7 @@ private:
 
         stop_watch_->Start();
         for (Image& img : render_result.images) {
-            i
+            int dst_x = img.dst_x;
+            int dst_y = img.dst_y;
+            Bitmap bmp = Bitmap::FromImage(std::move(img));
+            screen_canva
