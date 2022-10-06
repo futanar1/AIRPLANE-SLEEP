@@ -195,4 +195,9 @@ private:
             int dst_x = img.dst_x;
             int dst_y = img.dst_y;
             Bitmap bmp = Bitmap::FromImage(std::move(img));
-            screen_canva
+            screen_canvas.DrawBitmap(bmp, dst_x, dst_y);
+        }
+        stop_watch_->Stop();
+        int64_t compose_time = stop_watch_->GetMicroseconds();
+
+        if (render_result.duration == DUR
