@@ -202,4 +202,7 @@ private:
 
         if (render_result.duration == DURATION_INDEFINITE) {
             printf("[%.3lfs][INDEFINITE] images = %zu, render = %lfms, compose = %lfms\n",
-                   (double)render_resul
+                   (double)render_result.pts / 1000.0f,
+                   render_result.images.size(),
+                   static_cast<double>(render_time) / 1000.0f,
+                   st
