@@ -200,4 +200,6 @@ private:
         stop_watch_->Stop();
         int64_t compose_time = stop_watch_->GetMicroseconds();
 
-        if (render_result.duration == DUR
+        if (render_result.duration == DURATION_INDEFINITE) {
+            printf("[%.3lfs][INDEFINITE] images = %zu, render = %lfms, compose = %lfms\n",
+                   (double)render_resul
