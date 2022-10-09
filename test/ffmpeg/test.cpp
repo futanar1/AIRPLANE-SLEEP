@@ -208,4 +208,6 @@ private:
                    static_cast<double>(compose_time) / 1000.0f);
         } else {
             printf("[%.3lfs][%.7lfs] images = %zu, render = %lfms, compose = %lfms\n",
-        
+                   (double)render_result.pts / 1000.0f,
+                   (double)render_result.duration / 1000.0f,
+                   render_r
