@@ -218,4 +218,9 @@ private:
 
         std::string filename("test_ffmpeg_output_");
         filename.append(std::to_string(packet->pts));
-       
+        filename.append(".png");
+        png_writer_write_bitmap(filename.c_str(), screen_bmp);
+        return true;
+    }
+private:
+    AV
