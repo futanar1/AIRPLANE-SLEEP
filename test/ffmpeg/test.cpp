@@ -210,4 +210,6 @@ private:
             printf("[%.3lfs][%.7lfs] images = %zu, render = %lfms, compose = %lfms\n",
                    (double)render_result.pts / 1000.0f,
                    (double)render_result.duration / 1000.0f,
-                   render_r
+                   render_result.images.size(),
+                   static_cast<double>(render_time) / 1000.0f,
+                   static_cast<double>(compose_time) 
