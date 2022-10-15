@@ -212,4 +212,10 @@ private:
                    (double)render_result.duration / 1000.0f,
                    render_result.images.size(),
                    static_cast<double>(render_time) / 1000.0f,
-                   static_cast<double>(compose_time) 
+                   static_cast<double>(compose_time) / 1000.0f);
+        }
+        fflush(stdout);
+
+        std::string filename("test_ffmpeg_output_");
+        filename.append(std::to_string(packet->pts));
+       
