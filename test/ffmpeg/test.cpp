@@ -223,4 +223,8 @@ private:
         return true;
     }
 private:
-    AV
+    AVFormatContext* format_context_ = nullptr;
+    int arib_caption_index_ = -1;
+    // int64_t superimpose_pts_ = 0;
+    Context aribcc_context_;
+    Decoder arib
