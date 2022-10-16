@@ -227,4 +227,11 @@ private:
     int arib_caption_index_ = -1;
     // int64_t superimpose_pts_ = 0;
     Context aribcc_context_;
-    Decoder arib
+    Decoder aribcc_decoder_;
+    Renderer aribcc_renderer_;
+    std::unique_ptr<StopWatch> stop_watch_;
+};
+
+int main(int argc, const char* argv[]) {
+#ifdef _WIN32
+    
