@@ -246,4 +246,9 @@ int main(int argc, const char* argv[]) {
 
     if (!decode_renderer.Open(argv[1])) {
         fprintf(stderr, "Open() failed\n");
-        return 
+        return -1;
+    }
+
+    decode_renderer.RunLoop();
+    return 0;
+}
