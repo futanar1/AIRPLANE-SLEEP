@@ -234,4 +234,12 @@ private:
 
 int main(int argc, const char* argv[]) {
 #ifdef _WIN32
-    
+    UTF8CodePage enable_utf8_console;
+#endif
+
+    if (argc < 2) {
+        printf("Usage: %s input \n\n", argv[0]);
+        return -1;
+    }
+
+    CaptionDecodeRendererFFmp
