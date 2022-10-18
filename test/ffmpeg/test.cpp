@@ -242,4 +242,8 @@ int main(int argc, const char* argv[]) {
         return -1;
     }
 
-    CaptionDecodeRendererFFmp
+    CaptionDecodeRendererFFmpeg decode_renderer;
+
+    if (!decode_renderer.Open(argv[1])) {
+        fprintf(stderr, "Open() failed\n");
+        return 
