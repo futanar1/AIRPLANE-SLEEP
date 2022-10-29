@@ -18,4 +18,12 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-if(NOT ARIBCC_USE_FRE
+if(NOT ARIBCC_USE_FREETYPE)
+    find_package(Freetype)
+endif()
+
+if(NOT ARIBCC_USE_FONTCONFIG)
+    find_package(Fontconfig)
+endif()
+
+add_executable(test_fontconfig_
