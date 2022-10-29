@@ -26,4 +26,14 @@ if(NOT ARIBCC_USE_FONTCONFIG)
     find_package(Fontconfig)
 endif()
 
-add_executable(test_fontconfig_
+add_executable(test_fontconfig_freetype
+    EXCLUDE_FROM_ALL
+        test.cpp
+)
+
+target_compile_features(test_fontconfig_freetype
+    PRIVATE
+        cxx_std_17
+)
+
+target_incl
