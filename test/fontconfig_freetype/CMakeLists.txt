@@ -49,4 +49,10 @@ target_link_libraries(test_fontconfig_freetype
     PRIVATE
         aribcaption
         png_writer
-        ${FREETYPE_LIBRA
+        ${FREETYPE_LIBRARIES}
+        ${Fontconfig_LIBRARIES}
+)
+
+set_target_properties(test_fontconfig_freetype
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAK
