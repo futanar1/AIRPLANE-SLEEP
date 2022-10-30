@@ -42,4 +42,11 @@ target_include_directories(test_fontconfig_freetype
         ../../src
         ../png_writer/include
         ${FREETYPE_INCLUDE_DIRS}
-       
+        ${Fontconfig_INCLUDE_DIRS}
+)
+
+target_link_libraries(test_fontconfig_freetype
+    PRIVATE
+        aribcaption
+        png_writer
+        ${FREETYPE_LIBRA
