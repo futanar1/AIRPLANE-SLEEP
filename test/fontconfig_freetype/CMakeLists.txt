@@ -36,4 +36,10 @@ target_compile_features(test_fontconfig_freetype
         cxx_std_17
 )
 
-target_incl
+target_include_directories(test_fontconfig_freetype
+    PRIVATE
+        ../../include
+        ../../src
+        ../png_writer/include
+        ${FREETYPE_INCLUDE_DIRS}
+       
