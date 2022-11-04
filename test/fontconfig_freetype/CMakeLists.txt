@@ -55,4 +55,5 @@ target_link_libraries(test_fontconfig_freetype
 
 set_target_properties(test_fontconfig_freetype
     PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAK
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
