@@ -102,3 +102,54 @@ int main(int argc, const char* argv[]) {
                                              ch,
                                              style,
                                              ColorRGBA(  0, 255,   0, 255),
+                                             ColorRGBA(  0,   0,   0, 180),
+                                             3,
+                                             0,  // char_width * scale_factor,
+                                             char_height * scale_factor,
+                                             UnderlineInfo{section_x, section_width * scale_factor},
+                                             TextRenderFallbackPolicy::kAutoFallback);
+        if (status != TextRenderStatus::kOK) {
+            fprintf(stderr, "text_renderer.DrawChar returned error %d\n", static_cast<int>(status));
+            return -1;
+        }
+
+        if (draw_layout_box) {
+            ColorRGBA black(0, 0, 0, 255);
+            Rect rect(x, y, x + char_width * scale_factor, y + char_height * scale_factor);
+            canvas.DrawRect(black, Rect(rect.left, rect.top, rect.left + 1, rect.bottom));
+            canvas.DrawRect(black, Rect(rect.right - 1, rect.top, rect.right, rect.bottom));
+            canvas.DrawRect(black, Rect(rect.left, rect.top, rect.right, rect.top + 1));
+            canvas.DrawRect(black, Rect(rect.left, rect.bottom - 1, rect.right, rect.bottom));
+        }
+    }
+
+    text_renderer.EndDraw(text_render_ctx);
+
+    if (!png_writer_write_bitmap("test_fontconfig_freetype_output.png", bitmap)) {
+        fprintf(stderr, "write_png_file() failed\n");
+        return -1;
+    }
+
+    Bitmap bmp(char_width * scale_factor, char_height * scale_factor, PixelFormat::kRGBA8888);
+    text_render_ctx = text_renderer.BeginDraw(bmp);
+    text_renderer.DrawChar(text_render_ctx,
+                           0,
+                           0,
+                           U'獣',
+                           CharStyle::kCharStyleStroke,
+                           ColorRGBA(255, 255, 0, 255),
+                           ColorRGBA(0, 0, 0, 220),
+                           3,
+                           char_width * scale_factor,
+                           char_height * scale_factor,
+                           std::nullopt,
+                           TextRenderFallbackPolicy::kAutoFallback);
+    text_renderer.EndDraw(text_render_ctx);
+
+    if (!png_writer_write_bitmap("7363.png", bmp)) {
+        fprintf(stderr, "write_png_file() failed\n");
+        return -1;
+    }
+
+    return 0;
+}
