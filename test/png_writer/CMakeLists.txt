@@ -33,4 +33,12 @@ target_compile_features(png_writer
         cxx_std_17
 )
 
-target_
+target_include_directories(png_writer
+    PRIVATE
+        include/
+        ../../include
+        ../../src
+        ${PNG_INCLUDE_DIRS}
+)
+
+target
