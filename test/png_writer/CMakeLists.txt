@@ -23,4 +23,14 @@ find_package(PNG)
 add_library(png_writer
     STATIC
     EXCLUDE_FROM_ALL
-        include/png_wr
+        include/png_writer.h
+        include/png_writer.hpp
+        png_writer.cpp
+)
+
+target_compile_features(png_writer
+    PRIVATE
+        cxx_std_17
+)
+
+target_
