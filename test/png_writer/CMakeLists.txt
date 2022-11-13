@@ -41,4 +41,12 @@ target_include_directories(png_writer
         ${PNG_INCLUDE_DIRS}
 )
 
-target
+target_link_libraries(png_writer
+    PRIVATE
+        aribcaption
+        ${PNG_LIBRARIES}
+)
+
+set_target_properties(png_writer
+    PROPERTIES
+        RU
