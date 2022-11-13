@@ -49,4 +49,5 @@ target_link_libraries(png_writer
 
 set_target_properties(png_writer
     PROPERTIES
-        RU
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
