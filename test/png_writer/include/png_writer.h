@@ -20,3 +20,10 @@
 #define ARIBCAPTION_PNG_WRITER_H
 
 #include <stdbool.h>
+#include "aribcaption/image.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+bool png_writer_write_image_c(const char* filename, 
