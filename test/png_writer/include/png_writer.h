@@ -26,4 +26,10 @@
 extern "C" {
 #endif
 
-bool png_writer_write_image_c(const char* filename, 
+bool png_writer_write_image_c(const char* filename, const aribcc_image_t* image);
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
+
+#endif  // ARIBCAPTION_PNG_WRITER_H
