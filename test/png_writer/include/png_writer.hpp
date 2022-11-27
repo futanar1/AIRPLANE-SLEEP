@@ -9,4 +9,6 @@
 #include "renderer/bitmap.hpp"
 
 bool png_writer_write_image(const char* filename, const aribcaption::Image& image);
-bool png_writer_write_bitmap(
+bool png_writer_write_bitmap(const char* filename, const aribcaption::Bitmap& bitmap);
+
+#endif  // LIBARIBCAPTION_TEST_PNG_WRITER_HPP
