@@ -168,3 +168,25 @@ bool png_writer_write_bitmap(const char* filename, const Bitmap& bitmap) {
         info,
         bitmap.width(), bitmap.height(),
         8,
+        PNG_COLOR_TYPE_RGBA,
+        PNG_INTERLACE_NONE,
+        PNG_COMPRESSION_TYPE_DEFAULT,
+        PNG_FILTER_TYPE_DEFAULT
+    );
+    png_write_info(png, info);
+
+    std::vector<png_bytep> row_pointers;
+
+    for (int y = 0; y < bitmap.height() ; y++) {
+        auto addr = reinterpret_cast<png_bytep>(const_cast<ColorRGBA*>(bitmap.GetPixelAt(0, y)));
+        row_pointers.push_back(addr);
+    }
+
+    png_write_image(png, row_pointers.data());
+    png_write_end(png, nullptr);
+
+    fclose(fp);
+
+    png_destroy_write_struct(&png, &info);
+    return true;
+}
