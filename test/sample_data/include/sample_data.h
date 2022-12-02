@@ -1,4 +1,7 @@
 /*
  * Copyright (C) 2022 magicxqq <xqq@xqq.im>. All rights reserved.
  *
- * T
+ * This file is part of libaribcaption.
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose
