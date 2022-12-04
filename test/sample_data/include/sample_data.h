@@ -19,4 +19,9 @@
 #ifndef ARIBCAPTION_SAMPLE_DATA_H
 #define ARIBCAPTION_SAMPLE_DATA_H
 
-#ifdef __
+#ifdef __cplusplus
+    #include <cstdint>
+    #define SAMPLE_DATA_DECLEAR inline constexpr uint8_t
+#else
+    #include <stdint.h>
+    #define SAMPLE_DATA_DECLEAR stat
