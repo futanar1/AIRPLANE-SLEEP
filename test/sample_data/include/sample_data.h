@@ -24,4 +24,8 @@
     #define SAMPLE_DATA_DECLEAR inline constexpr uint8_t
 #else
     #include <stdint.h>
-    #define SAMPLE_DATA_DECLEAR stat
+    #define SAMPLE_DATA_DECLEAR static const uint8_t
+#endif
+
+SAMPLE_DATA_DECLEAR sample_data_1[] = {
+    0x80, 0xff, 0xf0, 0x04, 0x00, 0x00, 0x00, 0x4e, 0x3f, 0x00, 0x00, 0x4a, 0x1f
