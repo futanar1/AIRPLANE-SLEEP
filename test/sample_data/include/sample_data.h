@@ -87,4 +87,4 @@ SAMPLE_DATA_DECLEAR sample_data_drcs_1[] = {
 };
 
 
-#endif  //
+#endif  // ARIBCAPTION_SAMPLE_DATA_H
