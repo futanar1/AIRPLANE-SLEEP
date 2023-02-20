@@ -23,3 +23,12 @@ add_library(stopwatch
     EXCLUDE_FROM_ALL
         include/stopwatch.hpp
 )
+
+target_compile_features(stopwatch
+    PRIVATE
+        cxx_std_17
+)
+
+target_include_directories(stopwatch
+    PRIVATE
+        include
