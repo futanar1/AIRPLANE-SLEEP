@@ -31,4 +31,10 @@ target_compile_features(stopwatch
 
 target_include_directories(stopwatch
     PRIVATE
-        include
+        include/
+)
+
+set_target_properties(stopwatch
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
